@@ -1,0 +1,10 @@
+syntax = "proto3";
+option csharp_namespace = "gRPCStreaming.Shared";
+package chat;
+
+service Chat {
+  // Bidirectional: cả 2 phía đều stream
+  rpc Connect (stream ChatMessage) returns (stream ChatMessage);
+}
+
+message ChatMessage { string user = 1; string message = 2; string timestamp = 3; }

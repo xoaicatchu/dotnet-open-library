@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Observability.Api/Observability.Api.csproj" />
+  <Project Path="Observability.Tests/Observability.Tests.csproj" />
+</Solution>

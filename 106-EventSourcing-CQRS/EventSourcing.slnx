@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EventSourcing.Api/EventSourcing.Api.csproj" />
+  <Project Path="EventSourcing.Tests/EventSourcing.Tests.csproj" />
+</Solution>

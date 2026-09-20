@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ModernHighPerf.Api/ModernHighPerf.Api.csproj" />
+  <Project Path="ModernHighPerf.Tests/ModernHighPerf.Tests.csproj" />
+</Solution>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SagaPattern.Api/SagaPattern.Api.csproj" />
+  <Project Path="SagaPattern.Tests/SagaPattern.Tests.csproj" />
+</Solution>

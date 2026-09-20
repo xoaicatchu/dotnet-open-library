@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BulkOps.Api/BulkOps.Api.csproj" />
+  <Project Path="BulkOps.Tests/BulkOps.Tests.csproj" />
+</Solution>

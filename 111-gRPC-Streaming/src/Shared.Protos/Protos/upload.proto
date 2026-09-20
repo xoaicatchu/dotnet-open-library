@@ -1,0 +1,11 @@
+syntax = "proto3";
+option csharp_namespace = "gRPCStreaming.Shared";
+package upload;
+
+service BulkUpload {
+  // Client Streaming: client gửi nhiều records, server trả về 1 summary
+  rpc UploadProducts (stream ProductUploadRequest) returns (UploadSummary);
+}
+
+message ProductUploadRequest { string name = 1; double price = 2; int32 stock = 3; }
+message UploadSummary { int32 total_received = 1; int32 total_saved = 2; string message = 3; }

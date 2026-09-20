@@ -92,7 +92,48 @@ Kho dự án mẫu thực hành **52 thư viện .NET hàng đầu** trên nền
 |---|---|---|---|:---:|:---:|
 | 100 | [100-AllInOne](100-AllInOne/README.md) | 52 Thư Viện Toàn Diện | E-Commerce Order Fulfillment & Audit Platform | 5200 | 10/10 |
 
----
+### Dự án Benchmark Stack: 101 vs 102 (Enterprise Classic vs Modern High-Performance)
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 101 | [101-EnterpriseClassic](101-EnterpriseClassic/README.md) | MediatR · AutoMapper · Dapper · EF Core · MassTransit · Hangfire · Serilog · Swashbuckle | Battle-tested Enterprise Stack — Ổn định lâu năm, production-proven | 5201 | 8/8 |
+| 102 | [102-ModernHighPerf](102-ModernHighPerf/README.md) | Wolverine · Mapster · FusionCache · CAP · EF Core · Hangfire · Serilog · OpenTelemetry · NSwag | Modern High-Performance Stack — Throughput tối đa, latency thấp | 5202 | 8/8 |
+
+### Dự án Architecture Patterns
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 103 | [103-BenchmarkShowdown](103-BenchmarkShowdown/README.md) | BenchmarkDotNet · AutoMapper · Mapster · Dapper · EF Core · FusionCache · FluentValidation | Benchmark thực chiến: đo số liệu ns/op & allocation giữa classic vs modern libs | - | 6/6 |
+| 104 | [104-CleanVerticalSlice](104-CleanVerticalSlice/README.md) | MediatR · FluentValidation · EF Core · Serilog · Swashbuckle | Clean Architecture (4 layer) + Vertical Slice (feature-first) · Value Object · Aggregate Root · Domain Events | 5204 | 10/10 |
+| 105 | [105-Microservices-Basic](105-Microservices-Basic/README.md) | gRPC · YARP · EF Core · Swashbuckle | ProductService (REST+gRPC server) + OrderService (REST+gRPC client) + YARP API Gateway | 5300/5301/5302 | 10/10 |
+| 106 | [106-EventSourcing-CQRS](106-EventSourcing-CQRS/README.md) | SQLite EventStore · EF Core · Swashbuckle | Event Store, Aggregate Rebuild từ events, Snapshot, Read Model Projection | 5306 | 12/12 |
+| 107 | [107-Saga-Pattern](107-Saga-Pattern/README.md) | MassTransit StateMachine · Swashbuckle | Orchestration Saga: Order → Payment → Inventory → Shipping · Compensation flow | 5307 | 10/10 |
+
+### Dự án Security & Infrastructure
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 108 | [108-AuthStack](108-AuthStack/README.md) | JWT Bearer · BCrypt · EF Core · Rate Limiting | JWT Auth + Refresh Token Rotation + RBAC + Policy-based Authorization + Rate Limiting | 5308 | 12/12 |
+| 109 | [109-Observability](109-Observability/README.md) | OpenTelemetry · Prometheus · Serilog · EF Core | 3 trụ Observability: Metrics (/metrics) + Distributed Tracing + Structured Logging | 5309 | 8/8 |
+| 110 | [110-Middleware-Advanced](110-Middleware-Advanced/README.md) | ASP.NET Core Middleware · ProblemDetails RFC 9457 · Serilog | Custom Pipeline: CorrelationId + Request/Response Logging + GlobalExceptionHandler + ProblemDetails | 5310 | 12/12 |
+
+### Dự án Performance & Real-time
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 111 | [111-gRPC-Streaming](111-gRPC-Streaming/README.md) | gRPC · Protobuf | 4 gRPC patterns: Unary + Server Streaming + Client Streaming + Bidirectional Streaming | 5311/5321 | 10/10 |
+| 112 | [112-CachingAdvanced](112-CachingAdvanced/README.md) | IMemoryCache · IDistributedCache · HybridCache · FusionCache | L1/L2/Hybrid/Anti-stampede caching strategies | 5312 | 10/10 |
+| 113 | [113-BulkOps](113-BulkOps/README.md) | EF Core · EFCore.BulkExtensions · LinqToDB | Bulk Insert/Update/Delete: ExecuteUpdateAsync vs BulkExtensions vs BulkCopy | 5313 | 11/11 |
+| 116 | [116-WorkerService](116-WorkerService/README.md) | System.Threading.Channels · BackgroundService · PeriodicTimer | IHostedService + Channel\<T\> producer/consumer + periodic background jobs | 5316 | 10/10 |
+
+
+### Dự án Testing & Architecture Quality
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 114 | [114-TestingMastery](114-TestingMastery/README.md) | Moq · NSubstitute · Verify.Xunit · FluentAssertions · Bogus | Unit (Moq+NSubstitute) + Integration + Snapshot testing | 5314 | 16/16 |
+| 115 | [115-ArchitectureTests](115-ArchitectureTests/README.md) | NetArchTest.Rules · EF Core | Tự động kiểm tra dependency rules giữa Domain/Application/Infrastructure/Api | 5315 | 12/12 |
+
+### Dự án Modern API Styles
+| # | Dự án | Stack | Mục đích | Port | Tests |
+|---|---|---|---|:---:|:---:|
+| 117 | [117-GraphQL](117-GraphQL/README.md) | Hot Chocolate 14 · EF Core · DataLoader | GraphQL Query/Mutation/Subscription + DataLoader (N+1 prevention) + Banana Cake Pop UI | 5317 | 11/11 |
+
 
 ## Chi tiết Năng lực & Usecase Thực tế của Từng Thư viện
 

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AuthStack.Api/AuthStack.Api.csproj" />
+  <Project Path="AuthStack.Tests/AuthStack.Tests.csproj" />
+</Solution>

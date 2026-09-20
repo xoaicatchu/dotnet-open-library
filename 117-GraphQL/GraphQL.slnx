@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GraphQL.Api/GraphQL.Api.csproj" />
+  <Project Path="GraphQL.Tests/GraphQL.Tests.csproj" />
+</Solution>

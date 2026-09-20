@@ -1,0 +1,28 @@
+@Observability.Api_HostAddress = http://localhost:5309
+
+GET {{Observability.Api_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+POST {{Observability.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Super Widget",
+  "price": 99.99,
+  "stock": 42
+}
+
+###
+
+GET {{Observability.Api_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+DELETE {{Observability.Api_HostAddress}}/api/products/1
+
+###
+
+GET {{Observability.Api_HostAddress}}/metrics

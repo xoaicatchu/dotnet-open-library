@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CleanVerticalSlice.Api/CleanVerticalSlice.Api.csproj" />
+    <Project Path="src/CleanVerticalSlice.Application/CleanVerticalSlice.Application.csproj" />
+    <Project Path="src/CleanVerticalSlice.Domain/CleanVerticalSlice.Domain.csproj" />
+    <Project Path="src/CleanVerticalSlice.Infrastructure/CleanVerticalSlice.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CleanVerticalSlice.Tests/CleanVerticalSlice.Tests.csproj" />
+  </Folder>
+</Solution>

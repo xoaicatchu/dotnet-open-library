@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ArchTests.Domain/ArchTests.Domain.csproj" />
+    <Project Path="src/ArchTests.Application/ArchTests.Application.csproj" />
+    <Project Path="src/ArchTests.Infrastructure/ArchTests.Infrastructure.csproj" />
+    <Project Path="src/ArchTests.Api/ArchTests.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ArchTests.Tests/ArchTests.Tests.csproj" />
+  </Folder>
+</Solution>

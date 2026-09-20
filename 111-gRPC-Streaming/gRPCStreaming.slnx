@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shared.Protos/Shared.Protos.csproj" />
+    <Project Path="src/gRPCStreaming.Server/gRPCStreaming.Server.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/gRPCStreaming.Tests/gRPCStreaming.Tests.csproj" />
+  </Folder>
+</Solution>

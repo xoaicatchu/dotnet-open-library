@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MiddlewareAdvanced.Api/MiddlewareAdvanced.Api.csproj" />
+  <Project Path="MiddlewareAdvanced.Tests/MiddlewareAdvanced.Tests.csproj" />
+</Solution>
