@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CustomerValidationFluent.Api/CustomerValidationFluent.Api.csproj" />
+  <Project Path="CustomerValidationFluent.Tests/CustomerValidationFluent.Tests.csproj" />
+</Solution>

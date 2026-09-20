@@ -1,0 +1,24 @@
+@Host = http://localhost:5137
+
+### 1. Get OpenID Connect Discovery Document
+GET {{Host}}/.well-known/openid-configuration
+
+### 2. Request Access Token (Client Credentials)
+POST {{Host}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id=machine_worker&client_secret=worker_secret_key_123&scope=IdentityServerApi
+
+### 3. Get Inventory (Unauthorized without token)
+GET {{Host}}/api/inventory
+
+### 4. Create Inventory Item (Unauthorized without token)
+POST {{Host}}/api/inventory
+Content-Type: application/json
+
+{
+  "sku": "SKU-HEADSET-04",
+  "name": "Noise Cancelling Headset",
+  "stockQuantity": 50,
+  "unitPrice": 199.99
+}

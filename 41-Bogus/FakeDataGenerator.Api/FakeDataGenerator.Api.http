@@ -1,0 +1,31 @@
+@FakeDataGenerator_HostAddress = http://localhost:5141
+
+### 1. Get 5 Fake Users (English)
+GET {{FakeDataGenerator_HostAddress}}/api/mock/users?count=5
+Accept: application/json
+
+### 2. Get 5 Deterministic Users (Seed = 42)
+GET {{FakeDataGenerator_HostAddress}}/api/mock/users?count=5&seed=42
+Accept: application/json
+
+### 3. Get 5 Fake Users with Vietnamese Locale
+GET {{FakeDataGenerator_HostAddress}}/api/mock/users?count=5&locale=vi
+Accept: application/json
+
+### 4. Get 3 Fake Orders
+GET {{FakeDataGenerator_HostAddress}}/api/mock/orders?count=3
+Accept: application/json
+
+### 5. Get Customer by GUID (Deterministic)
+GET {{FakeDataGenerator_HostAddress}}/api/mock/customers/a3f12e84-8254-4a25-b827-02482e987111
+Accept: application/json
+
+### 6. Seed In-Memory Database Simulation
+POST {{FakeDataGenerator_HostAddress}}/api/mock/seed-db
+Content-Type: application/json
+
+{
+  "numberOfUsers": 50,
+  "numberOfOrders": 100,
+  "seed": 1337
+}

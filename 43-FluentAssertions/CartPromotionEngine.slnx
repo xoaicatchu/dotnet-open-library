@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CartPromotionEngine.Api/CartPromotionEngine.Api.csproj" />
+  <Project Path="CartPromotionEngine.Tests/CartPromotionEngine.Tests.csproj" />
+</Solution>

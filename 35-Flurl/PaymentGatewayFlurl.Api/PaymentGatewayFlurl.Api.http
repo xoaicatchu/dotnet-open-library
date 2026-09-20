@@ -1,0 +1,28 @@
+@Host = http://localhost:5135
+
+### Process Charge
+POST {{Host}}/api/paymentgateway/charges
+Content-Type: application/json
+
+{
+  "customerId": "cust_12345",
+  "amount": 99.50,
+  "currency": "USD",
+  "description": "Monthly Cloud Subscription"
+}
+
+### Get Transaction Status
+GET {{Host}}/api/paymentgateway/transactions/txn_sample_001
+
+### Process Refund
+POST {{Host}}/api/paymentgateway/refunds
+Content-Type: application/json
+
+{
+  "transactionId": "txn_sample_001",
+  "amount": 50.00,
+  "reason": "Partial customer refund"
+}
+
+### Get Exchange Rates
+GET {{Host}}/api/paymentgateway/rates?baseCurrency=USD&symbols=EUR,GBP,VND

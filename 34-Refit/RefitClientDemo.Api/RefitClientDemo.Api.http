@@ -1,0 +1,31 @@
+@Host = http://localhost:5134
+
+### Get External Users with Filter
+GET {{Host}}/api/externalusers?role=Admin&page=1&pageSize=5
+
+### Get External User by ID
+GET {{Host}}/api/externalusers/1
+
+### Create User via External API
+POST {{Host}}/api/externalusers
+Content-Type: application/json
+
+{
+  "name": "Sarah Connor",
+  "email": "sarah@cyberdyne.test",
+  "role": "Admin"
+}
+
+### Update User via External API
+PUT {{Host}}/api/externalusers/1
+Content-Type: application/json
+
+{
+  "name": "Sarah Connor Updated",
+  "email": "sarah.updated@cyberdyne.test",
+  "role": "SuperAdmin",
+  "isActive": true
+}
+
+### Delete User via External API
+DELETE {{Host}}/api/externalusers/1

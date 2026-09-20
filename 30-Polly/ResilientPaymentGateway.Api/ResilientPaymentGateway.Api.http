@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:5130
+
+### 1. Process normal payment (Success)
+POST {{baseUrl}}/api/payments/process
+Content-Type: application/json
+
+{
+  "accountId": "ACC-1001",
+  "amount": 150.00,
+  "currency": "USD"
+}
+
+### 2. Configure gateway for Transient Failure (Fails twice, succeeds on 3rd attempt via Polly Retry)
+POST {{baseUrl}}/api/payments/gateway-behavior?behavior=TransientFailure
+
+### 3. Process payment with Transient Failure (Recovers via Polly Retry)
+POST {{baseUrl}}/api/payments/process
+Content-Type: application/json
+
+{
+  "accountId": "ACC-1002",
+  "amount": 200.00,
+  "currency": "USD"
+}
+
+### 4. Configure gateway for Permanent Failure
+POST {{baseUrl}}/api/payments/gateway-behavior?behavior=PermanentFailure
+
+### 5. Process payment with Permanent Failure (Polly Fallback kicks in safely)
+POST {{baseUrl}}/api/payments/process
+Content-Type: application/json
+
+{
+  "accountId": "ACC-1003",
+  "amount": 500.00,
+  "currency": "USD"
+}
+
+### 6. Configure gateway for Timeout
+POST {{baseUrl}}/api/payments/gateway-behavior?behavior=Timeout
+
+### 7. Process payment with Timeout (Polly Timeout & Fallback kick in)
+POST {{baseUrl}}/api/payments/process
+Content-Type: application/json
+
+{
+  "accountId": "ACC-1004",
+  "amount": 75.00,
+  "currency": "USD"
+}
+
+### 8. Check gateway status & attempts count
+GET {{baseUrl}}/api/payments/status
+Accept: application/json

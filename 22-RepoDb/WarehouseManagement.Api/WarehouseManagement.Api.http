@@ -1,0 +1,64 @@
+@baseUrl = http://localhost:5122
+
+### 1. Get all warehouse items
+GET {{baseUrl}}/api/items
+Accept: application/json
+
+### 2. Filter by location
+GET {{baseUrl}}/api/items?location=Aisle-A1
+Accept: application/json
+
+### 3. Search items
+GET {{baseUrl}}/api/items?search=Box
+Accept: application/json
+
+### 4. Get item by ID
+GET {{baseUrl}}/api/items/1
+Accept: application/json
+
+### 5. Create new item
+POST {{baseUrl}}/api/items
+Content-Type: application/json
+
+{
+  "sku": "SKU-BUBBLE-ROLL",
+  "name": "Bubble Cushioning Wrap 100m",
+  "location": "Aisle-C1",
+  "quantity": 90,
+  "unitCost": 18.75
+}
+
+### 6. Update item
+PUT {{baseUrl}}/api/items/1
+Content-Type: application/json
+
+{
+  "name": "Standard Wooden Pallet - Heavy",
+  "location": "Aisle-A1",
+  "quantity": 300,
+  "unitCost": 16.00
+}
+
+### 7. Upsert item by SKU (Merge demo)
+POST {{baseUrl}}/api/items/upsert
+Content-Type: application/json
+
+{
+  "sku": "SKU-BOX-M",
+  "name": "Medium Shipping Box 12x12x12 - Recycled",
+  "location": "Aisle-A2",
+  "quantity": 1500,
+  "unitCost": 1.30
+}
+
+### 8. Batch restock items (Transaction demo)
+POST {{baseUrl}}/api/items/batch-restock
+Content-Type: application/json
+
+{
+  "skus": ["SKU-PALLET-001", "SKU-TAPE-HD"],
+  "addedQuantity": 50
+}
+
+### 9. Delete item
+DELETE {{baseUrl}}/api/items/4

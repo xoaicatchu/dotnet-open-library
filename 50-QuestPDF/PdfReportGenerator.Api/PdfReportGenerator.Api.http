@@ -1,0 +1,50 @@
+@PdfReportGenerator.Api_HostAddress = http://localhost:5150
+
+### Get sample invoice data
+# @name getSample
+GET {{PdfReportGenerator.Api_HostAddress}}/api/invoices/sample
+
+### Generate PDF download
+POST {{PdfReportGenerator.Api_HostAddress}}/api/invoices/generate-pdf
+Content-Type: application/json
+
+{
+  "invoiceNumber": "INV-2026-001",
+  "issueDate": "2026-09-20T00:00:00Z",
+  "dueDate": "2026-10-20T00:00:00Z",
+  "sellerName": "VNPT IT",
+  "sellerAddress": "Hanoi, Vietnam",
+  "customerName": "Acme Corp",
+  "customerEmail": "billing@acme.com",
+  "customerAddress": "123 Business Rd",
+  "items": [
+    {
+      "description": "Web Development",
+      "quantity": 40,
+      "unitPrice": 50.00
+    }
+  ],
+  "notes": "Net 30 days"
+}
+
+### Get PDF metadata
+POST {{PdfReportGenerator.Api_HostAddress}}/api/invoices/metadata
+Content-Type: application/json
+
+{
+  "invoiceNumber": "INV-2026-001",
+  "issueDate": "2026-09-20T00:00:00Z",
+  "dueDate": "2026-10-20T00:00:00Z",
+  "sellerName": "VNPT IT",
+  "sellerAddress": "Hanoi, Vietnam",
+  "customerName": "Acme Corp",
+  "customerEmail": "billing@acme.com",
+  "customerAddress": "123 Business Rd",
+  "items": [
+    {
+      "description": "Web Development",
+      "quantity": 40,
+      "unitPrice": 50.00
+    }
+  ]
+}

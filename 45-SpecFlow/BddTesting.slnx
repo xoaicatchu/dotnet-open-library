@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BddTesting.Api/BddTesting.Api.csproj" />
+  <Project Path="BddTesting.Tests/BddTesting.Tests.csproj" />
+</Solution>

@@ -1,0 +1,43 @@
+@SwaggerDocumentation_HostAddress = http://localhost:5146
+
+### 1. Get Swagger UI
+GET {{SwaggerDocumentation_HostAddress}}/swagger/index.html
+
+### 2. Get Swagger V1 JSON Specification
+GET {{SwaggerDocumentation_HostAddress}}/swagger/v1/swagger.json
+Accept: application/json
+
+### 3. Get Swagger V2 JSON Specification
+GET {{SwaggerDocumentation_HostAddress}}/swagger/v2/swagger.json
+Accept: application/json
+
+### 4. Get All Products V1
+GET {{SwaggerDocumentation_HostAddress}}/api/v1/products
+Accept: application/json
+
+### 5. Create Product V1
+POST {{SwaggerDocumentation_HostAddress}}/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Wireless Noise Canceling Headphones",
+  "price": 199.99,
+  "category": "Electronics"
+}
+
+### 6. Get All Products V2
+GET {{SwaggerDocumentation_HostAddress}}/api/v2/products
+Accept: application/json
+
+### 7. Create Product V2
+POST {{SwaggerDocumentation_HostAddress}}/api/v2/products
+Content-Type: application/json
+
+{
+  "sku": "ELEC-WH-1000XM5",
+  "name": "Sony WH-1000XM5 Premium Headphones",
+  "price": 349.99,
+  "category": "Electronics",
+  "inStock": true,
+  "tags": ["wireless", "anc", "bluetooth"]
+}

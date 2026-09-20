@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);NU1903;NU1904;NU1902;NU1608</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.12" />
+    <!-- Batch 1: 01-10 (Web API, Messaging & Distributed Systems) -->
+    <PackageReference Include="FastEndpoints" Version="8.2.0" />
+    <PackageReference Include="Carter" Version="9.0.0" />
+    <PackageReference Include="WolverineFx" Version="3.9.1" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Scrutor" Version="7.0.0" />
+    <PackageReference Include="MassTransit" Version="8.3.6" />
+    <PackageReference Include="DotNetCore.CAP" Version="8.2.0" />
+    <PackageReference Include="DotNetCore.CAP.InMemoryStorage" Version="8.2.0" />
+    <PackageReference Include="Savorboard.CAP.InMemoryMessageQueue" Version="8.2.0" />
+    <PackageReference Include="Rebus" Version="8.7.0" />
+    <PackageReference Include="Rebus.ServiceProvider" Version="10.3.0" />
+    <PackageReference Include="NServiceBus" Version="9.2.6" />
+    <PackageReference Include="Silverback.Core" Version="4.5.0" />
+
+    <!-- Batch 2: 11-20 (Streaming, Real-time, Actors & Background Jobs) -->
+    <PackageReference Include="Confluent.Kafka" Version="2.8.0" />
+    <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
+    <PackageReference Include="MQTTnet.AspNetCore" Version="4.3.7.1207" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.0-preview.1.25120.3" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="9.1.2" />
+    <PackageReference Include="Akka.Hosting" Version="1.5.37" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.14.0" />
+    <PackageReference Include="Coravel" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
+
+    <!-- Batch 3: 21-30 (Data Access, Caching & Resilience) -->
+    <PackageReference Include="linq2db.AspNet" Version="5.4.1.9" />
+    <PackageReference Include="linq2db.SQLite" Version="6.5.0" />
+    <PackageReference Include="RepoDb.Sqlite.Microsoft" Version="1.13.0" />
+    <PackageReference Include="Marten" Version="7.37.1" />
+    <PackageReference Include="FluentMigrator.Runner.SQLite" Version="6.2.0" />
+    <PackageReference Include="dbup-sqlite" Version="6.0.4" />
+    <PackageReference Include="ZiggyCreatures.FusionCache" Version="2.1.0" />
+    <PackageReference Include="EasyCaching.Core" Version="1.9.2" />
+    <PackageReference Include="EasyCaching.InMemory" Version="1.9.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
+    <PackageReference Include="Polly.Core" Version="8.5.2" />
+
+    <!-- Batch 4: 31-40 (Mapping, Validation, HTTP, Auth & Observability) -->
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Duende.IdentityServer" Version="7.2.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+
+    <!-- Batch 5: 41-47 (Testing, Documentation & Utilities) -->
+    <PackageReference Include="Bogus" Version="35.6.2" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
+
+    <!-- Batch 6: 48-52 (Files, Parsing & Workflow) -->
+    <PackageReference Include="Elsa" Version="3.8.2" />
+    <PackageReference Include="Stateless" Version="5.20.1" />
+    <PackageReference Include="QuestPDF" Version="2026.9.0" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+  </ItemGroup>
+
+</Project>

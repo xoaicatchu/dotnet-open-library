@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OrderMapping.Api/OrderMapping.Api.csproj" />
+  <Project Path="OrderMapping.Tests/OrderMapping.Tests.csproj" />
+</Solution>

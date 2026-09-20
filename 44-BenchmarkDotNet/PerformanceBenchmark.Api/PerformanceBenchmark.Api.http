@@ -1,0 +1,32 @@
+@PerformanceBenchmark_HostAddress = http://localhost:5144
+
+### 1. Get Available Benchmarks
+GET {{PerformanceBenchmark_HostAddress}}/api/benchmarks
+Accept: application/json
+
+### 2. Run JSON Serialization Benchmark (System.Text.Json vs Newtonsoft.Json)
+POST {{PerformanceBenchmark_HostAddress}}/api/benchmarks/run
+Content-Type: application/json
+
+{
+  "benchmarkId": "json",
+  "iterations": 5000
+}
+
+### 3. Run String Concatenation Benchmark (+ vs StringBuilder vs Interpolation)
+POST {{PerformanceBenchmark_HostAddress}}/api/benchmarks/run
+Content-Type: application/json
+
+{
+  "benchmarkId": "string",
+  "iterations": 10000
+}
+
+### 4. Run Collection Iteration Benchmark (For vs Foreach vs LINQ)
+POST {{PerformanceBenchmark_HostAddress}}/api/benchmarks/run
+Content-Type: application/json
+
+{
+  "benchmarkId": "collection",
+  "iterations": 2000
+}

@@ -1,0 +1,45 @@
+@CartPromotionEngine_HostAddress = http://localhost:5143
+@cartId = e4b0f922-38ef-41ec-8178-57d627c28899
+
+### 1. Get Empty Cart
+GET {{CartPromotionEngine_HostAddress}}/api/cart/{{cartId}}
+Accept: application/json
+
+### 2. Add First Item ($45.00 x 2)
+POST {{CartPromotionEngine_HostAddress}}/api/cart/{{cartId}}/items
+Content-Type: application/json
+
+{
+  "productId": "7b0a1d68-1996-41ce-9812-9860b0e50882",
+  "productName": "Ergonomic Mechanical Keyboard",
+  "unitPrice": 45.00,
+  "quantity": 2
+}
+
+### 3. Add Second Item ($25.00 x 1)
+POST {{CartPromotionEngine_HostAddress}}/api/cart/{{cartId}}/items
+Content-Type: application/json
+
+{
+  "productId": "9c1a2e79-2007-42df-0923-0971c1f61993",
+  "productName": "Wireless Gaming Mouse",
+  "unitPrice": 25.00,
+  "quantity": 1
+}
+
+### 4. Apply Coupon (SAVE10)
+POST {{CartPromotionEngine_HostAddress}}/api/cart/{{cartId}}/coupon
+Content-Type: application/json
+
+{
+  "couponCode": "SAVE10"
+}
+
+### 5. Checkout
+POST {{CartPromotionEngine_HostAddress}}/api/cart/{{cartId}}/checkout
+Content-Type: application/json
+
+{
+  "shippingAddress": "123 Le Loi, District 1, Ho Chi Minh City",
+  "paymentMethod": "CreditCard"
+}

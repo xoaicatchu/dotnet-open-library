@@ -1,0 +1,43 @@
+@SnapshotTesting_HostAddress = http://localhost:5142
+
+### 1. Get All Invoices
+GET {{SnapshotTesting_HostAddress}}/api/invoices
+Accept: application/json
+
+### 2. Get Seeded Invoice By Id
+GET {{SnapshotTesting_HostAddress}}/api/invoices/11111111-1111-1111-1111-111111111111
+Accept: application/json
+
+### 3. Get Invoice Summary
+GET {{SnapshotTesting_HostAddress}}/api/invoices/11111111-1111-1111-1111-111111111111/summary
+Accept: application/json
+
+### 4. Create New Invoice
+POST {{SnapshotTesting_HostAddress}}/api/invoices
+Content-Type: application/json
+
+{
+  "customer": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "Global Logistics Corp",
+    "taxCode": "0312987654",
+    "email": "finance@globallogistics.com",
+    "address": "456 Port Road, District 7, Ho Chi Minh City"
+  },
+  "items": [
+    {
+      "description": "Software Architecture Consulting",
+      "unitPrice": 1500.0,
+      "quantity": 2,
+      "discount": 200.0
+    },
+    {
+      "description": "Code Review & Security Audit",
+      "unitPrice": 800.0,
+      "quantity": 1,
+      "discount": 0.0
+    }
+  ],
+  "taxRate": 0.08,
+  "notes": "Net 15 payment terms apply."
+}

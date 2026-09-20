@@ -1,0 +1,37 @@
+@HostAddress = http://localhost:5104/api
+
+### Lấy danh sách liên hệ
+GET {{HostAddress}}/contacts
+
+### Tìm kiếm liên hệ
+GET {{HostAddress}}/contacts?search=john
+
+### Lấy chi tiết liên hệ
+GET {{HostAddress}}/contacts/1
+
+### Tạo mới liên hệ
+POST {{HostAddress}}/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Elon",
+  "lastName": "Musk",
+  "email": "elon@spacex.com",
+  "phone": "123456789",
+  "company": "SpaceX"
+}
+
+### Cập nhật liên hệ
+PUT {{HostAddress}}/contacts/1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe Updated",
+  "email": "john.updated@example.com",
+  "phone": "987654321",
+  "company": "Example Inc."
+}
+
+### Xóa liên hệ
+DELETE {{HostAddress}}/contacts/1

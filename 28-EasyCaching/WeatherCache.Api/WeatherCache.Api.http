@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:5128
+
+### 1. Get weather forecast for Tokyo (Cache MISS -> generates and caches)
+GET {{baseUrl}}/api/weatherforecast/Tokyo
+Accept: application/json
+
+### 2. Get weather forecast for Tokyo again (Cache HIT -> returns from cache)
+GET {{baseUrl}}/api/weatherforecast/Tokyo
+Accept: application/json
+
+### 3. Manually set custom forecast for Hanoi
+POST {{baseUrl}}/api/weatherforecast/Hanoi
+Content-Type: application/json
+
+{
+  "temperatureC": 32,
+  "summary": "Sunny and humid",
+  "ttlSeconds": 300
+}
+
+### 4. Get all cached items with prefix 'weather:'
+GET {{baseUrl}}/api/weatherforecast/prefix/weather:
+Accept: application/json
+
+### 5. Evict Tokyo from cache
+DELETE {{baseUrl}}/api/weatherforecast/Tokyo
+
+### 6. Get Tokyo again (Cache MISS -> generates new forecast)
+GET {{baseUrl}}/api/weatherforecast/Tokyo
+Accept: application/json

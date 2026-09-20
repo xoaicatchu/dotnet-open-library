@@ -1,0 +1,38 @@
+@host = http://localhost:5101
+
+### Get all products
+GET {{host}}/api/products
+Accept: application/json
+
+### Get product by ID
+GET {{host}}/api/products/1
+Accept: application/json
+
+### Search products
+GET {{host}}/api/products?search=mouse
+Accept: application/json
+
+### Create product
+POST {{host}}/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Product",
+  "price": 100000,
+  "stock": 10
+}
+
+### Update product
+PUT {{host}}/api/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Updated Keyboard",
+  "price": 1600000,
+  "stock": 20
+}
+
+### Delete product
+DELETE {{host}}/api/products/2

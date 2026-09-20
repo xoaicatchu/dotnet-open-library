@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:5127
+
+### 1. First call: Cache MISS (Hits simulated database)
+GET {{baseUrl}}/api/productscache/1
+Accept: application/json
+
+### 2. Second call: Cache HIT (Returns immediately from L1 MemoryCache)
+GET {{baseUrl}}/api/productscache/1
+Accept: application/json
+
+### 3. Check stats (TotalDbQueries should be 1)
+GET {{baseUrl}}/api/productscache/stats
+Accept: application/json
+
+### 4. Simulate database failure
+POST {{baseUrl}}/api/productscache/simulate-failure?enabled=true
+Accept: application/json
+
+### 5. Call again with failure active (FusionCache Fail-Safe returns cached data!)
+GET {{baseUrl}}/api/productscache/1
+Accept: application/json
+
+### 6. Restore database simulation
+POST {{baseUrl}}/api/productscache/simulate-failure?enabled=false
+Accept: application/json
+
+### 7. Evict cache for item 1
+DELETE {{baseUrl}}/api/productscache/1
+
+### 8. Call again after eviction (Hits database again, TotalDbQueries becomes 2)
+GET {{baseUrl}}/api/productscache/1
+Accept: application/json

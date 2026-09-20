@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:5129
+
+### 1. Increment a counter
+POST {{baseUrl}}/api/redisdemo/counter/pageviews:home?increment=1
+Accept: application/json
+
+### 2. Set field in a Hash (User session / cart)
+POST {{baseUrl}}/api/redisdemo/hash/cart:user123
+Content-Type: application/json
+
+{
+  "field": "item_99",
+  "value": "{\"name\":\"Mechanical Keyboard\",\"qty\":1}"
+}
+
+### 3. Get all fields in Hash
+GET {{baseUrl}}/api/redisdemo/hash/cart:user123
+Accept: application/json
+
+### 4. Add to Set (Unique tags)
+POST {{baseUrl}}/api/redisdemo/set/tags:dotnet
+Content-Type: application/json
+
+{
+  "member": "csharp"
+}
+
+### 5. Get all members of Set
+GET {{baseUrl}}/api/redisdemo/set/tags:dotnet
+Accept: application/json
+
+### 6. Add to Leaderboard (Sorted Set)
+POST {{baseUrl}}/api/redisdemo/leaderboard/game:season1
+Content-Type: application/json
+
+{
+  "member": "PlayerOne",
+  "score": 4500.0
+}
+
+### 7. Get Top 10 from Leaderboard
+GET {{baseUrl}}/api/redisdemo/leaderboard/game:season1/top?take=10
+Accept: application/json
+
+### 8. Publish message to Pub/Sub channel
+POST {{baseUrl}}/api/redisdemo/publish
+Content-Type: application/json
+
+{
+  "channel": "notifications",
+  "message": "Hello Redis Subscribers!"
+}

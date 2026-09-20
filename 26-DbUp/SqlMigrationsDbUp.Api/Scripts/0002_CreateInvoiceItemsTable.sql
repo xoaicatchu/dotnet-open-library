@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS InvoiceItems (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    InvoiceId INTEGER NOT NULL,
+    Description TEXT NOT NULL,
+    Quantity INTEGER NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (InvoiceId) REFERENCES Invoices(Id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS IX_InvoiceItems_InvoiceId ON InvoiceItems(InvoiceId);

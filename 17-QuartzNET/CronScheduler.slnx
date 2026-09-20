@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CronScheduler.Api/CronScheduler.Api.csproj" />
+  <Project Path="CronScheduler.Tests/CronScheduler.Tests.csproj" />
+</Solution>

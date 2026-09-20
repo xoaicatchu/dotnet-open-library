@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="FakeDataGenerator.Api/FakeDataGenerator.Api.csproj" />
+  <Project Path="FakeDataGenerator.Tests/FakeDataGenerator.Tests.csproj" />
+</Solution>

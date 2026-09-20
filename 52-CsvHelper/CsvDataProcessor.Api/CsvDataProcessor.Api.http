@@ -1,0 +1,20 @@
+@CsvDataProcessor.Api_HostAddress = http://localhost:5152
+
+### Get sample customer data
+GET {{CsvDataProcessor.Api_HostAddress}}/api/csv/sample
+
+### Export customer data to CSV
+POST {{CsvDataProcessor.Api_HostAddress}}/api/csv/export
+Content-Type: application/json
+
+[
+  {
+    "id": "CUST-001",
+    "fullName": "Alice Smith",
+    "email": "alice@example.com",
+    "phoneNumber": "+1-555-0100",
+    "balance": 1500.50,
+    "isActive": true,
+    "registeredDate": "2025-06-15T00:00:00Z"
+  }
+]

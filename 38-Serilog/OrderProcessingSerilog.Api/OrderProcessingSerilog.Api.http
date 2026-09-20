@@ -1,0 +1,27 @@
+@Host = http://localhost:5138
+
+### 1. Create Valid Order (Logs Information with Structured Properties)
+POST {{Host}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "cust_9988",
+  "amount": 250.75,
+  "itemName": "Ergonomic Office Chair"
+}
+
+### 2. Create Invalid Order (Logs Warning)
+POST {{Host}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "",
+  "amount": -50.00,
+  "itemName": "Bad Item"
+}
+
+### 3. Get Order by ID (Logs Diagnostic Search)
+GET {{Host}}/api/orders/ORD-SAMPLE1
+
+### 4. Fail Order (Logs Error with Exception and Stack Trace)
+POST {{Host}}/api/orders/ORD-SAMPLE1/fail

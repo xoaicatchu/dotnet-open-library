@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:5125
+
+### 1. Apply all pending migrations (Migrate Up)
+POST {{baseUrl}}/api/migrations/up
+Accept: application/json
+
+### 2. Get applied migrations history
+GET {{baseUrl}}/api/migrations/history
+Accept: application/json
+
+### 3. Inspect database schema tables and columns
+GET {{baseUrl}}/api/migrations/tables
+Accept: application/json
+
+### 4. Rollback to version 202601010001 (Delete Profiles and remove Status column)
+POST {{baseUrl}}/api/migrations/rollback/202601010001
+Accept: application/json
+
+### 5. Check schema after rollback
+GET {{baseUrl}}/api/migrations/tables
+Accept: application/json

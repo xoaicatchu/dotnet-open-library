@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:5132
+
+### 1. Get all users (projected to UserSummaryDto via Mapster)
+GET {{baseUrl}}/api/users
+Accept: application/json
+
+### 2. Get user by ID (detailed mapping)
+GET {{baseUrl}}/api/users/1
+Accept: application/json
+
+### 3. Create a new user (CreateUserRequest -> User entity -> UserDetailDto)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "username": "sarahconnor",
+  "email": "sarah.connor@example.com",
+  "firstName": "Sarah",
+  "lastName": "Connor",
+  "bio": "Resistance Leader",
+  "roles": ["User", "Moderator"],
+  "theme": "Dark",
+  "language": "en"
+}
+
+### 4. Update user bio and theme
+PUT {{baseUrl}}/api/users/1/bio
+Content-Type: application/json
+
+{
+  "bio": "Lead Cloud Architect & Principal Consultant",
+  "theme": "System"
+}

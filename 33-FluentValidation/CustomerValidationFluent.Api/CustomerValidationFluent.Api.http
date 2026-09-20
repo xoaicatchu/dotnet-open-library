@@ -1,0 +1,79 @@
+@Host = http://localhost:5133
+
+### Register Valid Customer
+POST {{Host}}/api/customers/register
+Content-Type: application/json
+
+{
+  "fullName": "Alice Johnson",
+  "email": "alice.johnson@example.com",
+  "age": 28,
+  "address": {
+    "street": "123 Tech Park Blvd",
+    "city": "Da Nang",
+    "postalCode": "550000",
+    "country": "Vietnam"
+  },
+  "isVip": true,
+  "membershipNumber": "VIP-1234"
+}
+
+### Register Invalid Customer (Validation Fails)
+POST {{Host}}/api/customers/register
+Content-Type: application/json
+
+{
+  "fullName": "A",
+  "email": "not-an-email",
+  "age": 16,
+  "address": {
+    "street": "",
+    "city": "",
+    "postalCode": "ABC",
+    "country": ""
+  },
+  "isVip": true,
+  "membershipNumber": "INVALID"
+}
+
+### Create Valid Order
+POST {{Host}}/api/customers/orders
+Content-Type: application/json
+
+{
+  "customerEmail": "alice.johnson@example.com",
+  "shippingMethod": "Express",
+  "discountPercent": 10,
+  "items": [
+    {
+      "sku": "PROD-101",
+      "name": "Wireless Mechanical Keyboard",
+      "quantity": 2,
+      "unitPrice": 129.99
+    },
+    {
+      "sku": "PROD-202",
+      "name": "Ergonomic Vertical Mouse",
+      "quantity": 1,
+      "unitPrice": 79.50
+    }
+  ]
+}
+
+### Create Invalid Order
+POST {{Host}}/api/customers/orders
+Content-Type: application/json
+
+{
+  "customerEmail": "bad-email",
+  "shippingMethod": "DroneDelivery",
+  "discountPercent": 150,
+  "items": [
+    {
+      "sku": "bad sku",
+      "name": "",
+      "quantity": 0,
+      "unitPrice": -10
+    }
+  ]
+}

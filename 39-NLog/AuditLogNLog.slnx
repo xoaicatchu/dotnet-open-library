@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AuditLogNLog.Api/AuditLogNLog.Api.csproj" />
+  <Project Path="AuditLogNLog.Tests/AuditLogNLog.Tests.csproj" />
+</Solution>

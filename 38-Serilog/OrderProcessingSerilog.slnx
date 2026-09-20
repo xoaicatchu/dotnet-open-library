@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OrderProcessingSerilog.Api/OrderProcessingSerilog.Api.csproj" />
+  <Project Path="OrderProcessingSerilog.Tests/OrderProcessingSerilog.Tests.csproj" />
+</Solution>

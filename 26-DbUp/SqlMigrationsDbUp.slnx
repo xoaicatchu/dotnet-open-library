@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SqlMigrationsDbUp.Api/SqlMigrationsDbUp.Api.csproj" />
+  <Project Path="SqlMigrationsDbUp.Tests/SqlMigrationsDbUp.Tests.csproj" />
+</Solution>

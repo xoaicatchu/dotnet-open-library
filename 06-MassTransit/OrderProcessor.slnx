@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="OrderProcessor.Api/OrderProcessor.Api.csproj" />
+  <Project Path="OrderProcessor.Tests/OrderProcessor.Tests.csproj" />
+</Solution>

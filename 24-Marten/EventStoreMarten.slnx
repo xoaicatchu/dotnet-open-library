@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EventStoreMarten.Api/EventStoreMarten.Api.csproj" />
+  <Project Path="EventStoreMarten.Tests/EventStoreMarten.Tests.csproj" />
+</Solution>

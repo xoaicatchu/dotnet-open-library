@@ -1,0 +1,28 @@
+@ExcelReportManager.Api_HostAddress = http://localhost:5151
+
+### Get sample sales data
+# @name sampleData
+GET {{ExcelReportManager.Api_HostAddress}}/api/reports/sample-data
+
+### Export sales data to Excel file (.xlsx)
+POST {{ExcelReportManager.Api_HostAddress}}/api/reports/export
+Content-Type: application/json
+
+[
+  {
+    "transactionId": "TXN-1001",
+    "customerName": "Acme Corp",
+    "product": "Cloud Service",
+    "quantity": 5,
+    "unitPrice": 1200.00,
+    "saleDate": "2026-01-15T00:00:00Z"
+  },
+  {
+    "transactionId": "TXN-1002",
+    "customerName": "Global Tech",
+    "product": "DB License",
+    "quantity": 2,
+    "unitPrice": 4500.00,
+    "saleDate": "2026-02-01T00:00:00Z"
+  }
+]

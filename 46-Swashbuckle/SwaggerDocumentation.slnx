@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SwaggerDocumentation.Api/SwaggerDocumentation.Api.csproj" />
+  <Project Path="SwaggerDocumentation.Tests/SwaggerDocumentation.Tests.csproj" />
+</Solution>

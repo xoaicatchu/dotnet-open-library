@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ExcelReportManager.Api\ExcelReportManager.Api.csproj" />
+  <Project Path="ExcelReportManager.Tests\ExcelReportManager.Tests.csproj" />
+</Solution>

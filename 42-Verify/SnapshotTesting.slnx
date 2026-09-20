@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SnapshotTesting.Api/SnapshotTesting.Api.csproj" />
+  <Project Path="SnapshotTesting.Tests/SnapshotTesting.Tests.csproj" />
+</Solution>

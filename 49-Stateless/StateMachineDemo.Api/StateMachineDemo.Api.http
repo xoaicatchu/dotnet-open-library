@@ -1,0 +1,45 @@
+@StateMachineDemo.Api_HostAddress = http://localhost:5149
+
+### Create a new order (Draft)
+# @name createOrder
+POST {{StateMachineDemo.Api_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "Alice Johnson",
+  "totalAmount": 1500.00
+}
+
+### Get order by ID
+@orderId = {{createOrder.response.body.id}}
+GET {{StateMachineDemo.Api_HostAddress}}/api/orders/{{orderId}}
+
+### Fire Submit trigger (Draft -> Submitted)
+POST {{StateMachineDemo.Api_HostAddress}}/api/orders/{{orderId}}/fire
+Content-Type: application/json
+
+{
+  "trigger": 0,
+  "reason": "Submitted by customer"
+}
+
+### Fire StartReview trigger (Submitted -> UnderReview)
+POST {{StateMachineDemo.Api_HostAddress}}/api/orders/{{orderId}}/fire
+Content-Type: application/json
+
+{
+  "trigger": 1,
+  "reason": "Assigned to manager"
+}
+
+### Fire Approve trigger (UnderReview -> Approved)
+POST {{StateMachineDemo.Api_HostAddress}}/api/orders/{{orderId}}/fire
+Content-Type: application/json
+
+{
+  "trigger": 2,
+  "reason": "Credit check passed"
+}
+
+### Get state machine graph in Mermaid format
+GET {{StateMachineDemo.Api_HostAddress}}/api/orders/{{orderId}}/graph?format=mermaid

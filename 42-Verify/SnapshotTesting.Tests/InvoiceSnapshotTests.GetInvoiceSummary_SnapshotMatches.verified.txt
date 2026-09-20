@@ -1,0 +1,8 @@
+{
+  Id: Guid_1,
+  InvoiceNumber: INV-2026-0001,
+  CustomerName: Acme Corporation,
+  IssueDate: DateTime_1,
+  GrandTotal: 1870.00,
+  Status: Issued
+}

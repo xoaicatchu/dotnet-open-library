@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PdfReportGenerator.Api\PdfReportGenerator.Api.csproj" />
+  <Project Path="PdfReportGenerator.Tests\PdfReportGenerator.Tests.csproj" />
+</Solution>

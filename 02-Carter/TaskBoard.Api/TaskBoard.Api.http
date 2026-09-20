@@ -1,0 +1,29 @@
+@TaskBoard.Api_HostAddress = http://localhost:5102
+
+GET {{TaskBoard.Api_HostAddress}}/api/tasks
+Accept: application/json
+
+###
+
+GET {{TaskBoard.Api_HostAddress}}/api/tasks?completed=true
+Accept: application/json
+
+###
+
+GET {{TaskBoard.Api_HostAddress}}/api/tasks/1
+Accept: application/json
+
+###
+
+POST {{TaskBoard.Api_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "New Task",
+  "description": "Task description"
+}
+
+###
+
+PATCH {{TaskBoard.Api_HostAddress}}/api/tasks/1/complete
+Accept: application/json

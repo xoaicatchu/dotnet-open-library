@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DatabaseMigrations.Api/DatabaseMigrations.Api.csproj" />
+  <Project Path="DatabaseMigrations.Tests/DatabaseMigrations.Tests.csproj" />
+</Solution>

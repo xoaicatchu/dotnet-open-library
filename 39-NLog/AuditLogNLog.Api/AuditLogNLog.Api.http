@@ -1,0 +1,35 @@
+@Host = http://localhost:5139
+
+### 1. Record Successful Login Audit
+POST {{Host}}/api/audit/login
+Content-Type: application/json
+
+{
+  "username": "admin_user",
+  "ipAddress": "192.168.1.100",
+  "success": true
+}
+
+### 2. Record Failed Login Audit (Warning)
+POST {{Host}}/api/audit/login
+Content-Type: application/json
+
+{
+  "username": "hacker_attempt",
+  "ipAddress": "10.0.0.99",
+  "success": false
+}
+
+### 3. Record Admin Action Audit
+POST {{Host}}/api/audit/action
+Content-Type: application/json
+
+{
+  "username": "super_admin",
+  "actionName": "DELETE_USER",
+  "resourceId": "USR-8822",
+  "details": "Deleted inactive account per GDPR request"
+}
+
+### 4. Health Check
+GET {{Host}}/api/audit/health

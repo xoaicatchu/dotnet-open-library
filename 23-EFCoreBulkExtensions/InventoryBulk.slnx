@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="InventoryBulk.Api/InventoryBulk.Api.csproj" />
+  <Project Path="InventoryBulk.Tests/InventoryBulk.Tests.csproj" />
+</Solution>

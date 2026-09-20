@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VirtualActors.Api/VirtualActors.Api.csproj" />
+  <Project Path="VirtualActors.Tests/VirtualActors.Tests.csproj" />
+</Solution>

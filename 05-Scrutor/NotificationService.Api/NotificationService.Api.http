@@ -1,0 +1,28 @@
+@host = http://localhost:5105
+
+### Get Channels
+GET {{host}}/api/notifications/channels
+
+### Get Formatters
+GET {{host}}/api/notifications/formatters
+
+### Send Notification (Email)
+POST {{host}}/api/notifications/send
+Content-Type: application/json
+
+{
+  "channel": "email",
+  "to": "user@example.com",
+  "subject": "Hello",
+  "body": "World"
+}
+
+### Broadcast Notification
+POST {{host}}/api/notifications/broadcast
+Content-Type: application/json
+
+{
+  "to": "user@example.com",
+  "subject": "Hello",
+  "body": "World"
+}

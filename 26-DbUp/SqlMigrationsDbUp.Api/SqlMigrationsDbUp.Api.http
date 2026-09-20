@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:5126
+
+### 1. Check migration status (pending vs executed)
+GET {{baseUrl}}/api/databaseupgrades/status
+Accept: application/json
+
+### 2. Execute pending database upgrade scripts
+POST {{baseUrl}}/api/databaseupgrades/upgrade
+Accept: application/json
+
+### 3. Check migration status after upgrade
+GET {{baseUrl}}/api/databaseupgrades/status
+Accept: application/json
+
+### 4. Inspect database tables and row counts
+GET {{baseUrl}}/api/databaseupgrades/tables
+Accept: application/json

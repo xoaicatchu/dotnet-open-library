@@ -1,0 +1,22 @@
+@OrderProcessor.Api_HostAddress = http://localhost:5106
+
+### Create Order
+POST {{OrderProcessor.Api_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "John Doe",
+  "product": "Laptop",
+  "quantity": 1,
+  "totalPrice": 25000000
+}
+
+### Get All Orders
+GET {{OrderProcessor.Api_HostAddress}}/api/orders
+
+### Get Order by ID
+@orderId = {{some_guid}}
+GET {{OrderProcessor.Api_HostAddress}}/api/orders/{{orderId}}
+
+### Cancel Order
+POST {{OrderProcessor.Api_HostAddress}}/api/orders/{{orderId}}/cancel

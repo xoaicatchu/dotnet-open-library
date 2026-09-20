@@ -1,0 +1,19 @@
+@Host = http://localhost:5136
+
+### Request OAuth 2.0 Access Token (Client Credentials)
+POST {{Host}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id=console-client&client_secret=secret_key_987654321&scope=api
+
+### Request Access Token with Invalid Secret (Fails)
+POST {{Host}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id=console-client&client_secret=WRONG_SECRET
+
+### Access Protected Secret Data (Unauthorized without token)
+GET {{Host}}/api/protectedresource/secret-data
+
+### Access Protected User Info (Unauthorized without token)
+GET {{Host}}/api/protectedresource/user-info

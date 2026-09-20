@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EcommerceTelemetry.Api/EcommerceTelemetry.Api.csproj" />
+  <Project Path="EcommerceTelemetry.Tests/EcommerceTelemetry.Tests.csproj" />
+</Solution>

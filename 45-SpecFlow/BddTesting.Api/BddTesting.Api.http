@@ -1,0 +1,31 @@
+@BddTesting_HostAddress = http://localhost:5145
+
+### 1. Get All Accounts
+GET {{BddTesting_HostAddress}}/api/accounts
+Accept: application/json
+
+### 2. Get Account By Number (Alice)
+GET {{BddTesting_HostAddress}}/api/accounts/ACC-1001
+Accept: application/json
+
+### 3. Create New Account
+POST {{BddTesting_HostAddress}}/api/accounts
+Content-Type: application/json
+
+{
+  "accountNumber": "ACC-2001",
+  "accountHolder": "David Miller",
+  "initialDeposit": 750.00,
+  "currency": "USD"
+}
+
+### 4. Transfer Money (Alice -> Bob: $200.00)
+POST {{BddTesting_HostAddress}}/api/accounts/transfer
+Content-Type: application/json
+
+{
+  "fromAccount": "ACC-1001",
+  "toAccount": "ACC-1002",
+  "amount": 200.00,
+  "note": "Payment for shared dinner"
+}

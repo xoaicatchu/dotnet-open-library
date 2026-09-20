@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AuthServerOpenIddict.Api/AuthServerOpenIddict.Api.csproj" />
+  <Project Path="AuthServerOpenIddict.Tests/AuthServerOpenIddict.Tests.csproj" />
+</Solution>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ResilientPaymentGateway.Api/ResilientPaymentGateway.Api.csproj" />
+  <Project Path="ResilientPaymentGateway.Tests/ResilientPaymentGateway.Tests.csproj" />
+</Solution>

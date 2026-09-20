@@ -1,0 +1,37 @@
+{
+  Id: Guid_1,
+  InvoiceNumber: INV-2026-0001,
+  IssueDate: DateTime_1,
+  DueDate: DateTime_2,
+  Customer: {
+    Id: Guid_2,
+    Name: Acme Corporation,
+    TaxCode: 0101234567,
+    Email: billing@acme.com,
+    Address: 123 Tech Park, Innovation Way, Silicon City
+  },
+  Items: [
+    {
+      ItemId: Guid_3,
+      Description: Enterprise Cloud Hosting - Annual Plan,
+      UnitPrice: 1200.00,
+      Quantity: 1,
+      Discount: 100.00,
+      LineTotal: 1100.00
+    },
+    {
+      ItemId: Guid_4,
+      Description: Premium Support & SLA 24/7,
+      UnitPrice: 300.00,
+      Quantity: 2,
+      LineTotal: 600.00
+    }
+  ],
+  SubTotal: 1700.00,
+  TaxRate: 0.10,
+  TaxAmount: 170.00,
+  DiscountTotal: 100.00,
+  GrandTotal: 1870.00,
+  Notes: Thank you for your business. Payment is due within 30 days.,
+  Status: Issued
+}

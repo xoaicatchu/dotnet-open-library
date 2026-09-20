@@ -1,0 +1,28 @@
+@Host = http://localhost:5140
+
+### 1. Process Valid Checkout (Emits Traces & Metrics)
+POST {{Host}}/api/checkout/process
+Content-Type: application/json
+
+{
+  "customerId": "cust_vip_1001",
+  "amount": 349.99,
+  "paymentMethod": "CreditCard"
+}
+
+### 2. Process Invalid Checkout (Sets Activity Error Status)
+POST {{Host}}/api/checkout/process
+Content-Type: application/json
+
+{
+  "customerId": "",
+  "amount": -10.00,
+  "paymentMethod": "PayPal"
+}
+
+### 3. Get Current Trace Context
+GET {{Host}}/api/checkout/trace
+traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+
+### 4. Get Metrics Summary
+GET {{Host}}/api/checkout/metrics-summary

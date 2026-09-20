@@ -1,0 +1,23 @@
+@VirtualActors.Api_HostAddress = http://localhost:5114
+
+POST {{VirtualActors.Api_HostAddress}}/api/carts/cart-123/items
+Content-Type: application/json
+
+{
+  "sku": "KB-1",
+  "name": "Keyboard",
+  "quantity": 2,
+  "unitPrice": 500000
+}
+
+###
+
+GET {{VirtualActors.Api_HostAddress}}/api/carts/cart-123
+
+###
+
+POST {{VirtualActors.Api_HostAddress}}/api/counters/clicks/increment?val=5
+
+###
+
+GET {{VirtualActors.Api_HostAddress}}/api/counters/clicks

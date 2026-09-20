@@ -1,0 +1,27 @@
+@WorkflowEngine.Api_HostAddress = http://localhost:5148
+
+### List workflow definitions
+GET {{WorkflowEngine.Api_HostAddress}}/api/workflows/definitions
+
+### Run greeting workflow
+POST {{WorkflowEngine.Api_HostAddress}}/api/workflows/run/greeting?name=VietDA
+
+### Run order approval - auto approve (under $1000)
+POST {{WorkflowEngine.Api_HostAddress}}/api/workflows/run/order-approval
+Content-Type: application/json
+
+{
+  "orderId": "ORD-001",
+  "amount": 500,
+  "requestedBy": "john.doe"
+}
+
+### Run order approval - requires review (>= $1000)
+POST {{WorkflowEngine.Api_HostAddress}}/api/workflows/run/order-approval
+Content-Type: application/json
+
+{
+  "orderId": "ORD-002",
+  "amount": 5000,
+  "requestedBy": "jane.smith"
+}

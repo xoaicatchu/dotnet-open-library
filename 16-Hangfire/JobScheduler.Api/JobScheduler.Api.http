@@ -1,0 +1,33 @@
+@HostAddress = http://localhost:5116
+
+POST {{HostAddress}}/api/jobs/welcome-email
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "name": "Nguyen Van A"
+}
+
+###
+
+POST {{HostAddress}}/api/jobs/delayed-reminder
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "message": "Subscription expires in 2 days",
+  "delaySeconds": 2
+}
+
+###
+
+POST {{HostAddress}}/api/jobs/recurring/daily-report
+Content-Type: application/json
+
+{
+  "reportType": "SalesSummary"
+}
+
+###
+
+GET {{HostAddress}}/api/jobs/history

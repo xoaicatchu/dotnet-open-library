@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="TaskQueueScheduler.Api/TaskQueueScheduler.Api.csproj" />
+  <Project Path="TaskQueueScheduler.Tests/TaskQueueScheduler.Tests.csproj" />
+</Solution>

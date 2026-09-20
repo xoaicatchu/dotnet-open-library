@@ -1,0 +1,53 @@
+@baseUrl = http://localhost:5120
+
+### 1. Get all products
+GET {{baseUrl}}/api/products
+Accept: application/json
+
+### 2. Search products
+GET {{baseUrl}}/api/products?search=Keyboard
+Accept: application/json
+
+### 3. Filter products by category
+GET {{baseUrl}}/api/products?categoryId=1
+Accept: application/json
+
+### 4. Get product by ID
+GET {{baseUrl}}/api/products/1
+Accept: application/json
+
+### 5. Create a new product
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Noise Cancelling Headphones",
+  "description": "Over-ear wireless headphones with ANC",
+  "price": 199.99,
+  "stock": 50,
+  "categoryId": 1
+}
+
+### 6. Update a product
+PUT {{baseUrl}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Wireless Ergonomic Mouse",
+  "description": "Updated ergonomic 2.4GHz mouse",
+  "price": 32.50,
+  "stock": 140,
+  "categoryId": 1
+}
+
+### 7. Apply batch discount (Transaction demo)
+POST {{baseUrl}}/api/products/batch-discount
+Content-Type: application/json
+
+{
+  "discountPercentage": 15,
+  "productIds": [1, 2]
+}
+
+### 8. Delete a product
+DELETE {{baseUrl}}/api/products/4

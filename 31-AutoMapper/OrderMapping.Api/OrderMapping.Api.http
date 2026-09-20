@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:5131
+
+### 1. Get all orders (flattened summary with calculated totals)
+GET {{baseUrl}}/api/orders
+Accept: application/json
+
+### 2. Get order details by ID (nested customer, address, items with line totals)
+GET {{baseUrl}}/api/orders/1
+Accept: application/json
+
+### 3. Create a new order (maps CreateOrderRequest -> Order entity -> OrderDetailDto)
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "customer": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com"
+  },
+  "shippingAddress": {
+    "street": "456 Oak Avenue",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78701",
+    "country": "USA"
+  },
+  "items": [
+    {
+      "productName": "Ergonomic Keyboard",
+      "unitPrice": 120.00,
+      "quantity": 1
+    },
+    {
+      "productName": "Monitor Stand",
+      "unitPrice": 35.50,
+      "quantity": 2
+    }
+  ]
+}
+
+### 4. Update order shipping address
+PUT {{baseUrl}}/api/orders/1/address
+Content-Type: application/json
+
+{
+  "street": "789 Pine Street Suite 400",
+  "city": "Seattle",
+  "state": "WA",
+  "zipCode": "98104",
+  "country": "USA"
+}

@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+TestResults/
+Debug/
+Release/
+*.user
+*.suo
+*.nupkg
+*.snupkg

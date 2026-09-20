@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AllInOne.Api\AllInOne.Api.csproj" />
+  <Project Path="AllInOne.Tests\AllInOne.Tests.csproj" />
+</Solution>

@@ -1,0 +1,39 @@
+@NswagToolchain_HostAddress = http://localhost:5147
+
+### 1. Get Swagger UI
+GET {{NswagToolchain_HostAddress}}/swagger
+
+### 2. Get ReDoc UI
+GET {{NswagToolchain_HostAddress}}/redoc
+
+### 3. Get OpenAPI V1 JSON Spec
+GET {{NswagToolchain_HostAddress}}/swagger/v1/swagger.json
+Accept: application/json
+
+### 4. Get All Tasks
+GET {{NswagToolchain_HostAddress}}/api/tasks
+Accept: application/json
+
+### 5. Filter Tasks by Status (InProgress)
+GET {{NswagToolchain_HostAddress}}/api/tasks?status=InProgress
+Accept: application/json
+
+### 6. Create New Task
+POST {{NswagToolchain_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Write Unit Tests for Payment Gateway",
+  "description": "Achieve 95% code coverage for payment processing logic.",
+  "priority": "High",
+  "assigneeEmail": "qa-lead@company.com",
+  "dueDate": "2026-10-01T00:00:00Z"
+}
+
+### 7. Generate C# Client SDK on-the-fly
+GET {{NswagToolchain_HostAddress}}/api/client-gen/csharp
+Accept: application/json
+
+### 8. Generate TypeScript Client SDK on-the-fly
+GET {{NswagToolchain_HostAddress}}/api/client-gen/typescript
+Accept: application/json

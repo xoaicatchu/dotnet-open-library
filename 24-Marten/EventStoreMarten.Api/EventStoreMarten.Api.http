@@ -1,0 +1,55 @@
+@baseUrl = http://localhost:5124
+
+### 1. Open new bank account (Event Sourcing: StartStream)
+# @name createAccount
+POST {{baseUrl}}/api/bankaccounts
+Content-Type: application/json
+
+{
+  "ownerName": "Alice Johnson",
+  "initialBalance": 500.00
+}
+
+### 2. Get account state by ID (Live Aggregation Replay)
+@accountId = {{createAccount.response.body.id}}
+GET {{baseUrl}}/api/bankaccounts/{{accountId}}
+Accept: application/json
+
+### 3. Deposit money (Append MoneyDeposited event)
+POST {{baseUrl}}/api/bankaccounts/{{accountId}}/deposit
+Content-Type: application/json
+
+{
+  "amount": 250.00,
+  "description": "Salary bonus"
+}
+
+### 4. Withdraw money (Append MoneyWithdrawn event)
+POST {{baseUrl}}/api/bankaccounts/{{accountId}}/withdraw
+Content-Type: application/json
+
+{
+  "amount": 100.00,
+  "description": "ATM withdrawal"
+}
+
+### 5. Get event stream history
+GET {{baseUrl}}/api/bankaccounts/{{accountId}}/events
+Accept: application/json
+
+### 6. Create customer profile (Document DB: Store JSONB)
+# @name createCustomer
+POST {{baseUrl}}/api/bankaccounts/customers
+Content-Type: application/json
+
+{
+  "fullName": "Bob Williams",
+  "email": "bob.williams@example.com",
+  "phoneNumber": "+1-555-0199",
+  "tier": "Premium"
+}
+
+### 7. Load customer profile by ID (Document DB: Load)
+@customerId = {{createCustomer.response.body.id}}
+GET {{baseUrl}}/api/bankaccounts/customers/{{customerId}}
+Accept: application/json

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="UserProfilesMapster.Api/UserProfilesMapster.Api.csproj" />
+  <Project Path="UserProfilesMapster.Tests/UserProfilesMapster.Tests.csproj" />
+</Solution>

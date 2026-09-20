@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NswagToolchain.Api/NswagToolchain.Api.csproj" />
+  <Project Path="NswagToolchain.Tests/NswagToolchain.Tests.csproj" />
+</Solution>

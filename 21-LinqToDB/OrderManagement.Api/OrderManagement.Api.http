@@ -1,0 +1,53 @@
+@baseUrl = http://localhost:5121
+
+### 1. Get all orders
+GET {{baseUrl}}/api/orders
+Accept: application/json
+
+### 2. Filter orders by status
+GET {{baseUrl}}/api/orders?status=Processing
+Accept: application/json
+
+### 3. Search orders by customer or address
+GET {{baseUrl}}/api/orders?search=Alice
+Accept: application/json
+
+### 4. Get order statistics
+GET {{baseUrl}}/api/orders/statistics
+Accept: application/json
+
+### 5. Get order detail by ID
+GET {{baseUrl}}/api/orders/1
+Accept: application/json
+
+### 6. Create a new order with items
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "David Pham",
+  "shippingAddress": "789 Nguyen Thi Minh Khai, District 3, HCMC",
+  "items": [
+    {
+      "productName": "Ergonomic Office Chair",
+      "quantity": 1,
+      "unitPrice": 189.99
+    },
+    {
+      "productName": "Lumbar Support Cushion",
+      "quantity": 2,
+      "unitPrice": 29.50
+    }
+  ]
+}
+
+### 7. Update order status (Set-based UPDATE)
+PATCH {{baseUrl}}/api/orders/1/status
+Content-Type: application/json
+
+{
+  "status": "Delivered"
+}
+
+### 8. Delete order (Set-based DELETE)
+DELETE {{baseUrl}}/api/orders/2

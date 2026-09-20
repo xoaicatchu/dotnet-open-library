@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="KafkaTelemetry.Api\KafkaTelemetry.Api.csproj" />
+  <Project Path="KafkaTelemetry.Tests\KafkaTelemetry.Tests.csproj" />
+</Solution>

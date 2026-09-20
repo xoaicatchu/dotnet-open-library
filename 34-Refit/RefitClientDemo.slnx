@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RefitClientDemo.Api/RefitClientDemo.Api.csproj" />
+  <Project Path="RefitClientDemo.Tests/RefitClientDemo.Tests.csproj" />
+</Solution>

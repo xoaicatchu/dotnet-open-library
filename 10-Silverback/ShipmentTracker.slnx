@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ShipmentTracker.Api/ShipmentTracker.Api.csproj" />
+  <Project Path="ShipmentTracker.Tests/ShipmentTracker.Tests.csproj" />
+</Solution>
