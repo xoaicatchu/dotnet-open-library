@@ -65,7 +65,14 @@ Content-Type: application/json
 {
   "productId": 1,
   "quantity": 2,
-  "customerName": "Tran Thi B"
+  "customerName": "Tran Thi B",
+  "customerEmail": "tranthib@example.com",
+  "Items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    }
+  ]
 }
 
 ###
