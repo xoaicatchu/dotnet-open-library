@@ -1,0 +1,73 @@
+### === PRODUCT SERVICE (port 5301) ===
+@ProductService = http://localhost:5301
+
+# GET all products
+GET {{ProductService}}/api/products
+Accept: application/json
+
+###
+
+# GET product by id
+GET {{ProductService}}/api/products/1
+Accept: application/json
+
+###
+
+# POST create product
+POST {{ProductService}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Dell Monitor 27\"",
+  "price": 449.99,
+  "stock": 40
+}
+
+###
+
+# DELETE product
+DELETE {{ProductService}}/api/products/1
+
+###
+
+### === ORDER SERVICE (port 5302) ===
+@OrderService = http://localhost:5302
+
+# GET all orders
+GET {{OrderService}}/api/orders
+Accept: application/json
+
+###
+
+# GET order by id
+GET {{OrderService}}/api/orders/1
+Accept: application/json
+
+###
+
+# POST create order (internally calls ProductService via gRPC to validate product)
+POST {{OrderService}}/api/orders
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2,
+  "customerName": "Le Van C"
+}
+
+###
+
+### === API GATEWAY / YARP (port 5300) ===
+@Gateway = http://localhost:5300
+
+# GET products via Gateway (YARP routes to ProductService)
+GET {{Gateway}}/api/products
+Accept: application/json
+
+###
+
+# GET orders via Gateway (YARP routes to OrderService)
+GET {{Gateway}}/api/orders
+Accept: application/json
+
+###

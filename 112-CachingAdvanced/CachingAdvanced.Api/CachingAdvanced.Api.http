@@ -1,6 +1,72 @@
-@CachingAdvanced.Api_HostAddress = http://localhost:5263
+@CachingAdvanced_HostAddress = http://localhost:5312
 
-GET {{CachingAdvanced.Api_HostAddress}}/weatherforecast/
+### === L1: IMemoryCache (In-Process) ===
+
+# GET product (cache miss → DB → memory cache set with 60s TTL)
+GET {{CachingAdvanced_HostAddress}}/api/memorycache/1
+Accept: application/json
+
+###
+
+# GET lại → cache HIT (không query DB)
+GET {{CachingAdvanced_HostAddress}}/api/memorycache/1
+Accept: application/json
+
+###
+
+# POST invalidate memory cache entry
+POST {{CachingAdvanced_HostAddress}}/api/memorycache/1/invalidate
+
+###
+
+### === L2: IDistributedCache (JSON serialized) ===
+
+# GET product từ distributed cache
+GET {{CachingAdvanced_HostAddress}}/api/distributedcache/1
+Accept: application/json
+
+###
+
+# GET lại từ cache
+GET {{CachingAdvanced_HostAddress}}/api/distributedcache/1
+Accept: application/json
+
+###
+
+# POST invalidate distributed cache
+POST {{CachingAdvanced_HostAddress}}/api/distributedcache/1/invalidate
+
+###
+
+### === L1+L2: HybridCache (.NET 9+) ===
+
+# GET product từ HybridCache (L1 miss → L2 miss → DB, set both)
+GET {{CachingAdvanced_HostAddress}}/api/hybridcache/1
+Accept: application/json
+
+###
+
+# GET lại → L1 HIT (ultra-fast)
+GET {{CachingAdvanced_HostAddress}}/api/hybridcache/1
+Accept: application/json
+
+###
+
+# POST invalidate hybrid cache (cả L1 + L2)
+POST {{CachingAdvanced_HostAddress}}/api/hybridcache/1/invalidate
+
+###
+
+### === FusionCache (Anti-stampede + Fail-safe) ===
+
+# GET product từ FusionCache
+GET {{CachingAdvanced_HostAddress}}/api/fusioncache/1
+Accept: application/json
+
+###
+
+# GET non-existent (fail-safe: trả null thay vì throw)
+GET {{CachingAdvanced_HostAddress}}/api/fusioncache/9999
 Accept: application/json
 
 ###

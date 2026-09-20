@@ -1,6 +1,59 @@
-@WorkerService.Api_HostAddress = http://localhost:5294
+@WorkerService_HostAddress = http://localhost:5316
 
-GET {{WorkerService.Api_HostAddress}}/weatherforecast/
+### === EMAIL QUEUE (Channel<T> producer) ===
+
+# POST enqueue email (producer → Channel<EmailMessage> → EmailQueueWorker consumer)
+POST {{WorkerService_HostAddress}}/api/email/send
+Content-Type: application/json
+
+{
+  "to": "customer@email.com",
+  "subject": "Order Confirmation #12345",
+  "body": "Your order has been placed successfully."
+}
+
+###
+
+# POST enqueue another email
+POST {{WorkerService_HostAddress}}/api/email/send
+Content-Type: application/json
+
+{
+  "to": "admin@email.com",
+  "subject": "Daily Report Ready",
+  "body": "Please review the attached report."
+}
+
+###
+
+# GET current queue depth (how many emails are pending in Channel)
+GET {{WorkerService_HostAddress}}/api/email/queue-depth
+Accept: application/json
+
+###
+
+### === JOBS (Background job tracking via DB) ===
+
+# GET all jobs (most recent 50)
+GET {{WorkerService_HostAddress}}/api/jobs
+Accept: application/json
+
+###
+
+# GET job by id
+GET {{WorkerService_HostAddress}}/api/jobs/1
+Accept: application/json
+
+###
+
+# GET job not found → 404
+GET {{WorkerService_HostAddress}}/api/jobs/9999
+Accept: application/json
+
+###
+
+# GET job statistics (grouped by status: Pending/Running/Completed/Failed)
+GET {{WorkerService_HostAddress}}/api/jobs/stats
 Accept: application/json
 
 ###

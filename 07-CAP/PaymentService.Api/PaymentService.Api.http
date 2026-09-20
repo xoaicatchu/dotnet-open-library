@@ -1,0 +1,49 @@
+@CAP_HostAddress = http://localhost:5107
+
+# POST create payment (publishes event via CAP → subscriber handles)
+POST {{CAP_HostAddress}}/api/payments
+Content-Type: application/json
+
+{
+  "orderId": "a1b2c3d4-0000-0000-0000-000000000001",
+  "amount": 299.99,
+  "currency": "VND",
+  "method": "CreditCard"
+}
+
+###
+
+# POST payment (large amount → simulates different flow)
+POST {{CAP_HostAddress}}/api/payments
+Content-Type: application/json
+
+{
+  "orderId": "a1b2c3d4-0000-0000-0000-000000000002",
+  "amount": 9999.99,
+  "currency": "USD",
+  "method": "BankTransfer"
+}
+
+###
+
+# GET all payments
+GET {{CAP_HostAddress}}/api/payments
+Accept: application/json
+
+###
+
+# GET payment by id
+GET {{CAP_HostAddress}}/api/payments/a1b2c3d4-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+# POST refund payment
+POST {{CAP_HostAddress}}/api/payments/a1b2c3d4-0000-0000-0000-000000000001/refund
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation"
+}
+
+###

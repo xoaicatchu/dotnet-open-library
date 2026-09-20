@@ -1,0 +1,80 @@
+@GraphQL_HostAddress = http://localhost:5317
+
+### === QUERIES ===
+
+# Query: get all products
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "{ products { id name price stock } }" }
+
+###
+
+# Query: get product by id (DataLoader - N+1 prevention)
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "{ productById(id: 1) { id name price stock createdAt } }" }
+
+###
+
+# Query: with filtering (Hot Chocolate UseFiltering)
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "{ products(where: { price: { gt: 100 } }) { id name price } }" }
+
+###
+
+# Query: with sorting descending
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "{ products(order: { price: DESC }) { name price } }" }
+
+###
+
+# Query: all orders with nested product info
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "{ orders { id customerName quantity totalPrice product { name price } } }" }
+
+###
+
+### === MUTATIONS ===
+
+# Mutation: create product
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "mutation { createProduct(name: \"RTX 4090 GPU\", description: \"High-end GPU\", price: 1599.99, stock: 5, categoryId: 1) { id name price } }" }
+
+###
+
+# Mutation: update product
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "mutation { updateProduct(id: 1, price: 1399.99, stock: 8) { id name price stock } }" }
+
+###
+
+# Mutation: delete product
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "mutation { deleteProduct(id: 1) }" }
+
+###
+
+# Mutation: create order
+POST {{GraphQL_HostAddress}}/graphql
+Content-Type: application/json
+
+{ "query": "mutation { createOrder(customerName: \"Nguyen Van A\", productId: 2, quantity: 1) { id customerName totalPrice } }" }
+
+###
+
+### === PLAYGROUND ===
+# Banana Cake Pop UI: http://localhost:5317/ui

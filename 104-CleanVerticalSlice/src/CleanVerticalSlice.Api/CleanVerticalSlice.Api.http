@@ -1,6 +1,71 @@
-@CleanVerticalSlice.Api_HostAddress = http://localhost:5035
+@CleanVerticalSlice_HostAddress = http://localhost:5035
 
-GET {{CleanVerticalSlice.Api_HostAddress}}/weatherforecast/
+### === PRODUCTS ===
+
+# GET all products (CQRS Query → Dapper)
+GET {{CleanVerticalSlice_HostAddress}}/api/products
 Accept: application/json
+
+###
+
+# GET product by id
+GET {{CleanVerticalSlice_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+# POST create product (ValidationBehavior pipeline → MediatR Command)
+POST {{CleanVerticalSlice_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "iPhone 16 Pro",
+  "price": 1099.99,
+  "stock": 100
+}
+
+###
+
+# POST invalid product → FluentValidation 400
+POST {{CleanVerticalSlice_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": -5,
+  "stock": -1
+}
+
+###
+
+# PUT update product
+PUT {{CleanVerticalSlice_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "iPhone 16 Pro Max",
+  "price": 1299.99,
+  "stock": 80
+}
+
+###
+
+### === ORDERS ===
+
+# GET all orders
+GET {{CleanVerticalSlice_HostAddress}}/api/orders
+Accept: application/json
+
+###
+
+# POST create order
+POST {{CleanVerticalSlice_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2,
+  "customerName": "Tran Thi B"
+}
 
 ###

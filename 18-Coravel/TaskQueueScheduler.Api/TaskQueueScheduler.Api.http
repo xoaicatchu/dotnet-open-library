@@ -1,0 +1,42 @@
+@Coravel_HostAddress = http://localhost:5118
+
+# POST queue a one-off task (Coravel IQueue dispatch)
+POST {{Coravel_HostAddress}}/api/tasks/queue
+Content-Type: application/json
+
+{
+  "taskType": "SendEmail",
+  "payload": {
+    "to": "user@email.com",
+    "subject": "Welcome!",
+    "body": "Thank you for signing up."
+  }
+}
+
+###
+
+# POST queue another task
+POST {{Coravel_HostAddress}}/api/tasks/queue
+Content-Type: application/json
+
+{
+  "taskType": "GenerateReport",
+  "payload": {
+    "reportType": "SalesDaily",
+    "date": "2026-09-20"
+  }
+}
+
+###
+
+# GET heartbeat log (Coravel recurring invocable that runs every minute)
+GET {{Coravel_HostAddress}}/api/tasks/heartbeats
+Accept: application/json
+
+###
+
+# GET task execution history
+GET {{Coravel_HostAddress}}/api/tasks/history
+Accept: application/json
+
+###

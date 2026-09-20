@@ -1,0 +1,46 @@
+@MQTT_HostAddress = http://localhost:5112
+
+# GET all registered devices
+GET {{MQTT_HostAddress}}/api/devices
+Accept: application/json
+
+###
+
+# GET device by id
+GET {{MQTT_HostAddress}}/api/devices/living-room-light
+Accept: application/json
+
+###
+
+# POST send command to device (MQTTnet publishes to broker → device subscribes)
+POST {{MQTT_HostAddress}}/api/devices/living-room-light/command
+Content-Type: application/json
+
+{
+  "command": "TurnOn",
+  "payload": { "brightness": 80, "color": "warm-white" }
+}
+
+###
+
+# POST turn off device
+POST {{MQTT_HostAddress}}/api/devices/bedroom-ac/command
+Content-Type: application/json
+
+{
+  "command": "TurnOff",
+  "payload": {}
+}
+
+###
+
+# POST set thermostat temperature
+POST {{MQTT_HostAddress}}/api/devices/thermostat-main/command
+Content-Type: application/json
+
+{
+  "command": "SetTemperature",
+  "payload": { "temperature": 24, "unit": "Celsius" }
+}
+
+###

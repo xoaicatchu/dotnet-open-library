@@ -1,0 +1,52 @@
+@Silverback_HostAddress = http://localhost:5110
+
+# POST create shipment (Silverback publishes ShipmentCreatedEvent)
+POST {{Silverback_HostAddress}}/api/shipments
+Content-Type: application/json
+
+{
+  "orderId": "c3d4e5f6-0000-0000-0000-000000000001",
+  "recipientName": "Le Van C",
+  "address": "123 Nguyen Hue, Q1, TPHCM",
+  "weight": 2.5,
+  "carrier": "GHN"
+}
+
+###
+
+# POST another shipment
+POST {{Silverback_HostAddress}}/api/shipments
+Content-Type: application/json
+
+{
+  "orderId": "c3d4e5f6-0000-0000-0000-000000000002",
+  "recipientName": "Pham Thi D",
+  "address": "456 Ly Thuong Kiet, Q10, TPHCM",
+  "weight": 0.8,
+  "carrier": "ViettelPost"
+}
+
+###
+
+# GET all shipments
+GET {{Silverback_HostAddress}}/api/shipments
+Accept: application/json
+
+###
+
+# GET shipment by id
+GET {{Silverback_HostAddress}}/api/shipments/c3d4e5f6-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+# PUT update shipment status (subscriber updates DB)
+PUT {{Silverback_HostAddress}}/api/shipments/c3d4e5f6-0000-0000-0000-000000000001/status
+Content-Type: application/json
+
+{
+  "status": "InTransit",
+  "note": "Package picked up by carrier"
+}
+
+###

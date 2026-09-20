@@ -1,6 +1,48 @@
-@TestingMastery.Api_HostAddress = http://localhost:5249
+@TestingMastery_HostAddress = http://localhost:5314
 
-GET {{TestingMastery.Api_HostAddress}}/weatherforecast/
+# GET all products
+GET {{TestingMastery_HostAddress}}/api/products
 Accept: application/json
+
+###
+
+# GET product by id
+GET {{TestingMastery_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+# GET product not found → 404
+GET {{TestingMastery_HostAddress}}/api/products/9999
+Accept: application/json
+
+###
+
+# POST create product
+POST {{TestingMastery_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Test Product via HTTP",
+  "price": 49.99,
+  "stock": 25
+}
+
+###
+
+# PUT update product
+PUT {{TestingMastery_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Updated Test Product",
+  "price": 59.99,
+  "stock": 20
+}
+
+###
+
+# DELETE product
+DELETE {{TestingMastery_HostAddress}}/api/products/1
 
 ###

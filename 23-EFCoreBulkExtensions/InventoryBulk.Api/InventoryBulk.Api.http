@@ -1,0 +1,65 @@
+@BulkExt_HostAddress = http://localhost:5123
+
+# GET all inventory stock
+GET {{BulkExt_HostAddress}}/api/stock
+Accept: application/json
+
+###
+
+# GET stock item by id
+GET {{BulkExt_HostAddress}}/api/stock/1
+Accept: application/json
+
+###
+
+# POST bulk insert (EFCore.BulkExtensions BulkInsertAsync)
+POST {{BulkExt_HostAddress}}/api/stock/bulk-insert
+Content-Type: application/json
+
+[
+  { "sku": "SKU-001", "name": "Product A", "quantity": 100, "price": 29.99 },
+  { "sku": "SKU-002", "name": "Product B", "quantity": 200, "price": 49.99 },
+  { "sku": "SKU-003", "name": "Product C", "quantity": 150, "price": 19.99 },
+  { "sku": "SKU-004", "name": "Product D", "quantity": 75,  "price": 99.99 }
+]
+
+###
+
+# POST bulk update (BulkUpdateAsync - batch UPDATE SQL)
+POST {{BulkExt_HostAddress}}/api/stock/bulk-update
+Content-Type: application/json
+
+[
+  { "id": 1, "sku": "SKU-001", "name": "Product A (Sale)", "quantity": 80, "price": 24.99 },
+  { "id": 2, "sku": "SKU-002", "name": "Product B (Sale)", "quantity": 180, "price": 39.99 }
+]
+
+###
+
+# POST bulk delete (BulkDeleteAsync)
+POST {{BulkExt_HostAddress}}/api/stock/bulk-delete
+Content-Type: application/json
+
+[
+  { "id": 3 },
+  { "id": 4 }
+]
+
+###
+
+# POST bulk upsert (BulkInsertOrUpdateAsync)
+POST {{BulkExt_HostAddress}}/api/stock/bulk-upsert
+Content-Type: application/json
+
+[
+  { "id": 1, "sku": "SKU-001", "name": "Product A (Upsert)", "quantity": 90, "price": 27.99 },
+  { "id": 0, "sku": "SKU-NEW", "name": "Brand New Product", "quantity": 50, "price": 59.99 }
+]
+
+###
+
+# GET inventory summary statistics
+GET {{BulkExt_HostAddress}}/api/stock/summary
+Accept: application/json
+
+###

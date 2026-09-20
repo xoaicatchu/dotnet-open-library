@@ -1,0 +1,37 @@
+@QuartzNET_HostAddress = http://localhost:5117
+
+# POST trigger immediate backup job (Quartz fires job now)
+POST {{QuartzNET_HostAddress}}/api/scheduler/backup/trigger
+Content-Type: application/json
+
+{}
+
+###
+
+# POST pause a scheduled job
+POST {{QuartzNET_HostAddress}}/api/scheduler/jobs/daily-cleanup/pause
+Content-Type: application/json
+
+{}
+
+###
+
+# POST resume a paused job
+POST {{QuartzNET_HostAddress}}/api/scheduler/jobs/daily-cleanup/resume
+Content-Type: application/json
+
+{}
+
+###
+
+# GET scheduler metrics (running jobs, next fire times)
+GET {{QuartzNET_HostAddress}}/api/scheduler/metrics
+Accept: application/json
+
+###
+
+# GET backup history list
+GET {{QuartzNET_HostAddress}}/api/scheduler/backups
+Accept: application/json
+
+###

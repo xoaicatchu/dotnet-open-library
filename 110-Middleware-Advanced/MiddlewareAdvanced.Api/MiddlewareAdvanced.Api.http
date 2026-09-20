@@ -1,6 +1,66 @@
-@MiddlewareAdvanced.Api_HostAddress = http://localhost:5000
+@MiddlewareAdvanced_HostAddress = http://localhost:5310
 
-GET {{MiddlewareAdvanced.Api_HostAddress}}/weatherforecast/
+### === PRODUCTS ===
+
+# GET all products (X-Correlation-Id được tự động thêm vào response)
+GET {{MiddlewareAdvanced_HostAddress}}/api/products
 Accept: application/json
+X-Correlation-Id: my-custom-correlation-001
+
+###
+
+# POST create product (valid)
+POST {{MiddlewareAdvanced_HostAddress}}/api/products
+Content-Type: application/json
+X-Correlation-Id: my-custom-correlation-002
+
+{
+  "name": "Dell XPS 15"
+}
+
+###
+
+# POST invalid product → BusinessException → 400 ProblemDetails RFC 9457
+POST {{MiddlewareAdvanced_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+###
+
+### === ERROR DEMO (ProblemDetails RFC 9457) ===
+
+# GET → KeyNotFoundException → 404 ProblemDetails
+GET {{MiddlewareAdvanced_HostAddress}}/api/demo/not-found
+
+###
+
+# GET → BusinessException → 400 ProblemDetails
+GET {{MiddlewareAdvanced_HostAddress}}/api/demo/business-error
+
+###
+
+# GET → InvalidOperationException → 500 ProblemDetails (stack trace hidden)
+GET {{MiddlewareAdvanced_HostAddress}}/api/demo/server-error
+
+###
+
+# GET → echo correlation id từ header
+GET {{MiddlewareAdvanced_HostAddress}}/api/demo/correlation-id
+X-Correlation-Id: test-correlation-xyz-789
+
+###
+
+# GET slow endpoint → Request/Response logging ghi duration ~200ms
+GET {{MiddlewareAdvanced_HostAddress}}/api/demo/slow-endpoint
+
+###
+
+### === MAP WHEN ===
+
+# GET /ping → "pong" (MapWhen branch, không qua middleware chính)
+GET {{MiddlewareAdvanced_HostAddress}}/ping
 
 ###

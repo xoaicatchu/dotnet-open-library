@@ -1,6 +1,84 @@
-@AuthStack.Api_HostAddress = http://localhost:5005
+@AuthStack_HostAddress = http://localhost:5308
 
-GET {{AuthStack.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### === AUTH ===
+
+# POST register user
+POST {{AuthStack_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "nguyenvana",
+  "email": "nguyenvana@email.com",
+  "password": "Password@123",
+  "role": "User"
+}
+
+###
+
+# POST register admin
+POST {{AuthStack_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "adminuser",
+  "email": "admin@email.com",
+  "password": "Admin@123",
+  "role": "Admin"
+}
+
+###
+
+# POST login → returns accessToken + refreshToken
+# @name loginResponse
+POST {{AuthStack_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nguyenvana@email.com",
+  "password": "Password@123"
+}
+
+###
+
+# POST refresh access token
+POST {{AuthStack_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "accessToken": "paste-access-token-here",
+  "refreshToken": "paste-refresh-token-here"
+}
+
+###
+
+# POST revoke refresh token (logout)
+POST {{AuthStack_HostAddress}}/api/auth/revoke
+Content-Type: application/json
+
+{
+  "refreshToken": "paste-refresh-token-here"
+}
+
+###
+
+### === USERS (JWT required) ===
+
+# GET current user profile (Authorization: Bearer <accessToken>)
+GET {{AuthStack_HostAddress}}/api/users/me
+Authorization: Bearer paste-access-token-here
+
+###
+
+### === ADMIN (Admin role required) ===
+
+# GET admin dashboard stats
+GET {{AuthStack_HostAddress}}/api/admin/dashboard
+Authorization: Bearer paste-admin-token-here
+
+###
+
+# GET all users list
+GET {{AuthStack_HostAddress}}/api/admin/users
+Authorization: Bearer paste-admin-token-here
 
 ###

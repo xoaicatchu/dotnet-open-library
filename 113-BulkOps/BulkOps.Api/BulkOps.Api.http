@@ -1,6 +1,73 @@
-@BulkOps.Api_HostAddress = http://localhost:5022
+@BulkOps_HostAddress = http://localhost:5313
 
-GET {{BulkOps.Api_HostAddress}}/weatherforecast/
+### === EF CORE NATIVE (ExecuteUpdateAsync / ExecuteDeleteAsync) ===
+
+# POST bulk insert 100 records (AddRangeAsync + SaveChangesAsync)
+POST {{BulkOps_HostAddress}}/api/efcore/bulk-insert?count=100
+
+###
+
+# POST bulk insert 1000 records
+POST {{BulkOps_HostAddress}}/api/efcore/bulk-insert?count=1000
+
+###
+
+# PUT bulk update price (ExecuteUpdateAsync - không load entity vào memory)
+PUT {{BulkOps_HostAddress}}/api/efcore/bulk-update-price?multiplier=1.1
+
+###
+
+# DELETE bulk delete inactive (ExecuteDeleteAsync - single SQL DELETE)
+DELETE {{BulkOps_HostAddress}}/api/efcore/bulk-delete-inactive
+
+###
+
+# GET products list
+GET {{BulkOps_HostAddress}}/api/efcore/products
 Accept: application/json
+
+###
+
+### === EFCORE.BULKEXTENSIONS ===
+
+# POST BulkInsertAsync (thư viện EFCore.BulkExtensions)
+POST {{BulkOps_HostAddress}}/api/bulkext/bulk-insert?count=100
+
+###
+
+# PUT BulkUpdateAsync
+PUT {{BulkOps_HostAddress}}/api/bulkext/bulk-update
+Content-Type: application/json
+
+[
+  { "id": 1, "name": "Updated A", "price": 199.99, "stock": 30, "isActive": true },
+  { "id": 2, "name": "Updated B", "price": 299.99, "stock": 20, "isActive": true }
+]
+
+###
+
+# DELETE BulkDeleteAsync
+DELETE {{BulkOps_HostAddress}}/api/bulkext/bulk-delete
+Content-Type: application/json
+
+[{ "id": 1 }, { "id": 2 }]
+
+###
+
+# POST BulkInsertOrUpdateAsync (Upsert)
+POST {{BulkOps_HostAddress}}/api/bulkext/bulk-upsert
+Content-Type: application/json
+
+[
+  { "id": 0, "name": "New via Upsert", "price": 99.99, "stock": 50, "isActive": true },
+  { "id": 3, "name": "Existing Updated", "price": 149.99, "stock": 40, "isActive": true }
+]
+
+###
+
+### === LINQTODB BULKCOPY ===
+
+# POST native SQL BULK INSERT via LinqToDB (nhanh nhất)
+POST {{BulkOps_HostAddress}}/api/linq2db/bulk-insert?count=100
 
 ###

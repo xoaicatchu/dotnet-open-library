@@ -1,6 +1,50 @@
-@BookStore.Api_HostAddress = http://localhost:5103
+@BookStore_HostAddress = http://localhost:5103
 
-GET {{BookStore.Api_HostAddress}}/api/books/
+# GET all books
+GET {{BookStore_HostAddress}}/api/books
 Accept: application/json
+
+###
+
+# GET book by id
+GET {{BookStore_HostAddress}}/api/books/1
+Accept: application/json
+
+###
+
+# GET book not found
+GET {{BookStore_HostAddress}}/api/books/9999
+Accept: application/json
+
+###
+
+# POST create book (Wolverine dispatch command → handler)
+POST {{BookStore_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "Clean Architecture",
+  "author": "Robert C. Martin",
+  "price": 39.99,
+  "stock": 50
+}
+
+###
+
+# PUT update book
+PUT {{BookStore_HostAddress}}/api/books/1
+Content-Type: application/json
+
+{
+  "title": "Clean Architecture (2nd Ed)",
+  "author": "Robert C. Martin",
+  "price": 44.99,
+  "stock": 40
+}
+
+###
+
+# DELETE book
+DELETE {{BookStore_HostAddress}}/api/books/1
 
 ###

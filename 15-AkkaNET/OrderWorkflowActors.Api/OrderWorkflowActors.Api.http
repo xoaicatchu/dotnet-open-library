@@ -1,6 +1,34 @@
-@OrderWorkflowActors.Api_HostAddress = http://localhost:5077
+@AkkaNET_HostAddress = http://localhost:5015
 
-GET {{OrderWorkflowActors.Api_HostAddress}}/weatherforecast/
+# POST pay for order (ActorSystem processes payment via Actor message)
+POST {{AkkaNET_HostAddress}}/api/actor-orders/d4e5f6a7-0000-0000-0000-000000000001/pay
+Content-Type: application/json
+
+{
+  "amount": 499.99,
+  "paymentMethod": "CreditCard"
+}
+
+###
+
+# POST cancel order (sends CancelOrder message to Actor)
+POST {{AkkaNET_HostAddress}}/api/actor-orders/d4e5f6a7-0000-0000-0000-000000000002/cancel
+Content-Type: application/json
+
+{
+  "reason": "Customer changed mind"
+}
+
+###
+
+# GET order state from Actor
+GET {{AkkaNET_HostAddress}}/api/actor-orders/d4e5f6a7-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+# GET order state after cancel
+GET {{AkkaNET_HostAddress}}/api/actor-orders/d4e5f6a7-0000-0000-0000-000000000002
 Accept: application/json
 
 ###

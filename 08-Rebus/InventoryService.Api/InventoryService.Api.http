@@ -1,0 +1,54 @@
+@Rebus_HostAddress = http://localhost:5108
+
+# GET all inventory items
+GET {{Rebus_HostAddress}}/api/inventory
+Accept: application/json
+
+###
+
+# GET item by id
+GET {{Rebus_HostAddress}}/api/inventory/1
+Accept: application/json
+
+###
+
+# GET item not found
+GET {{Rebus_HostAddress}}/api/inventory/9999
+Accept: application/json
+
+###
+
+# POST create inventory item (Rebus dispatches command)
+POST {{Rebus_HostAddress}}/api/inventory
+Content-Type: application/json
+
+{
+  "sku": "SKU-LAPTOP-001",
+  "name": "Gaming Laptop",
+  "quantity": 100,
+  "warehouseLocation": "A-01-03"
+}
+
+###
+
+# POST add stock (Rebus publishes StockAddedEvent)
+POST {{Rebus_HostAddress}}/api/inventory/1/add-stock
+Content-Type: application/json
+
+{
+  "quantity": 50,
+  "reason": "New shipment arrived"
+}
+
+###
+
+# POST remove stock (Rebus publishes StockRemovedEvent)
+POST {{Rebus_HostAddress}}/api/inventory/1/remove-stock
+Content-Type: application/json
+
+{
+  "quantity": 10,
+  "reason": "Order fulfillment"
+}
+
+###

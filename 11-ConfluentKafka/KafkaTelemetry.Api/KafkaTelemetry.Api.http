@@ -1,0 +1,41 @@
+@Kafka_HostAddress = http://localhost:5111
+
+# POST publish telemetry event (Confluent Kafka producer → topic: telemetry-events)
+POST {{Kafka_HostAddress}}/api/telemetry
+Content-Type: application/json
+
+{
+  "deviceId": "device-sensor-001",
+  "type": "Temperature",
+  "value": 72.5,
+  "unit": "Celsius",
+  "timestamp": "2026-09-20T10:00:00Z"
+}
+
+###
+
+# POST publish another event
+POST {{Kafka_HostAddress}}/api/telemetry
+Content-Type: application/json
+
+{
+  "deviceId": "device-sensor-002",
+  "type": "Humidity",
+  "value": 65.0,
+  "unit": "Percent",
+  "timestamp": "2026-09-20T10:00:05Z"
+}
+
+###
+
+# GET all device list
+GET {{Kafka_HostAddress}}/api/telemetry/devices
+Accept: application/json
+
+###
+
+# GET telemetry by deviceId (consumed from Kafka, stored in DB)
+GET {{Kafka_HostAddress}}/api/telemetry/device-sensor-001
+Accept: application/json
+
+###

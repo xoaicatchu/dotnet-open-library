@@ -1,0 +1,75 @@
+@EnterpriseClassic_HostAddress = http://localhost:5201
+
+### === PRODUCTS ===
+
+# GET all products (Dapper query)
+GET {{EnterpriseClassic_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+# GET product by id (EF Core + IDistributedCache)
+GET {{EnterpriseClassic_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+# POST create product (MediatR → FluentValidation → AutoMapper → EF Core → MassTransit event)
+POST {{EnterpriseClassic_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "MacBook Pro M4",
+  "description": "Apple Silicon laptop",
+  "price": 2499.99,
+  "stock": 30,
+  "categoryId": 1
+}
+
+###
+
+# POST invalid product (FluentValidation → 400)
+POST {{EnterpriseClassic_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": -10,
+  "stock": -1
+}
+
+###
+
+# PUT update product (MediatR command)
+PUT {{EnterpriseClassic_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "MacBook Pro M4 (Updated)",
+  "price": 2299.99,
+  "stock": 25
+}
+
+###
+
+### === ORDERS ===
+
+# GET all orders (Dapper)
+GET {{EnterpriseClassic_HostAddress}}/api/orders
+Accept: application/json
+
+###
+
+# POST create order (MediatR → Polly retry → MassTransit publish)
+POST {{EnterpriseClassic_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "Nguyen Van A",
+  "customerEmail": "nguyenvana@email.com",
+  "items": [
+    { "productId": 1, "productName": "MacBook Pro M4", "quantity": 1, "unitPrice": 2499.99 }
+  ]
+}
+
+###

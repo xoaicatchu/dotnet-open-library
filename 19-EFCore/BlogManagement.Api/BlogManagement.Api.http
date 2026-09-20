@@ -1,0 +1,91 @@
+@EFCore_HostAddress = http://localhost:5119
+
+### === POSTS ===
+
+# GET all posts (AsNoTracking + projection → PostSummaryDto with CommentsCount)
+GET {{EFCore_HostAddress}}/api/posts
+Accept: application/json
+
+###
+
+# GET posts filtered by author
+GET {{EFCore_HostAddress}}/api/posts?author=Nguyen Van A
+Accept: application/json
+
+###
+
+# GET post by id (eager loading: .Include(p => p.Comments))
+GET {{EFCore_HostAddress}}/api/posts/1
+Accept: application/json
+
+###
+
+# GET post not found → 404
+GET {{EFCore_HostAddress}}/api/posts/9999
+Accept: application/json
+
+###
+
+# POST create post
+POST {{EFCore_HostAddress}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "Getting Started with EF Core 10",
+  "content": "EF Core is an ORM that enables .NET developers to work with a database...",
+  "author": "Nguyen Van A"
+}
+
+###
+
+# POST create invalid post (empty title → 400 validation)
+POST {{EFCore_HostAddress}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "Some content",
+  "author": "Test"
+}
+
+###
+
+# PUT update post
+PUT {{EFCore_HostAddress}}/api/posts/1
+Content-Type: application/json
+
+{
+  "title": "Getting Started with EF Core 10 (Updated)",
+  "content": "Updated content with new features..."
+}
+
+###
+
+# DELETE post (cascade deletes all related Comments)
+DELETE {{EFCore_HostAddress}}/api/posts/1
+
+###
+
+### === COMMENTS ===
+
+# POST add comment to post
+POST {{EFCore_HostAddress}}/api/posts/1/comments
+Content-Type: application/json
+
+{
+  "author": "Tran Thi B",
+  "content": "Great article! Very helpful."
+}
+
+###
+
+# POST add another comment
+POST {{EFCore_HostAddress}}/api/posts/1/comments
+Content-Type: application/json
+
+{
+  "author": "Le Van C",
+  "content": "Thanks for sharing this."
+}
+
+###

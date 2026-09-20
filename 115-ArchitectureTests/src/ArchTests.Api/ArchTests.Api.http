@@ -1,0 +1,24 @@
+@ArchTests_HostAddress = http://localhost:5315
+
+# GET all products (Api → Application → Infrastructure → Domain, theo đúng dependency rules)
+GET {{ArchTests_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+# GET product by id
+GET {{ArchTests_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+# GET product not found → 404
+GET {{ArchTests_HostAddress}}/api/products/9999
+Accept: application/json
+
+###
+
+# DELETE product (kiểm tra Api layer không gọi thẳng Infrastructure)
+DELETE {{ArchTests_HostAddress}}/api/products/1
+
+###

@@ -1,6 +1,44 @@
-@SagaPattern.Api_HostAddress = http://localhost:5083
+@SagaPattern_HostAddress = http://localhost:5307
 
-GET {{SagaPattern.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+# POST create order → Saga starts: Initial → PaymentProcessing → InventoryReserving → Shipping → Completed
+# Happy path: amount <= 500 và quantity <= 10
+POST {{SagaPattern_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2,
+  "amount": 199.99,
+  "customerName": "Pham Thi D",
+  "customerEmail": "phamthid@email.com"
+}
+
+###
+
+# POST order → Payment FAIL (amount > 500) → Saga compensates → Failed state
+POST {{SagaPattern_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "productId": 2,
+  "quantity": 1,
+  "amount": 999.99,
+  "customerName": "Hoang Van E",
+  "customerEmail": "hoangvane@email.com"
+}
+
+###
+
+# POST order → Inventory FAIL (quantity > 10) → Saga compensates
+POST {{SagaPattern_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "productId": 3,
+  "quantity": 15,
+  "amount": 49.99,
+  "customerName": "Nguyen Thi F",
+  "customerEmail": "nguyenthif@email.com"
+}
 
 ###

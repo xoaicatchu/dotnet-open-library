@@ -1,6 +1,52 @@
-@EventSourcing.Api_HostAddress = http://localhost:5208
+@EventSourcing_HostAddress = http://localhost:5306
 
-GET {{EventSourcing.Api_HostAddress}}/weatherforecast/
+### === PRODUCTS (Write Model - Command Side) ===
+
+# GET all products (Read Model projection)
+GET {{EventSourcing_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+# GET product by id
+GET {{EventSourcing_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+# POST create product (appends ProductCreated event to EventStore)
+POST {{EventSourcing_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Sony WH-1000XM5",
+  "price": 349.99,
+  "stock": 75
+}
+
+###
+
+# PUT update product (appends ProductUpdated event)
+PUT {{EventSourcing_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Sony WH-1000XM5 (Sale)",
+  "price": 279.99,
+  "stock": 60
+}
+
+###
+
+# DELETE product (appends ProductDeleted event, rebuilds aggregate)
+DELETE {{EventSourcing_HostAddress}}/api/products/1
+
+###
+
+### === EVENTS (Audit Trail / Query Side) ===
+
+# GET full event history for an aggregate (replay all events)
+GET {{EventSourcing_HostAddress}}/api/events/1
 Accept: application/json
 
 ###

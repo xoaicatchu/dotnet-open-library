@@ -1,0 +1,34 @@
+@SignalR_HostAddress = http://localhost:5113
+
+# POST broadcast notification to all clients (SignalR Hub push)
+POST {{SignalR_HostAddress}}/api/notifications/broadcast
+Content-Type: application/json
+
+{
+  "title": "System Maintenance",
+  "message": "Server will restart at 2:00 AM",
+  "type": "Warning"
+}
+
+###
+
+# POST broadcast urgent alert
+POST {{SignalR_HostAddress}}/api/notifications/broadcast
+Content-Type: application/json
+
+{
+  "title": "New Order Received",
+  "message": "Order #12345 placed by Nguyen Van A",
+  "type": "Info"
+}
+
+###
+
+# GET SignalR hub connection status
+GET {{SignalR_HostAddress}}/api/notifications/status
+Accept: application/json
+
+###
+
+# Note: SignalR WebSocket hub at ws://localhost:5113/hubs/notifications
+# Connect via JavaScript: new signalR.HubConnectionBuilder().withUrl("/hubs/notifications").build()

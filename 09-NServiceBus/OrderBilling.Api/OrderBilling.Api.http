@@ -1,0 +1,45 @@
+@NServiceBus_HostAddress = http://localhost:5109
+
+# POST bill order (NServiceBus sends BillOrderCommand → BillingHandler creates invoice)
+POST {{NServiceBus_HostAddress}}/api/billing/bill
+Content-Type: application/json
+
+{
+  "orderId": "b2c3d4e5-0000-0000-0000-000000000001",
+  "customerName": "Nguyen Van A",
+  "customerEmail": "nguyenvana@email.com",
+  "amount": 599.99,
+  "items": [
+    { "name": "Headphones", "quantity": 1, "price": 599.99 }
+  ]
+}
+
+###
+
+# POST bill another order
+POST {{NServiceBus_HostAddress}}/api/billing/bill
+Content-Type: application/json
+
+{
+  "orderId": "b2c3d4e5-0000-0000-0000-000000000002",
+  "customerName": "Tran Thi B",
+  "customerEmail": "tranthib@email.com",
+  "amount": 1299.99,
+  "items": [
+    { "name": "Laptop", "quantity": 1, "price": 1299.99 }
+  ]
+}
+
+###
+
+# GET all invoices
+GET {{NServiceBus_HostAddress}}/api/billing/invoices
+Accept: application/json
+
+###
+
+# GET invoice by orderId
+GET {{NServiceBus_HostAddress}}/api/billing/invoices/b2c3d4e5-0000-0000-0000-000000000001
+Accept: application/json
+
+###

@@ -1,0 +1,32 @@
+@gRPC_HTTP_HostAddress = http://localhost:5321
+
+### gRPC Streaming Server HTTP endpoint
+# Note: gRPC calls require a gRPC client (e.g., Postman, grpcurl, or test project)
+# HTTP base URL: http://localhost:5321
+# gRPC base URL: http://localhost:5311
+
+### === UNARY RPC ===
+# grpcurl -plaintext -d '{"id": 1}' localhost:5311 product.ProductStream/GetProduct
+# grpcurl -plaintext -d '{"id": 999}' localhost:5311 product.ProductStream/GetProduct
+
+### === SERVER STREAMING ===
+# grpcurl -plaintext -d '{"product_id": 1, "count": 5}' localhost:5311 product.ProductStream/StreamPrices
+# grpcurl -plaintext -d '{"page_size": 4}' localhost:5311 product.ProductStream/ListProducts
+
+### === CLIENT STREAMING ===
+# grpcurl -plaintext -d @ localhost:5311 upload.BulkUpload/UploadProducts <<EOF
+# {"name": "Product 1", "price": 99.99, "stock": 10}
+# {"name": "Product 2", "price": 49.99, "stock": 20}
+# EOF
+
+### === BIDIRECTIONAL STREAMING ===
+# grpcurl -plaintext -d @ localhost:5311 chat.Chat/Connect <<EOF
+# {"user": "Alice", "message": "Hello"}
+# {"user": "Alice", "message": "How are you?"}
+# EOF
+
+### === HTTP ROOT ===
+GET {{gRPC_HTTP_HostAddress}}/
+Accept: text/plain
+
+###
