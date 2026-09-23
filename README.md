@@ -1,547 +1,382 @@
-# .NET 10 Production Library Playbook (Top 52)
+# .NET 10 Production Library Playbook
 
-Kho dự án mẫu thực hành **52 thư viện .NET hàng đầu** trên nền tảng **.NET 10 (C# 13)**. Mỗi thư mục là một giải pháp hoàn chỉnh, độc lập, sẵn sàng chạy với:
-- Kiến trúc **ASP.NET Core Controller** (`[ApiController]`, kế thừa `ControllerBase`)
-- Hướng dẫn tiếng Việt chi tiết theo chuẩn 12 phần
-- Kiểm thử tự động độc lập (**TDD** với `xUnit` & `WebApplicationFactory`)
-- Cổng HTTP riêng biệt từ `5101` đến `5152`
-- File `.http` sẵn sàng test trên VS Code / Rider / Visual Studio
-
----
-
-## Danh mục 52 Dự Án
-
-### Batch 1: Projects 01–10 (Web API, Messaging & Distributed Systems)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 01 | [01-FastEndpoints](01-FastEndpoints/README.md) | FastEndpoints | REPR Pattern, Clean Architecture API sản phẩm | 5101 | 17/17 |
-| 02 | [02-Carter](02-Carter/README.md) | Carter | Thin controller & CarterModule quản lý danh mục | 5102 | 7/7 |
-| 03 | [03-Wolverine](03-Wolverine/README.md) | Wolverine | Mediator & Message Bus không cần interface | 5103 | 6/6 |
-| 04 | [04-MediatR](04-MediatR/README.md) | MediatR | CQRS & Pipeline Behaviors (Validation, Logging) | 5104 | 6/6 |
-| 05 | [05-Scrutor](05-Scrutor/README.md) | Scrutor | Assembly Scanning & Decorator Pattern DI | 5105 | 9/9 |
-| 06 | [06-MassTransit](06-MassTransit/README.md) | MassTransit | Message Broker (In-Memory / RabbitMQ) & Consumer | 5106 | 9/9 |
-| 07 | [07-CAP](07-CAP/README.md) | CAP | Transactional Outbox & Event-Driven Architecture | 5107 | 6/6 |
-| 08 | [08-Rebus](08-Rebus/README.md) | Rebus | Lean Service Bus & Sagas điều phối giao dịch | 5108 | 9/9 |
-| 09 | [09-NServiceBus](09-NServiceBus/README.md) | NServiceBus | Enterprise Messaging & Message Routing | 5109 | 7/7 |
-| 10 | [10-Silverback](10-Silverback/README.md) | Silverback | Kafka / Broker abstraction & Inbound/Outbound | 5110 | 9/9 |
-
-### Batch 2: Projects 11–20 (Streaming, Real-time, Actors & Background Jobs)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 11 | [11-ConfluentKafka](11-ConfluentKafka/README.md) | Confluent.Kafka | High-throughput Kafka Producer & Consumer | 5111 | 8/8 |
-| 12 | [12-MQTTnet](12-MQTTnet/README.md) | MQTTnet | Embedded MQTT Broker & IoT Device Simulator | 5112 | 5/5 |
-| 13 | [13-SignalR](13-SignalR/README.md) | SignalR | Real-time WebSocket streaming & Chat rooms | 5113 | 5/5 |
-| 14 | [14-MicrosoftOrleans](14-MicrosoftOrleans/README.md) | Microsoft Orleans | Virtual Actor Model (Grains, State, Placement) | 5114 | 6/6 |
-| 15 | [15-AkkaNET](15-AkkaNET/README.md) | Akka.NET | Actor System, Mailbox & State Machine | 5115 | 10/10 |
-| 16 | [16-Hangfire](16-Hangfire/README.md) | Hangfire | Background Job Processing, Cron & Dashboard | 5116 | 5/5 |
-| 17 | [17-QuartzNET](17-QuartzNET/README.md) | Quartz.NET | Enterprise Job Scheduling & Trigger listeners | 5117 | 4/4 |
-| 18 | [18-Coravel](18-Coravel/README.md) | Coravel | Lightweight In-process Scheduler, Queue & Event | 5118 | 5/5 |
-| 19 | [19-EFCore](19-EFCore/README.md) | Entity Framework Core | Relational ORM, Change Tracker & AsNoTracking | 5119 | 10/10 |
-| 20 | [20-Dapper](20-Dapper/README.md) | Dapper | High-performance Micro-ORM & Multi-mapping | 5120 | 13/13 |
-
-### Batch 3: Projects 21–30 (Data Access, Caching & Resilience)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 21 | [21-LinqToDB](21-LinqToDB/README.md) | LinqToDB | LINQ-to-SQL siêu tốc, BulkCopy & Set-based Update | 5121 | 13/13 |
-| 22 | [22-RepoDb](22-RepoDb/README.md) | RepoDb | Hybrid ORM tốc độ cao, Property Handlers | 5122 | 15/15 |
-| 23 | [23-EFCoreBulkExtensions](23-EFCoreBulkExtensions/README.md) | EF Core Native Batch | ExecuteUpdateAsync, ExecuteDeleteAsync & Batching | 5123 | 9/9 |
-| 24 | [24-Marten](24-Marten/README.md) | Marten | PostgreSQL JSONB Document DB & Event Sourcing | 5124 | 10/10 |
-| 25 | [25-FluentMigrator](25-FluentMigrator/README.md) | FluentMigrator | C# Fluent Database Schema Migrations & Rollback | 5125 | 2/2 suites |
-| 26 | [26-DbUp](26-DbUp/README.md) | DbUp | Raw SQL Script Migrations (`.sql`) & Journaling | 5126 | 1/1 suite |
-| 27 | [27-FusionCache](27-FusionCache/README.md) | FusionCache | Anti-Stampede Lock, Fail-Safe & L1 Memory Cache | 5127 | 2/2 suites |
-| 28 | [28-EasyCaching](28-EasyCaching/README.md) | EasyCaching | Caching Abstraction, Multi-provider, Prefix Query | 5128 | 5/5 |
-| 29 | [29-StackExchangeRedis](29-StackExchangeRedis/README.md) | StackExchange.Redis | Redis Data Structures (Hash, Set, ZSet) & Pub/Sub | 5129 | 7/7 |
-| 30 | [30-Polly](30-Polly/README.md) | Polly v8 (Polly.Core) | Resilience Pipeline (Retry, Circuit Breaker, Fallback) | 5130 | 6/6 |
-
-### Batch 4: Projects 31–40 (Mapping, Validation, HTTP, Auth & Observability)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 31 | [31-AutoMapper](31-AutoMapper/README.md) | AutoMapper | Object Mapping, Flattening, Projection, Profiles | 5131 | 7/7 |
-| 32 | [32-Mapster](32-Mapster/README.md) | Mapster | High Performance Object Mapping, TypeAdapterConfig | 5132 | 6/6 |
-| 33 | [33-FluentValidation](33-FluentValidation/README.md) | FluentValidation | Strongly-typed Validation Rules, Child Validators | 5133 | 12/12 |
-| 34 | [34-Refit](34-Refit/README.md) | Refit | Type-safe REST Client, Declarative HTTP Interface | 5134 | 10/10 |
-| 35 | [35-Flurl](35-Flurl/README.md) | Flurl.Http | Fluent URL Builder & HTTP Client, HttpTest | 5135 | 8/8 |
-| 36 | [36-OpenIddict](36-OpenIddict/README.md) | OpenIddict | OAuth 2.0 / OIDC Server, Client Credentials Flow | 5136 | 6/6 |
-| 37 | [37-DuendeIdentityServer](37-DuendeIdentityServer/README.md) | Duende IdentityServer | Enterprise Identity & Access Management, Local API | 5137 | 6/6 |
-| 38 | [38-Serilog](38-Serilog/README.md) | Serilog | Structured Logging, LogContext, Sinks | 5138 | 5/5 |
-| 39 | [39-NLog](39-NLog/README.md) | NLog | Flexible Logging, XML Config, MemoryTarget | 5139 | 5/5 |
-| 40 | [40-OpenTelemetry](40-OpenTelemetry/README.md) | OpenTelemetry | Distributed Tracing (ActivitySource), Metrics (Meter) | 5140 | 5/5 |
-
-### Batch 5: Projects 41–47 (Testing, Documentation & Utilities)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 41 | [41-Bogus](41-Bogus/README.md) | Bogus | Fake data generator, Deterministic seeding, Locales | 5141 | 12/12 |
-| 42 | [42-Verify](42-Verify/README.md) | Verify (Verify.Xunit) | Snapshot testing, Scrubbing Guids/Dates, Invoices | 5142 | 7/7 |
-| 43 | [43-FluentAssertions](43-FluentAssertions/README.md) | FluentAssertions | Natural assertions, Deep equivalency, Shopping Cart | 5143 | 13/13 |
-| 44 | [44-BenchmarkDotNet](44-BenchmarkDotNet/README.md) | BenchmarkDotNet | Nanosecond benchmarking, MemoryDiagnoser, JIT warmup | 5144 | 8/8 |
-| 45 | [45-SpecFlow](45-SpecFlow/README.md) | SpecFlow (SpecFlow.xUnit) | BDD Gherkin scenarios, Living Documentation, Banking | 5145 | 11/11 |
-| 46 | [46-Swashbuckle](46-Swashbuckle/README.md) | Swashbuckle.AspNetCore | OpenAPI 3.0, Multi-version (V1/V2), Operation Filters | 5146 | 9/9 |
-| 47 | [47-NSwag](47-NSwag/README.md) | NSwag | OpenAPI toolchain, Swagger UI, ReDoc, C#/TS SDK gen | 5147 | 11/11 |
-
-### Batch 6: Projects 48–52 (Files, Parsing & Workflow)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 48 | [48-Elsa](48-Elsa/README.md) | Elsa Workflows | Code-first Workflow engine, In-process runner, Order approval | 5148 | 8/8 |
-| 49 | [49-Stateless](49-Stateless/README.md) | Stateless | Finite State Machine, Transition guards, History, Mermaid/DOT | 5149 | 8/8 |
-| 50 | [50-QuestPDF](50-QuestPDF/README.md) | QuestPDF | Code-first PDF generation, Fluent layout, Invoice documents | 5150 | 6/6 |
-| 51 | [51-ClosedXML](51-ClosedXML/README.md) | ClosedXML | Excel reader & writer (.xlsx), Styled reports, Formula, Roundtrip | 5151 | 6/6 |
-| 52 | [52-CsvHelper](52-CsvHelper/README.md) | CsvHelper | High-performance CSV import/export, ClassMap, Streaming | 5152 | 7/7 |
-
-### Dự án Tổng Hợp: 100-AllInOne (Toàn bộ 52 Thư Viện trong 1 Use Case)
-| # | Dự án | Thư viện | Tình huống thực tế | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 100 | [100-AllInOne](100-AllInOne/README.md) | 52 Thư Viện Toàn Diện | E-Commerce Order Fulfillment & Audit Platform | 5200 | 10/10 |
-
-### Dự án Benchmark Stack: 101 vs 102 (Enterprise Classic vs Modern High-Performance)
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 101 | [101-EnterpriseClassic](101-EnterpriseClassic/README.md) | MediatR · AutoMapper · Dapper · EF Core · MassTransit · Hangfire · Serilog · Swashbuckle | Battle-tested Enterprise Stack — Ổn định lâu năm, production-proven | 5201 | 8/8 |
-| 102 | [102-ModernHighPerf](102-ModernHighPerf/README.md) | Wolverine · Mapster · FusionCache · CAP · EF Core · Hangfire · Serilog · OpenTelemetry · NSwag | Modern High-Performance Stack — Throughput tối đa, latency thấp | 5202 | 8/8 |
-
-### Dự án Architecture Patterns
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 103 | [103-BenchmarkShowdown](103-BenchmarkShowdown/README.md) | BenchmarkDotNet · AutoMapper · Mapster · Dapper · EF Core · FusionCache · FluentValidation | Benchmark thực chiến: đo số liệu ns/op & allocation giữa classic vs modern libs | - | 6/6 |
-| 104 | [104-CleanVerticalSlice](104-CleanVerticalSlice/README.md) | MediatR · FluentValidation · EF Core · Serilog · Swashbuckle | Clean Architecture (4 layer) + Vertical Slice (feature-first) · Value Object · Aggregate Root · Domain Events | 5204 | 10/10 |
-| 105 | [105-Microservices-Basic](105-Microservices-Basic/README.md) | gRPC · YARP · EF Core · Swashbuckle | ProductService (REST+gRPC server) + OrderService (REST+gRPC client) + YARP API Gateway | 5300/5301/5302 | 10/10 |
-| 106 | [106-EventSourcing-CQRS](106-EventSourcing-CQRS/README.md) | SQLite EventStore · EF Core · Swashbuckle | Event Store, Aggregate Rebuild từ events, Snapshot, Read Model Projection | 5306 | 12/12 |
-| 107 | [107-Saga-Pattern](107-Saga-Pattern/README.md) | MassTransit StateMachine · Swashbuckle | Orchestration Saga: Order → Payment → Inventory → Shipping · Compensation flow | 5307 | 10/10 |
-
-### Dự án Security & Infrastructure
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 108 | [108-AuthStack](108-AuthStack/README.md) | JWT Bearer · BCrypt · EF Core · Rate Limiting | JWT Auth + Refresh Token Rotation + RBAC + Policy-based Authorization + Rate Limiting | 5308 | 12/12 |
-| 109 | [109-Observability](109-Observability/README.md) | OpenTelemetry · Prometheus · Serilog · EF Core | 3 trụ Observability: Metrics (/metrics) + Distributed Tracing + Structured Logging | 5309 | 8/8 |
-| 110 | [110-Middleware-Advanced](110-Middleware-Advanced/README.md) | ASP.NET Core Middleware · ProblemDetails RFC 9457 · Serilog | Custom Pipeline: CorrelationId + Request/Response Logging + GlobalExceptionHandler + ProblemDetails | 5310 | 12/12 |
-
-### Dự án Performance & Real-time
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 111 | [111-gRPC-Streaming](111-gRPC-Streaming/README.md) | gRPC · Protobuf | 4 gRPC patterns: Unary + Server Streaming + Client Streaming + Bidirectional Streaming | 5311/5321 | 10/10 |
-| 112 | [112-CachingAdvanced](112-CachingAdvanced/README.md) | IMemoryCache · IDistributedCache · HybridCache · FusionCache | L1/L2/Hybrid/Anti-stampede caching strategies | 5312 | 10/10 |
-| 113 | [113-BulkOps](113-BulkOps/README.md) | EF Core · EFCore.BulkExtensions · LinqToDB | Bulk Insert/Update/Delete: ExecuteUpdateAsync vs BulkExtensions vs BulkCopy | 5313 | 11/11 |
-| 116 | [116-WorkerService](116-WorkerService/README.md) | System.Threading.Channels · BackgroundService · PeriodicTimer | IHostedService + Channel\<T\> producer/consumer + periodic background jobs | 5316 | 10/10 |
-
-
-### Dự án Testing & Architecture Quality
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 114 | [114-TestingMastery](114-TestingMastery/README.md) | Moq · NSubstitute · Verify.Xunit · FluentAssertions · Bogus | Unit (Moq+NSubstitute) + Integration + Snapshot testing | 5314 | 16/16 |
-| 115 | [115-ArchitectureTests](115-ArchitectureTests/README.md) | NetArchTest.Rules · EF Core | Tự động kiểm tra dependency rules giữa Domain/Application/Infrastructure/Api | 5315 | 12/12 |
-
-### Dự án Modern API Styles
-| # | Dự án | Stack | Mục đích | Port | Tests |
-|---|---|---|---|:---:|:---:|
-| 117 | [117-GraphQL](117-GraphQL/README.md) | Hot Chocolate 14 · EF Core · DataLoader | GraphQL Query/Mutation/Subscription + DataLoader (N+1 prevention) + Banana Cake Pop UI | 5317 | 11/11 |
-
-
-## Chi tiết Năng lực & Usecase Thực tế của Từng Thư viện
-
-### Batch 1: Web API, Messaging & Distributed Systems (01–10)
-
-#### 01. FastEndpoints
-- **Năng lực cốt lõi**: Triển khai kiến trúc REPR (Request-Endpoint-Response), tự động phát hiện endpoint qua assembly scanning, tích hợp sẵn FluentValidation pipeline, hỗ trợ response caching và security policies trực tiếp trên endpoint.
-- **Usecase thực tế**:
-  - Xây dựng hệ thống Microservices quy mô lớn theo phong cách Vertical Slice Architecture (mỗi feature nằm trọn vẹn trong một thư mục).
-  - Thay thế ASP.NET Core Controller truyền thống để loại bỏ overhead, tăng throughput (RPS) và ngăn chặn tình trạng Controller phình to (God Controller).
-  - Xây dựng API kiểm tra dữ liệu nghiêm ngặt ngay tại cửa ngõ trước khi vào tầng logic nghiệp vụ.
-
-#### 02. Carter
-- **Năng lực cốt lõi**: Đóng gói các route Minimal API vào các class `ICarterModule` độc lập, tự động đăng ký vào DI và routing table, cung cấp Fluent Validation extension và Content Negotiation.
-- **Usecase thực tế**:
-  - Tổ chức và module hóa hàng chục hoặc hàng trăm endpoint Minimal APIs trong dự án lớn mà không làm bừa bãi file `Program.cs`.
-  - Xây dựng các plugin hoặc tính năng có thể bật/tắt động bằng cách nạp/hủy nạp assembly.
-  - Phù hợp cho các Web API ưu tiên tốc độ khởi động nhanh và dung lượng bộ nhớ thấp (Container / Serverless).
-
-#### 03. Wolverine
-- **Năng lực cốt lõi**:
-  - **In-process Command Mediator**: Thay thế MediatR với cú pháp Zero-Interface (không bắt buộc kế thừa `IRequest` hay `IRequestHandler`), code thuần POCO.
-  - **Asynchronous Messaging**: Gửi/nhận message qua broker ngoài (RabbitMQ, Kafka, Azure Service Bus, AWS SQS) với cùng một mô hình handler.
-  - **Transactional Outbox & Inbox**: Tự động lưu message vào outbox table cùng transaction với database, cam kết không mất mát message.
-  - **Cascading Messages & Side Effects**: Handler có thể trả về một tuple chứa nhiều message hoặc event con để Wolverine tự động phân phối tiếp mà không cần inject `IMessageBus`.
-  - **Compile-time Code Generation**: Sử dụng Lamar/Jasper để sinh mã C# trước khi chạy, đạt tốc độ gần như gọi hàm trực tiếp.
-- **Usecase thực tế**:
-  - Triển khai CQRS (Command Query Responsibility Segregation) và Event-Driven Architecture chuẩn mực trong hệ thống phân tán.
-  - Xử lý các nghiệp vụ phức tạp có chuỗi phản ứng nhiều bước (ví dụ: Tạo đơn hàng -> Bắn event trừ kho -> Bắn event gửi email -> Bắn event tích điểm).
-  - Tích hợp liền mạch giữa Marten (Event Sourcing) và PostgreSQL hoặc EF Core và SQL Server.
-
-#### 04. MediatR
-- **Năng lực cốt lõi**: Trừu tượng hóa giao tiếp in-process giữa các thành phần thông qua Requests (1-1) và Notifications (1-N), hỗ trợ mạnh mẽ Pipeline Behaviors (middleware in-process).
-- **Usecase thực tế**:
-  - Triển khai Clean Architecture / Onion Architecture: Tách rời Controller (tầng Web) khỏi Handler (tầng Application).
-  - Xử lý tập trung các Cross-cutting Concerns: Tự động ghi log, kiểm tra validation, đo thời gian thực thi, quản lý transaction cho mọi request qua Pipeline Behaviors.
-  - Phát sự kiện nội bộ (`INotification`) khi có thay đổi trạng thái để các module khác lắng nghe trong cùng một tiến trình.
-
-#### 05. Scrutor
-- **Năng lực cốt lõi**: Mở rộng `Microsoft.Extensions.DependencyInjection` với khả năng quét assembly theo quy ước (Convention-based registration) và triển khai Decorator Pattern tự nhiên cho DI.
-- **Usecase thực tế**:
-  - Tự động đăng ký toàn bộ Service và Repository theo interface tương ứng (`I...Service` -> `...Service`) mà không phải viết hàng trăm dòng `AddScoped`.
-  - Triển khai Decorator Pattern: Bọc thêm tính năng logging, caching hoặc retry xung quanh một service gốc mà không làm sửa đổi mã nguồn service đó.
-  - Quét và nạp các dynamic module trong kiến trúc Modular Monolith.
-
-#### 06. MassTransit
-- **Năng lực cốt lõi**: Enterprise Service Bus mã nguồn mở hoàn chỉnh, hỗ trợ RabbitMQ, Azure Service Bus, Amazon SQS, Kafka; tích hợp sẵn Saga State Machine, Outbox Pattern, Dead Letter Queue và Consumer Fault Handling.
-- **Usecase thực tế**:
-  - Giao tiếp bất đồng bộ, tin cậy giữa các microservices trong hệ sinh thái thương mại điện tử, thanh toán, vận chuyển.
-  - Điều phối quy trình phân tán dài hạn (Distributed Sagas) như đặt vé máy bay, phòng khách sạn, hoàn tiền khi một bước thất bại.
-  - Xử lý hàng đợi chịu tải cao với cơ chế Auto-Retry, Exponential Backoff và Circuit Breaker tích hợp sẵn.
-
-#### 07. CAP
-- **Năng lực cốt lõi**: Triển khai Transactional Outbox Pattern kết hợp EventBus cho kiến trúc Microservices, hỗ trợ đa dạng Storage (SQL Server, MySQL, PostgreSQL, MongoDB) và Broker (RabbitMQ, Kafka, Redis Streams, Azure Service Bus).
-- **Usecase thực tế**:
-  - Đảm bảo tính nhất quán dữ liệu tuyệt đối (Eventual Consistency) giữa thao tác ghi vào Database nghiệp vụ và thao tác xuất bản Message ra Broker.
-  - Lọc trùng lặp tự động (Idempotent Consumer) ở phía nhận dữ liệu, loại bỏ nguy cơ xử lý trùng giao dịch thanh toán hoặc đơn hàng.
-  - Hệ thống Tài chính, Ngân hàng, Cổng thanh toán yêu cầu mức độ tin cậy giao dịch 100%.
-
-#### 08. Rebus
-- **Năng lực cốt lõi**: Thư viện Service Bus tinh gọn (lean and modern), dễ cấu hình, hỗ trợ định tuyến 1-1 (Send) và 1-N (Publish), tích hợp quản lý Saga và đa dạng transport.
-- **Usecase thực tế**:
-  - Thay thế các giải pháp Service Bus cồng kềnh cho các ứng dụng vừa và nhỏ cần giao tiếp bất đồng bộ qua hàng đợi.
-  - Quản lý trạng thái quy trình nghiệp vụ nhiều bước (Saga) với cú pháp C# đơn giản.
-  - Thích hợp cho các team muốn nắm rõ toàn bộ luồng hoạt động của message bus mà không bị che giấu bởi quá nhiều tầng trừu tượng.
-
-#### 09. NServiceBus
-- **Năng lực cốt lõi**: Nền tảng nhắn tin phân tán cấp doanh nghiệp (Enterprise-grade), cung cấp bộ công cụ giám sát trực quan (ServicePulse, ServiceInsight), quản lý Outbox, Saga, tự động phục hồi lỗi cấp cao.
-- **Usecase thực tế**:
-  - Hệ thống tài chính ngân hàng, bảo hiểm, chăm sóc sức khỏe có yêu cầu SLA khắt khe và ràng buộc pháp lý về kiểm toán dữ liệu.
-  - Giám sát luồng tin nhắn và phân tích sự cố phân tán trực quan bằng giao diện đồ họa.
-  - Xử lý các quy trình nghiệp vụ có thời gian chờ kéo dài nhiều tuần hoặc tháng.
-
-#### 10. Silverback
-- **Năng lực cốt lõi**: Khung làm việc chuyên biệt cho Apache Kafka và RabbitMQ, cung cấp trừu tượng hóa mức cao, hỗ trợ Transactional Outbox/Inbox, Batch Processing, Partition Rebalancing và Schema Registry.
-- **Usecase thực tế**:
-  - Xử lý luồng sự kiện tốc độ cao (Event Streaming) với Kafka trong các hệ thống Big Data, IoT hoặc viễn thông.
-  - Đảm bảo ngữ nghĩa phân phối Exactly-Once hoặc At-Least-Once trong môi trường container động.
-  - Đồng bộ dữ liệu bất đồng bộ giữa các cơ sở dữ liệu phân tán (Data Replication).
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10" />
+  <img src="https://img.shields.io/badge/C%23-13.0-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C# 13" />
+  <img src="https://img.shields.io/badge/Libraries-52%20Projects-007ACC?style=for-the-badge&logo=nuget&logoColor=white" alt="52 Libraries" />
+  <img src="https://img.shields.io/badge/Showcase-18%20Projects-FF6B35?style=for-the-badge&logo=dotnet&logoColor=white" alt="18 Showcase" />
+  <img src="https://img.shields.io/badge/REST%20Ready-100%25-brightgreen?style=for-the-badge" alt="REST Ready" />
+  <img src="https://img.shields.io/badge/Tests-TDD%20Verified-blueviolet?style=for-the-badge" alt="Tests" />
+</p>
 
 ---
 
-### Batch 2: Streaming, Real-time, Actors & Background Jobs (11–20)
+## 📖 Tổng Quan Dự Án (Overview & Philosophy)
 
-#### 11. Confluent.Kafka
-- **Năng lực cốt lõi**: Thư viện client Apache Kafka chính thức từ Confluent, được tối ưu hóa bằng C-driver (`librdkafka`), mang lại hiệu năng throughput cao nhất và độ trễ thấp nhất.
-- **Usecase thực tế**:
-  - Thu thập hàng triệu bản ghi telemetry, log, metrics hoặc clickstream mỗi giây.
-  - Giao tiếp giữa các microservices yêu cầu thông lượng cực lớn mà RabbitMQ không đáp ứng đủ.
-  - Triển khai kiến trúc Event Sourcing quy mô lớn.
+Kho lưu trữ này là **Bộ tài liệu kiến trúc thực chiến và mã nguồn mẫu toàn diện gồm 52 dự án thư viện độc lập và 18 dự án showcase** trong hệ sinh thái **.NET 10 (C# 13)**.
 
-#### 12. MQTTnet
-- **Năng lực cốt lõi**: Thư viện MQTT hiệu năng cao cho .NET, hỗ trợ đầy đủ MQTT v3.1.1 và v5.0, cho phép tạo cả MQTT Client và nhúng trực tiếp MQTT Server/Broker vào ứng dụng.
-- **Usecase thực tế**:
-  - Kết nối và thu thập dữ liệu từ hàng ngàn thiết bị IoT, cảm biến công nghiệp, đồng hồ thông minh với băng thông siêu thấp.
-  - Tự xây dựng MQTT Broker nội bộ cho nhà máy hoặc tòa nhà thông minh mà không cần cài thêm Mosquitto hay HiveMQ.
-  - Đẩy lệnh điều khiển thời gian thực xuống các thiết bị phần cứng nhúng (ESP32, Raspberry Pi).
-
-#### 13. SignalR
-- **Năng lực cốt lõi**: Thư viện giao tiếp hai chiều thời gian thực (Real-time Full-Duplex) giữa Client và Server qua WebSocket, Server-Sent Events (SSE) hoặc Long Polling với cơ chế fallback tự động.
-- **Usecase thực tế**:
-  - Bảng điều khiển (Dashboard) trực tiếp: biểu đồ chứng khoán, kết quả bóng đá, số lượng truy cập thời gian thực.
-  - Ứng dụng chat, nhắn tin nhóm, làm việc cộng tác đa người dùng (Google Docs clone).
-  - Thông báo đẩy (Push Notifications) trong ứng dụng web/mobile khi có đơn hàng mới hoặc cảnh báo hệ thống.
-
-#### 14. Microsoft Orleans
-- **Năng lực cốt lõi**: Framework Virtual Actor phân tán của Microsoft, tự động quản lý vòng đời Grain (kích hoạt, nạp RAM, lưu trữ, thu hồi) mà lập trình viên không phải lo về concurrency hay distributed locks.
-- **Usecase thực tế**:
-  - Quản lý giỏ hàng thương mại điện tử và phiên đăng nhập: Mỗi giỏ hàng là một Actor chạy độc lập trên cụm server, xử lý đồng thời cực cao không bị xung đột.
-  - Game server trực tuyến: Quản lý trạng thái hàng triệu người chơi và phòng đấu trong không gian ảo.
-  - Digital Twins & Quản lý thiết bị IoT: Mỗi thiết bị vật lý có một bản sao Grain số hóa trên đám mây.
-
-#### 15. Akka.NET
-- **Năng lực cốt lõi**: Cổng .NET của Apache Pekko/Akka (JVM), triển khai mô hình Actor thuần túy, giám sát cây phân cấp (Supervision Hierarchies), xử lý thông điệp qua Mailbox đơn luồng an toàn.
-- **Usecase thực tế**:
-  - Ứng dụng giao dịch tài chính tốc độ cao, sàn giao dịch tiền mã hóa cần xử lý lệnh mua/bán với độ trễ microsecond.
-  - Hệ thống yêu cầu khả năng chịu lỗi tối đa ("Let it crash"): tự động khôi phục Actor con khi xảy ra ngoại lệ.
-  - Mô phỏng thực tế phức tạp (traffic simulation, mô hình vi mô).
-
-#### 16. Hangfire
-- **Năng lực cốt lõi**: Thư viện xử lý tác vụ nền (Background Jobs) toàn diện, lưu trữ job bền vững (Persistent Storage), hỗ trợ Fire-and-Forget, Delayed, Recurring (Cron) và Continuations kèm Dashboard Web tích hợp.
-- **Usecase thực tế**:
-  - Xuất báo cáo Excel/PDF dung lượng lớn và gửi email đính kèm sau khi người dùng yêu cầu.
-  - Lập lịch tự động: Đồng bộ dữ liệu kho hàng vào 01:00 AM mỗi ngày, dọn dẹp file tạm hàng tuần.
-  - Tự động thử lại khi gọi API bên thứ ba thất bại với cơ chế backoff.
-
-#### 17. Quartz.NET
-- **Năng lực cốt lõi**: Hệ thống lập lịch tác vụ doanh nghiệp lâu đời và hoàn chỉnh nhất, hỗ trợ biểu thức Cron cực kỳ phức tạp (lịch ngày lễ, tuần làm việc), cơ chế Misfire Instruction và Clustered Execution.
-- **Usecase thực tế**:
-  - Lập lịch thanh toán lương nhân viên, tính lãi suất ngân hàng vào ngày làm việc cuối cùng của tháng.
-  - Chạy các tác vụ batch quy mô lớn trên cụm nhiều server (Cluster) với cơ chế khóa hàng qua database, cam kết không chạy trùng lặp.
-  - Tự động bù đắp các lượt chạy bị bỏ lỡ (Misfire) khi server bị khởi động lại.
-
-#### 18. Coravel
-- **Năng lực cốt lõi**: Thư viện siêu nhẹ cung cấp Scheduler, Queue, Caching, Event và Mailer in-process theo phong cách Laravel, không yêu cầu cơ sở dữ liệu lưu trữ cấu hình.
-- **Usecase thực tế**:
-  - Ứng dụng Monolith vừa và nhỏ cần lập lịch định kỳ bằng cú pháp C# Fluent tự nhiên (`scheduler.Schedule<MyJob>().DailyAt(13, 30)`).
-  - Đưa các tác vụ nặng vào hàng đợi in-memory (`IQueue`) để trả response về cho client ngay lập tức.
-  - Dự án không muốn cài đặt hay bảo trì cơ sở dữ liệu riêng cho background jobs như Hangfire.
-
-#### 19. Entity Framework Core (EF Core)
-- **Năng lực cốt lõi**: Trình ánh xạ quan hệ - đối tượng (ORM) đầy đủ tính năng chính thức của Microsoft, hỗ trợ LINQ to SQL, Change Tracking, Eager/Lazy/Explicit Loading, Migrations và Concurrency Control.
-- **Usecase thực tế**:
-  - Ứng dụng nghiệp vụ doanh nghiệp (Line of Business) với hàng trăm bảng dữ liệu có quan hệ phức tạp (1-1, 1-N, N-N).
-  - Quản lý phiên bản cấu trúc cơ sở dữ liệu tự động theo mã nguồn qua EF Core Migrations.
-  - Tối ưu hóa truy vấn chỉ đọc bằng `.AsNoTracking()` và projection dữ liệu trực tiếp sang DTO bằng `.Select()`.
-
-#### 20. Dapper
-- **Năng lực cốt lõi**: Micro-ORM siêu nhanh được phát triển bởi Stack Overflow, mở rộng `IDbConnection` với cơ chế Dynamic IL Deserialization, mapping trực tiếp kết quả SQL sang C# object với tốc độ tiệm cận ADO.NET thuần.
-- **Usecase thực tế**:
-  - Các truy vấn đọc dữ liệu phức tạp đòi hỏi tối ưu hóa câu lệnh SQL thủ công (CTE, Window Functions, Stored Procedures).
-  - Phía Đọc (Read-side) trong kiến trúc CQRS: EF Core nhận Command ghi, Dapper xử lý Query đọc.
-  - Các ứng dụng web có lưu lượng truy cập khổng lồ cần giảm thiểu CPU và RAM cấp phát khi truy vấn CSDL.
+### 🎯 Triết lý cốt lõi (Core Principles)
+1. **Tập trung vào bài toán thực tế**: Mỗi project giải quyết một **vấn đề sản xuất cụ thể (Pain Point)** kèm use case doanh nghiệp thực tiễn, không dừng lại ở mức hướng dẫn cú pháp cơ bản.
+2. **Chuẩn hóa kỹ thuật**:
+   - **.NET 10 LTS**: Tận dụng C# 13, Primary Constructors, `IExceptionHandler`, `HybridCache`, AOT compatibility.
+   - **ASP.NET Core Controller**: Bắt buộc `[ApiController] : ControllerBase` — không dùng Minimal API (ngoại trừ project chuyên biệt).
+   - **Độc lập hoàn toàn**: Mỗi dự án là một solution độc lập, copy và chạy ngay lập tức không phụ thuộc project cha.
+   - **Cổng dịch vụ phân lập**: 52 dự án được gán dải cổng riêng từ `5101` đến `5152`, không trùng lặp.
+   - **Sẵn sàng kiểm thử**: Mọi dự án có **REST Controller**, **Unit/Integration Test** và file **`*.http`** chuẩn hóa.
 
 ---
 
-### Batch 3: Data Access, Caching & Resilience (21–30)
+## 🗺️ Bản Đồ Kiến Trúc Hệ Thống (System Blueprint)
 
-#### 21. LinqToDB
-- **Năng lực cốt lõi**: Trình ORM hướng LINQ siêu tốc, sinh câu lệnh SQL trong suốt, hỗ trợ BulkCopy nguyên bản, cập nhật/xóa theo tập hợp (Set-based operations: `Update`, `Delete`) và các câu lệnh đặc thù (CTE, MERGE, Table Hints).
-- **Usecase thực tế**:
-  - Chèn hàng triệu bản ghi vào cơ sở dữ liệu trong vài giây qua `BulkCopyAsync` mà không cần công cụ bên ngoài.
-  - Thực hiện các lệnh cập nhật hàng loạt trực tiếp trên CSDL (`db.Orders.Where(...).Update(x => ...)`) mà không cần nạp thực thể vào bộ nhớ.
-  - Phù hợp cho các hệ thống Data Warehouse, xử lý dữ liệu lớn (ETL).
+```mermaid
+flowchart TD
+    subgraph ClientLayer ["Client & Ingress Tier"]
+        Client["Web / Mobile / Third-Party Apps"]
+        GW["05-YARP / 105-Microservices<br/>(API Gateway & Reverse Proxy)"]
+        Client -->|HTTP / REST| GW
+    end
 
-#### 22. RepoDb
-- **Năng lực cốt lõi**: Hybrid ORM cân bằng hoàn hảo giữa tốc độ của Dapper và tính tiện dụng của EF Core, cung cấp sẵn các thao tác CRUD (`Insert`, `Update`, `Merge`, `Delete`) không cần viết SQL, kết hợp bộ nhớ đệm metadata tự động.
-- **Usecase thực tế**:
-  - Phát triển API CRUD siêu tốc mà không phải viết câu lệnh SQL thủ công như Dapper, cũng không chịu overhead Change Tracker của EF Core.
-  - Đồng bộ hóa dữ liệu thông qua thao tác `Merge` (Upsert: chèn nếu chưa có, cập nhật nếu đã tồn tại).
-  - Thao tác dữ liệu hàng loạt với `InsertAll`, `UpdateAll` tối ưu cao.
+    subgraph SecurityShield ["Security & Identity Tier"]
+        Auth["36-OpenIddict / 37-DuendeIdentityServer<br/>(OAuth2 / OIDC Token Issuer)"]
+        JWT["108-AuthStack<br/>(JWT Bearer + RBAC + Rate Limiting)"]
+        GW --> Auth
+        Auth --> JWT
+    end
 
-#### 23. EF Core Native Batch (EFCoreBulkExtensions)
-- **Năng lực cốt lõi**: Tận dụng tính năng Native Batching của EF Core 7/8/9/10 (`ExecuteUpdateAsync`, `ExecuteDeleteAsync`) và thư viện mở rộng để thực thi các thao tác hàng loạt trực tiếp tại CSDL.
-- **Usecase thực tế**:
-  - Cập nhật trạng thái hàng ngàn đơn hàng hết hạn chỉ bằng một câu lệnh SQL duy nhất mà không cần tải dữ liệu vào RAM.
-  - Xóa hàng loạt dữ liệu log hoặc giỏ hàng cũ định kỳ mà không bị lỗi tràn bộ nhớ.
-  - Kết hợp với cấu hình Fluent API có sẵn của `DbContext`.
+    subgraph TransportLayer ["REST & Transport Tier"]
+        REST["01-FastEndpoints / 02-Carter<br/>(REPR Pattern / Module-based API)"]
+        CQRS["04-MediatR / 03-Wolverine<br/>(CQRS + Pipeline Behaviors)"]
+        gRPC["111-gRPC-Streaming<br/>(Unary + Server + Client + Bidi)"]
+        JWT --> REST
+        REST -.->|"Validate"| V["33-FluentValidation"]
+        REST -.->|"Map DTO"| M["31-AutoMapper / 32-Mapster"]
+        REST --> CQRS
+    end
 
-#### 24. Marten
-- **Năng lực cốt lõi**: Biến PostgreSQL thành cơ sở dữ liệu Document NoSQL hoàn chỉnh (dựa trên JSONB) kết hợp Event Sourcing Engine đẳng cấp thế giới, hỗ trợ Live & Inline Projections.
-- **Usecase thực tế**:
-  - Lưu trữ tài liệu JSON linh hoạt không cần khai báo schema cứng, hỗ trợ tìm kiếm sâu trong JSON với chỉ mục GIN của PostgreSQL.
-  - Hệ thống Event Sourcing cho ngân hàng, kế toán: Lưu trữ mọi biến động số dư dưới dạng sự kiện không thể sửa đổi (Append-only).
-  - Khôi phục trạng thái đối tượng tại bất kỳ thời điểm nào trong quá khứ (Time Travel Query).
+    subgraph BusinessCore ["Business Logic & Workflow Tier"]
+        Saga["107-Saga-Pattern<br/>(MassTransit StateMachine)"]
+        ES["106-EventSourcing-CQRS<br/>(SQLite EventStore)"]
+        FSM["49-Stateless<br/>(Finite State Machine)"]
+        WF["48-Elsa<br/>(Workflow Engine)"]
+        CQRS --> Saga & ES
+    end
 
-#### 25. FluentMigrator
-- **Năng lực cốt lõi**: Khung quản lý phiên bản CSDL độc lập với ORM, khai báo cấu trúc bảng, cột, khóa ngoại và chỉ mục bằng mã C# Fluent rõ ràng, hỗ trợ cả Migrate Up và Rollback Down.
-- **Usecase thực tế**:
-  - Quản lý migration cho các dự án không dùng EF Core (ví dụ dùng Dapper, LinqToDB, ADO.NET thuần).
-  - Tự động hóa cập nhật CSDL trong pipeline CI/CD trước khi deploy ứng dụng lên môi trường Production.
-  - Viết migration dễ bảo trì, dễ đọc hiểu và có thể chuyển đổi giữa SQL Server, PostgreSQL, MySQL mà không cần viết lại SQL.
+    subgraph CacheResiliency ["Cache & Resilience Tier"]
+        Cache["27-FusionCache / 28-EasyCaching<br/>(Anti-Stampede + Fail-Safe)"]
+        Dist["29-StackExchangeRedis<br/>(Distributed Cache + Pub/Sub)"]
+        Retry["30-Polly<br/>(Retry + Circuit Breaker + Fallback)"]
+        HybridC["112-CachingAdvanced<br/>(L1+L2+HybridCache)"]
+        BusinessCore <--> Cache & Dist
+        REST -.->|"Resilience"| Retry
+    end
 
-#### 26. DbUp
-- **Năng lực cốt lõi**: Công cụ nâng cấp CSDL dựa trên việc thực thi các file SQL thuần (`.sql`) được nhúng trong assembly, ghi nhận lịch sử vào bảng `SchemaVersions`.
-- **Usecase thực tế**:
-  - Dành cho các đội ngũ có DBA quản lý trực tiếp câu lệnh SQL, muốn kiểm soát 100% cú pháp DDL, phân vùng bảng và chỉ mục tối ưu.
-  - Tích hợp chạy nâng cấp CSDL ngay khi ứng dụng khởi động lần đầu tiên.
-  - Kiểm soát tuyệt đối sự thay đổi schema mà không có bất kỳ "ma thuật" sinh code nào.
+    subgraph AsyncIntegration ["Event-Driven & Messaging Tier"]
+        MB["06-MassTransit / 07-CAP / 08-Rebus<br/>(Message Bus + Outbox Pattern)"]
+        KB["11-ConfluentKafka / 10-Silverback<br/>(Kafka High-Throughput)"]
+        RT["13-SignalR / 12-MQTTnet<br/>(Real-time WebSocket / IoT MQTT)"]
+        BG["16-Hangfire / 17-QuartzNET / 116-WorkerService<br/>(Background Jobs + Channel<T>)"]
+        BusinessCore --> MB & KB & RT & BG
+    end
 
-#### 27. FusionCache
-- **Năng lực cốt lõi**: Thư viện bộ nhớ đệm thế hệ mới, hỗ trợ cơ chế đa tầng (L1 Memory + L2 Distributed/Redis), chống hiện tượng Cache Stampede (Distributed Locking), chế độ Fail-Safe và làm mới ngầm (Soft Timeout / Background Refresh).
-- **Usecase thực tế**:
-  - Các hệ thống có lượng truy cập cực lớn (High Load), ngăn chặn việc hàng ngàn request cùng chọc vào DB khi một key cache phổ biến vừa hết hạn.
-  - Đảm bảo tính liên tục của dịch vụ: Khi Redis hoặc Database gặp sự cố tạm thời, FusionCache tự động trả về dữ liệu cũ (Stale Data) kèm log cảnh báo thay vì báo lỗi 500 cho người dùng.
-  - Tối ưu hóa hiệu năng ứng dụng bằng cách ưu tiên đọc từ L1 RAM máy chủ trước khi gọi sang L2 Redis.
+    subgraph DataLayer ["Data Access & Migration Tier"]
+        ORM["19-EFCore / 20-Dapper / 21-LinqToDB<br/>(ORM + Micro-ORM)"]
+        Bulk["113-BulkOps / 23-EFCoreBulkExtensions<br/>(Bulk Insert/Update/Delete)"]
+        GQL["117-GraphQL<br/>(Hot Chocolate + DataLoader)"]
+        Migrate["25-FluentMigrator / 26-DbUp<br/>(Schema Versioning)"]
+        BusinessCore --> ORM & Bulk & GQL
+        Migrate -.->|"Schema init"| ORM
+    end
 
-#### 28. EasyCaching
-- **Năng lực cốt lõi**: Lớp trừu tượng hóa bộ nhớ đệm đa năng, hỗ trợ nhiều provider (Memory, Redis, Memcached, SQLite), hỗ trợ bộ nhớ đệm lai (Hybrid Caching) và đánh dấu cache qua Attribute.
-- **Usecase thực tế**:
-  - Dễ dàng chuyển đổi nhà cung cấp bộ nhớ đệm (từ Memory sang Redis) chỉ bằng cách đổi file cấu hình `appsettings.json`.
-  - Tự động cache kết quả của hàm thông qua Aspect-Oriented Programming (Attribute `[EasyCachingAble]`).
-  - Đồng bộ hóa việc xóa cache giữa các node trong cụm server thông qua Redis Bus.
-
-#### 29. StackExchange.Redis
-- **Năng lực cốt lõi**: Client Redis hiệu năng cao, thread-safe, sử dụng kỹ thuật Connection Multiplexing để chia sẻ một kết nối TCP duy nhất cho hàng ngàn request đồng thời, hỗ trợ đầy đủ các cấu trúc dữ liệu của Redis và Pub/Sub.
-- **Usecase thực tế**:
-  - Triển khai Khóa phân tán (Distributed Lock) để chống xử lý trùng lặp trong môi trường nhiều server.
-  - Xây dựng bảng xếp hạng trực tiếp (Leaderboards) bằng Redis Sorted Sets.
-  - Lưu trữ và đồng bộ hóa phiên làm việc của người dùng (Session Storage) và dữ liệu cache dùng chung.
-
-#### 30. Polly v8
-- **Năng lực cốt lõi**: Thư viện khả năng phục hồi (Resilience) và xử lý lỗi tạm thời tiêu chuẩn cho .NET, xây dựng trên nền tảng `ResiliencePipeline` hoàn toàn mới: Retry, Circuit Breaker, Timeout, Rate Limiter và Fallback.
-- **Usecase thực tế**:
-  - Tự động thử lại khi gọi API đối tác bên thứ ba gặp lỗi gián đoạn mạng hoặc HTTP 503 tạm thời với chiến lược Exponential Backoff + Jitter.
-  - Ngắt mạch (Circuit Breaker) khi dịch vụ phụ thuộc bị sập kéo dài, lập tức trả về lỗi mà không làm nghẽn thread pool của hệ thống.
-  - Giới hạn tốc độ gọi ra (Rate Limiter) để không vi phạm chính sách của nhà cung cấp API bên ngoài.
-
----
-
-### Batch 4: Mapping, Validation, HTTP, Auth & Observability (31–40)
-
-#### 31. AutoMapper
-- **Năng lực cốt lõi**: Thư viện ánh xạ đối tượng dựa trên quy ước (Convention-based Object Mapping) phổ biến nhất trong .NET, hỗ trợ Profiles, Flattening, Projection và kiểm tra cấu hình compile/unit test.
-- **Usecase thực tế**:
-  - Tự động chuyển đổi giữa Domain Entities và DTOs để bảo vệ mô hình dữ liệu nội bộ không bị lộ ra ngoài API.
-  - Làm phẳng (Flattening) các cấu trúc đối tượng lồng nhau phức tạp thành một DTO phẳng cho giao diện người dùng.
-  - Dùng `AssertConfigurationIsValid()` trong Unit Test để đảm bảo không có trường nào bị bỏ sót khi thay đổi mô hình dữ liệu.
-
-#### 32. Mapster
-- **Năng lực cốt lõi**: Thư viện ánh xạ đối tượng hiệu năng siêu cao, sinh mã bytecode động (Expression Trees) hoặc sinh mã lúc biên dịch (Compile-time CodeGen), tốc độ nhanh hơn AutoMapper từ 3 đến 8 lần.
-- **Usecase thực tế**:
-  - Thay thế AutoMapper trong các ứng dụng yêu cầu hiệu năng cao và ít phân bổ bộ nhớ (Low Allocations).
-  - Cú pháp cực kỳ gọn gàng với extension method `source.Adapt<TDestination>()` mà không bắt buộc phải inject `IMapper`.
-  - Hỗ trợ tạo code ánh xạ trực tiếp trong lúc build dự án để đạt tốc độ tối đa tương đương code viết tay.
-
-#### 33. FluentValidation
-- **Năng lực cốt lõi**: Thư viện kiểm tra tính hợp lệ của dữ liệu (Validation) mạnh mẽ, sử dụng cú pháp Fluent C# để định nghĩa các quy tắc kiểm tra tách biệt hoàn toàn khỏi class dữ liệu.
-- **Usecase thực tế**:
-  - Tách rời logic kiểm tra dữ liệu ra khỏi DTOs/Entities, giữ cho model trong sạch (Clean POCO).
-  - Xây dựng các quy tắc nghiệp vụ phức tạp: phụ thuộc điều kiện (`When`, `Unless`), kiểm tra bất đồng bộ với CSDL (`MustAsync` kiểm tra email đã tồn tại hay chưa).
-  - Tái sử dụng các bộ quy tắc kiểm tra con (ví dụ: `AddressValidator`) trong nhiều request khác nhau.
-
-#### 34. Refit
-- **Năng lực cốt lõi**: Biến đổi một interface C# thuần túy thành một REST API Client type-safe, tự động serialize request body và deserialize response body qua `System.Text.Json`.
-- **Usecase thực tế**:
-  - Gọi các REST API bên ngoài (payment gateway, microservices nội bộ, mạng xã hội) mà không cần viết boilerplate code với `HttpClient`.
-  - Kết hợp hoàn hảo với `IHttpClientFactory` và các chính sách phục hồi của Polly.
-  - Code dễ đọc, dễ mock trong Unit Test bằng cách mock interface.
-
-#### 35. Flurl.Http
-- **Năng lực cốt lõi**: Bộ công cụ xây dựng URL theo chuỗi (Fluent URL Builder) kết hợp HTTP Client trực quan, cung cấp môi trường giả lập kiểm thử `HttpTest` không cần kết nối mạng.
-- **Usecase thực tế**:
-  - Xây dựng các URL phức tạp với nhiều path segments, query parameters và headers mà không bao giờ bị lỗi sai định dạng hoặc thừa/thiếu dấu `/`.
-  - Viết Unit/Integration Test cho các tác vụ gọi HTTP một cách dễ dàng: `using var httpTest = new HttpTest();` và kiểm tra request đã được gửi đi chính xác.
-  - Bắt lỗi HTTP tinh tế với class ngoại lệ `FlurlHttpException` chứa đầy đủ chi tiết response từ server.
-
-#### 36. OpenIddict
-- **Năng lực cốt lõi**: Khung làm việc linh hoạt, mô-đun hóa để xây dựng máy chủ cấp phép OAuth 2.0 và OpenID Connect Server trên nền tảng ASP.NET Core.
-- **Usecase thực tế**:
-  - Tự xây dựng giải pháp Identity Provider (IdP) nội bộ cho công ty mà không phải trả phí bản quyền đắt đỏ.
-  - Cấp phát và xác thực JWT Access Token cho giao tiếp Backend-to-Backend qua Client Credentials Flow.
-  - Hỗ trợ Authorization Code Flow with PKCE cho ứng dụng Single Page Apps (React, Angular) và Mobile Apps.
-
-#### 37. Duende IdentityServer
-- **Năng lực cốt lõi**: Nền tảng quản lý định danh và truy cập doanh nghiệp (Enterprise IAM) chuẩn mực nhất cho .NET, hỗ trợ đầy đủ các tiêu chuẩn OpenID Connect, OAuth 2.0, API Protection và Single Sign-On (SSO).
-- **Usecase thực tế**:
-  - Đăng nhập một lần (Single Sign-On - SSO) cho toàn bộ hệ thống ứng dụng Web, Di động và Desktop của doanh nghiệp.
-  - Phân quyền chi tiết theo Scope và Claims cho từng API tài nguyên.
-  - Quản lý phiên làm việc, thu hồi token (Token Revocation) và tích hợp liên kết với các nhà cung cấp bên ngoài (Google, Microsoft, SAML2).
-
-#### 38. Serilog
-- **Năng lực cốt lõi**: Thư viện ghi log có cấu trúc (Structured Logging) tiêu chuẩn cho .NET, lưu trữ log dưới dạng sự kiện JSON phong phú, hỗ trợ làm giàu ngữ cảnh (Enrichment) và xuất ra hàng chục Sink khác nhau.
-- **Usecase thực tế**:
-  - Ghi log có cấu trúc: Truy vấn log theo các thuộc tính cụ thể (`OrderId`, `CustomerId`) trên Seq, Elasticsearch hoặc Grafana Loki.
-  - Tự động làm giàu dữ liệu log với `CorrelationId` để truy vết một request từ lúc vào API cho đến khi xử lý xong.
-  - Cấu hình linh hoạt qua file `appsettings.json` hoặc code C#.
-
-#### 39. NLog
-- **Năng lực cốt lõi**: Thư viện ghi log hiệu năng cao, linh hoạt, hỗ trợ cấu hình bằng file XML (`NLog.config`), cung cấp hàng loạt Target (File, Database, Memory, Mail) và cơ chế tự động chia file log theo ngày/kích thước.
-- **Usecase thực tế**:
-  - Các hệ thống lớn yêu cầu quản lý cấu hình log tập trung qua file XML mà không cần build lại ứng dụng.
-  - Sử dụng `MemoryTarget` để bắt và kiểm tra nội dung log trong các bài kiểm thử tự động (Integration Testing).
-  - Tự động nén và lưu trữ các file log cũ theo thời gian (Log Archiving).
-
-#### 40. OpenTelemetry
-- **Năng lực cốt lõi**: Tiêu chuẩn mở toàn cầu cho Khả năng quan sát (Observability), hợp nhất việc thu thập Distributed Tracing (`ActivitySource`), Metrics (`Meter`) và Logs để gửi về các hệ thống giám sát qua giao thức OTLP.
-- **Usecase thực tế**:
-  - Truy vết phân tán (Distributed Tracing): Theo dõi toàn bộ hành trình của một request đi qua nhiều microservices để định vị chính xác điểm nghẽn hiệu năng trên Jaeger hoặc Zipkin.
-  - Thu thập các chỉ số nghiệp vụ (Business Metrics) như số lượng đơn hàng, doanh thu tức thời, thời gian phản hồi và hiển thị trực quan trên Prometheus/Grafana.
-  - Chuẩn hóa toàn bộ hệ thống giám sát theo chuẩn Cloud Native Computing Foundation (CNCF).
-
----
-
-### Batch 5: Testing, Documentation & Utilities (41–47)
-
-#### 41. Bogus
-- **Năng lực cốt lõi**: Thư viện sinh dữ liệu giả lập (Fake Data Generator) thực tế và phong phú, hỗ trợ đa ngôn ngữ (Locales bao gồm tiếng Việt), cho phép cố định Seed để tạo dữ liệu tất định (Deterministic).
-- **Usecase thực tế**:
-  - Tạo hàng ngàn bản ghi dữ liệu mẫu (người dùng, địa chỉ, số điện thoại, sản phẩm, thẻ tín dụng) phục vụ Seed Database khi khởi tạo dự án.
-  - Sinh dữ liệu kiểm thử thực tế cho Unit Tests và Performance Benchmarks.
-  - Cố định `Randomizer.Seed` để dữ liệu sinh ra trong mỗi lần chạy test luôn giống hệt nhau, đảm bảo test không bị chập chờn (Flaky Tests).
-
-#### 42. Verify (Verify.Xunit)
-- **Năng lực cốt lõi**: Thư viện kiểm thử ảnh chụp (Snapshot Testing), tự động so sánh đối tượng kết quả với file snapshot đã được phê duyệt (`*.verified.txt`), tích hợp sẵn công cụ tự động làm sạch (Scrubbing) các dữ liệu động.
-- **Usecase thực tế**:
-  - Kiểm thử các cấu trúc dữ liệu JSON, XML hoặc HTML phức tạp mà không cần viết hàng chục câu lệnh `Assert.Equal` thủ công.
-  - Phát hiện sớm các lỗi phá vỡ tương thích (Breaking Changes) trong response của API khi nâng cấp phiên bản phần mềm.
-  - Tự động thay thế các giá trị biến động như `Guid`, `DateTime` bằng các placeholder cố định để kết quả so sánh luôn chính xác.
-
-#### 43. FluentAssertions
-- **Năng lực cốt lõi**: Thư viện viết câu lệnh khẳng định (Assertions) theo phong cách Fluent tự nhiên, cung cấp khả năng so sánh tương đương sâu (Deep Equivalency) và thông báo lỗi cực kỳ chi tiết khi test thất bại.
-- **Usecase thực tế**:
-  - Viết code kiểm thử dễ đọc, dễ hiểu như văn bản tiếng Anh: `result.Should().BeEquivalentTo(expected)`.
-  - So sánh hai cây đối tượng phức tạp mà không cần các class phải triển khai interface `IEquatable`.
-  - Tiết kiệm thời gian debug khi test fail nhờ thông báo lỗi chỉ rõ chính xác thuộc tính nào, dòng nào bị sai lệch giá trị.
-
-#### 44. BenchmarkDotNet
-- **Năng lực cốt lõi**: Thư viện chuẩn mực thế giới để đo lường hiệu năng mã nguồn .NET, tự động quản lý quá trình JIT Warmup, đo thời gian ở cấp độ nano giây và phân tích cấp phát bộ nhớ RAM (MemoryDiagnoser).
-- **Usecase thực tế**:
-  - So sánh hiệu năng thực tế giữa các thư viện hoặc thuật toán khác nhau (ví dụ: `System.Text.Json` vs `Newtonsoft.Json`, `for` vs `foreach` vs `LINQ`).
-  - Phát hiện các điểm cấp phát bộ nhớ không cần thiết (Memory Allocations) gây áp lực lên Garbage Collector (GC Gen 0/1/2).
-  - Tối ưu hóa các đoạn mã quan trọng (Hot Paths) trong các hệ thống xử lý tần suất cao.
-
-#### 45. SpecFlow (SpecFlow.xUnit)
-- **Năng lực cốt lõi**: Khung làm việc Phát triển Hướng Hành vi (Behavior-Driven Development - BDD) hàng đầu cho .NET, biến đổi các kịch bản viết bằng ngôn ngữ tự nhiên Gherkin (`Given - When - Then`) thành các bài test tự động có thể thực thi.
-- **Usecase thực tế**:
-  - Tạo tiếng nói chung giữa Business Analyst (BA), Tester (QA) và Lập trình viên (Developer) thông qua các kịch bản nghiệp vụ rõ ràng.
-  - Xây dựng Tài liệu Sống (Living Documentation) vừa có thể đọc hiểu vừa là kiểm thử hồi quy tự động.
-  - Kiểm thử chấp nhận người dùng (User Acceptance Testing) cho các luồng nghiệp vụ phức tạp như chuyển khoản ngân hàng, quy trình xét duyệt hồ sơ.
-
-#### 46. Swashbuckle.AspNetCore
-- **Năng lực cốt lõi**: Công cụ tích hợp Swagger/OpenAPI 3.0 vào ASP.NET Core, tự động sinh tài liệu JSON từ Controllers và Models, cung cấp giao diện tương tác trực quan Swagger UI, hỗ trợ đa phiên bản (Multi-versioning) và các bộ lọc tùy biến (Filters).
-- **Usecase thực tế**:
-  - Tự động sinh tài liệu chuẩn OpenAPI 3.0 cho toàn bộ API của dự án.
-  - Quản lý và phân tách tài liệu giữa các phiên bản API khác nhau (V1, V2).
-  - Tùy biến tài liệu với Operation Filters (thêm Header Correlation ID, Bearer Auth) và Schema Filters (mô tả ví dụ mẫu cho từng trường dữ liệu).
-
-#### 47. NSwag
-- **Năng lực cốt lõi**: Chuỗi công cụ OpenAPI toàn diện, vừa hỗ trợ sinh tài liệu Swagger UI và ReDoc, vừa hỗ trợ sinh mã nguồn Client SDK (C# HttpClient hoặc TypeScript Axios/Fetch) tự động từ OpenAPI Specification.
-- **Usecase thực tế**:
-  - Cung cấp tài liệu API hiện đại với cả 2 giao diện Swagger UI và ReDoc.
-  - Tự động sinh toàn bộ code Client SDK bằng C# hoặc TypeScript cho đội ngũ Frontend/Mobile mỗi khi Backend cập nhật API, loại bỏ hoàn toàn việc viết code gọi API thủ công.
-  - Tích hợp vào pipeline build để tự động xuất file SDK đồng bộ sang các kho lưu trữ khác.
-
----
-
-### Batch 6: Files, Parsing & Workflow (48–52)
-
-#### 48. Elsa Workflows
-- **Năng lực cốt lõi**: Bộ khung Workflow Engine mã nguồn mở mạnh mẽ, cho phép lập trình quy trình bằng C# Code-First (`WorkflowBase`, `Sequence`, `If`, `SetVariable`) hoặc thiết kế kéo thả trực quan trên Elsa Studio, hỗ trợ cả thực thi in-process ngắn hạn lẫn quy trình phân tán dài hạn.
-- **Usecase thực tế**:
-  - Tự động hóa các quy trình xét duyệt nghiệp vụ: Phê duyệt đơn hàng, thẩm định hồ sơ vay vốn, quy trình tuyển dụng nhân sự.
-  - Lập trình luồng nghiệp vụ phức tạp dưới dạng các bước tuần tự rõ ràng, dễ bảo trì và dễ viết unit test.
-  - Quản lý các quy trình dài hạn (Long-running Workflows) cần dừng lại chờ sự kiện bên ngoài (email phê duyệt, webhook phản hồi từ đối tác).
-
-#### 49. Stateless
-- **Năng lực cốt lõi**: Thư viện máy trạng thái hữu hạn (Finite State Machine - FSM) siêu nhẹ và linh hoạt, cấu hình trạng thái và trigger bằng cú pháp Fluent C#, hỗ trợ guard clauses, entry/exit actions, lưu vết lịch sử chuyển đổi và xuất biểu đồ Mermaid/DOT.
-- **Usecase thực tế**:
-  - Quản lý vòng đời thực thể: Đơn hàng (`Draft` -> `Submitted` -> `UnderReview` -> `Approved` / `Rejected`), vé hỗ trợ kỹ thuật, hợp đồng điện tử.
-  - Ngăn chặn triệt để các lỗi logic nghiệp vụ: Không cho phép chuyển trạng thái bất hợp lệ (ví dụ: không thể duyệt đơn hàng khi chưa gửi nộp).
-  - Tự động xuất biểu đồ trạng thái (Mermaid/Graphviz) từ mã nguồn để đưa vào tài liệu kiến trúc hệ thống.
-
-#### 50. QuestPDF
-- **Năng lực cốt lõi**: Thư viện tạo tài liệu PDF theo phong cách Code-First hiện đại, sử dụng Fluent API trực quan kết hợp engine đồ họa SkiaSharp, hỗ trợ phân trang tự động, bảng biểu phức tạp, văn bản đa kiểu và tem bản quyền Community.
-- **Usecase thực tế**:
-  - Xuất hóa đơn bán hàng điện tử (Invoices), phiếu xuất kho, phiếu thu tiền với thiết kế chuyên nghiệp và màu sắc thương hiệu.
-  - Tạo các báo cáo phân tích tài chính nhiều trang, chứng nhận hoàn thành khóa học, phiếu khám bệnh.
-  - Thay thế hoàn toàn các giải pháp chuyển đổi HTML-to-PDF nặng nề, tăng tốc độ render gấp 10 lần và tiết kiệm tài nguyên máy chủ.
-
-#### 51. ClosedXML
-- **Năng lực cốt lõi**: Thư viện đọc và ghi bảng tính Excel (.xlsx) chuẩn OpenXML, cung cấp API trực quan để định dạng ô (font, màu nền, border, format tiền tệ), tính toán công thức (`=SUM(...)`, `=D2*E2`), tự động co giãn cột và đọc dữ liệu phân tích thành DTOs.
-- **Usecase thực tế**:
-  - Xuất báo cáo doanh thu, danh sách nhân sự ra file Excel chuyên nghiệp có sẵn công thức tính toán để người dùng tiếp tục thao tác trên Microsoft Excel.
-  - Đọc và phân tích (Import) các file Excel dữ liệu lớn do khách hàng tải lên, kiểm tra tính hợp lệ từng dòng và lưu vào cơ sở dữ liệu.
-  - Xử lý bảng tính trên máy chủ Linux/Docker mà không cần cài đặt Microsoft Office.
-
-#### 52. CsvHelper
-- **Năng lực cốt lõi**: Thư viện đọc và ghi file CSV chuẩn công nghiệp cho .NET, hỗ trợ tùy biến ánh xạ qua `ClassMap<T>`, xử lý luồng dữ liệu liên tục (Streaming) bất đồng bộ với dung lượng bộ nhớ cố định và tốc độ tối đa.
-- **Usecase thực tế**:
-  - Nhập/xuất dữ liệu khối lượng lớn (hàng triệu bản ghi danh bạ, giao dịch, lịch sử cuộc gọi) mà không làm tràn bộ nhớ RAM máy chủ.
-  - Đồng bộ và trao đổi dữ liệu với các hệ thống cũ (Legacy Systems) hoặc đối tác qua định dạng CSV tiêu chuẩn.
-  - Tùy biến linh hoạt định dạng ngày tháng, dấu phân cách số thập phân (`CultureInfo.InvariantCulture`) và thu thập lỗi chi tiết theo từng dòng dữ liệu hỏng.
-
----
-
-## Cách chạy và kiểm thử
-
-### 1. Chạy một bài bất kỳ
-Vào thư mục API của bài đó và dùng lệnh `dotnet run`:
-```powershell
-cd 27-FusionCache/ProductCatalogCache.Api
-dotnet run
-# Mở Swagger UI tại: http://localhost:5127/swagger
+    subgraph ObservabilityLayer ["Observability & Production Readiness"]
+        Logs["38-Serilog / 39-NLog<br/>(Structured Logging)"]
+        Trace["40-OpenTelemetry / 109-Observability<br/>(Distributed Tracing + Metrics)"]
+        Mw["110-Middleware-Advanced<br/>(CorrelationId + ProblemDetails RFC 9457)"]
+    end
 ```
 
-### 2. Chạy toàn bộ unit/integration test
-```powershell
-dotnet test 27-FusionCache/ProductCatalogCache.slnx
+---
+
+## 📋 Danh Mục Toàn Diện 52 Thư Viện Thực Chiến
+
+### I. Web API & Giao Tiếp Client-Server (01 – 06)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**01-FastEndpoints**](./01-FastEndpoints/) | `5101` | FastEndpoints | Loại bỏ God Controller phình to; mỗi endpoint là một class độc lập theo kiến trúc REPR (Request-Endpoint-Response), tốc độ vượt trội so với MVC truyền thống. |
+| [**02-Carter**](./02-Carter/) | `5102` | Carter | Tổ chức hàng trăm Minimal API endpoint vào các `ICarterModule` độc lập mà không làm bừa bãi `Program.cs`, hỗ trợ Content Negotiation và plugin hóa. |
+| [**03-Wolverine**](./03-Wolverine/) | `5103` | Wolverine | Triển khai CQRS + Event-Driven Architecture với cú pháp Zero-Interface (POCO thuần); Transactional Outbox tích hợp, tốc độ nhờ Compile-time Code Generation. |
+| [**04-MediatR**](./04-MediatR/) | `5104` | MediatR | Tách rời Controller khỏi Business Logic; tự động áp dụng Cross-cutting Concerns (Validation, Logging, Transaction) qua Pipeline Behaviors cho mọi request. |
+| [**05-Scrutor**](./05-Scrutor/) | `5105` | Scrutor | Tự động đăng ký toàn bộ Service/Repository theo quy ước assembly scanning; triển khai Decorator Pattern sạch sẽ mà không cần sửa code gốc. |
+| [**06-MassTransit**](./06-MassTransit/) | `5106` | MassTransit | Enterprise Service Bus hoàn chỉnh hỗ trợ RabbitMQ/Kafka/Azure SB; điều phối Saga phân tán, Dead Letter Queue và Consumer Fault Handling. |
+
+---
+
+### II. Messaging & Kiến Trúc Hướng Sự Kiện (07 – 10)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**07-CAP**](./07-CAP/) | `5107` | DotNetCore.CAP | Đảm bảo Eventual Consistency tuyệt đối giữa thao tác ghi DB nghiệp vụ và xuất bản Message ra Broker (Transactional Outbox), chặn trùng giao dịch tự động. |
+| [**08-Rebus**](./08-Rebus/) | `5108` | Rebus | Service Bus tinh gọn (lean) cho ứng dụng vừa và nhỏ; quản lý Saga trạng thái dài hạn với cú pháp C# tường minh, không bị ẩn bởi quá nhiều tầng trừu tượng. |
+| [**09-NServiceBus**](./09-NServiceBus/) | `5109` | NServiceBus | Nền tảng messaging cấp Enterprise với giám sát trực quan (ServicePulse/ServiceInsight); xử lý quy trình nghiệp vụ kéo dài nhiều tuần, phục hồi lỗi tự động. |
+| [**10-Silverback**](./10-Silverback/) | `5110` | Silverback | Khung chuyên biệt cho Kafka/RabbitMQ với Transactional Outbox/Inbox, Batch Processing và Partition Rebalancing; đảm bảo ngữ nghĩa Exactly-Once. |
+
+---
+
+### III. Streaming, Real-time & Actor Model (11 – 15)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**11-ConfluentKafka**](./11-ConfluentKafka/) | `5111` | Confluent.Kafka | Kafka Producer/Consumer hiệu năng cao (hàng trăm nghìn msg/giây); xử lý telemetry IoT theo thời gian thực với Consumer Group và partition assignment. |
+| [**12-MQTTnet**](./12-MQTTnet/) | `5112` | MQTTnet | Nhúng MQTT Broker trực tiếp vào ứng dụng .NET cho hệ thống IoT Smart Home/Industry; điều khiển thiết bị qua publish/subscribe trong điều kiện mạng yếu. |
+| [**13-SignalR**](./13-SignalR/) | `5113` | SignalR | Đẩy thông báo thời gian thực xuống hàng nghìn client (WebSocket/SSE/Long-Polling) mà không polling liên tục; Chat, Dashboard live update, Stock price feed. |
+| [**14-MicrosoftOrleans**](./14-MicrosoftOrleans/) | `5114` | Microsoft Orleans | Virtual Actor Model cho hệ thống phân tán — mỗi Grain là một Actor stateful; xử lý hàng triệu đối tượng cô lập mà không lo thread management hay sharding thủ công. |
+| [**15-AkkaNET**](./15-AkkaNET/) | `5115` | Akka.NET | Actor System, Mailbox và Hierarchical Supervision Tree; xây dựng hệ thống chịu lỗi tự phục hồi (Let it crash), luồng xử lý song song cực cao. |
+
+---
+
+### IV. Lập Lịch & Background Jobs (16 – 18)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**16-Hangfire**](./16-Hangfire/) | `5116` | Hangfire | Chạy background job bền vững (persistent) — không mất khi server restart; Dashboard trực quan để retry thủ công, theo dõi lịch sử thực thi theo thời gian thực. |
+| [**17-QuartzNET**](./17-QuartzNET/) | `5117` | Quartz.NET | Lập lịch phức tạp (ngày cuối tháng, misfire handling); lưu trạng thái trigger vào DB, chống trùng lặp khi chạy Cluster nhiều instance song song. |
+| [**18-Coravel**](./18-Coravel/) | `5118` | Coravel | Scheduler in-process siêu nhẹ — định nghĩa Cron trực tiếp bằng C# Fluent API, không cần DB bên ngoài; phù hợp microservice nhỏ và Serverless. |
+
+---
+
+### V. Truy Cập Cơ Sở Dữ Liệu & ORM (19 – 24)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**19-EFCore**](./19-EFCore/) | `5119` | Entity Framework Core 10 | ORM đầy đủ tính năng: Change Tracker, Lazy/Eager Loading, LINQ projection; triệt tiêu N+1 Query bằng `AsNoTracking` và `Include` có kiểm soát. |
+| [**20-Dapper**](./20-Dapper/) | `5120` | Dapper | Micro-ORM tốc độ cao — ánh xạ kết quả SQL thô trực tiếp sang POCO; DBA kiểm soát từng dòng SQL, hiệu năng vượt EF Core 3–5 lần cho Read-heavy workload. |
+| [**21-LinqToDB**](./21-LinqToDB/) | `5121` | LinqToDB | LINQ-to-SQL type-safe với BulkCopy native và Set-based Update; chèn hàng trăm nghìn bản ghi không cần round-trip, nhanh hơn EF Core 10–20 lần. |
+| [**22-RepoDb**](./22-RepoDb/) | `5122` | RepoDb | Hybrid ORM kết hợp tốc độ Micro-ORM và tính năng Full-ORM; Property Handlers, Expression-based QueryField, batch merge built-in. |
+| [**23-EFCoreBulkExtensions**](./23-EFCoreBulkExtensions/) | `5123` | EF Core Bulk Extensions | Bổ sung `BulkInsertAsync`, `BulkUpdateAsync`, `BulkDeleteAsync` cho EF Core — chèn 100K bản ghi trong vài giây thay vì hàng phút với `SaveChanges` thông thường. |
+| [**24-Marten**](./24-Marten/) | `5124` | Marten | Dùng PostgreSQL làm Document DB (JSONB) và EventStore đồng thời — không cần thêm Mongo; lưu trữ Event Sourcing, project ReadModel bằng Projection. |
+
+---
+
+### VI. Schema Migration (25 – 26)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**25-FluentMigrator**](./25-FluentMigrator/) | `5125` | FluentMigrator | Định nghĩa migration bằng C# Fluent API có type-safe, auto Rollback và version control; loại bỏ lỗi quên chạy script DB khi deploy Production. |
+| [**26-DbUp**](./26-DbUp/) | `5126` | DbUp | Chạy các file SQL script thuần (`.sql`) theo thứ tự phiên bản và ghi nhật ký vào DB — phù hợp team DBA ưa SQL hơn ORM migration. |
+
+---
+
+### VII. Caching & Khả Năng Chống Chịu Lỗi (27 – 30)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**27-FusionCache**](./27-FusionCache/) | `5127` | FusionCache | Anti-Stampede Lock ngăn nghìn request đồng thời đánh DB khi cache miss; Fail-Safe trả giá trị cũ khi backend lỗi thay vì throw exception. |
+| [**28-EasyCaching**](./28-EasyCaching/) | `5128` | EasyCaching | Caching Abstraction Layer — đổi provider từ Memory sang Redis qua config; Prefix-based invalidation, Serialization pluggable. |
+| [**29-StackExchangeRedis**](./29-StackExchangeRedis/) | `5129` | StackExchange.Redis | Truy cập trực tiếp Redis Data Structures (Hash, Set, SortedSet, Pub/Sub); Distributed Lock, Atomic Increment, Leaderboard thời gian thực. |
+| [**30-Polly**](./30-Polly/) | `5130` | Polly v8 (Polly.Core) | Resilience Pipeline đầy đủ: Retry với Exponential Backoff, Circuit Breaker chống sập dây chuyền, Timeout, Hedging và Fallback cho HTTP client. |
+
+---
+
+### VIII. Mapping & Validation (31 – 33)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**31-AutoMapper**](./31-AutoMapper/) | `5131` | AutoMapper | Loại bỏ hàng nghìn dòng getter/setter thủ công; Flattening, ReverseMap, Projection (LINQ), ValueTransformer và convention-based Profiles. |
+| [**32-Mapster**](./32-Mapster/) | `5132` | Mapster | Object Mapping hiệu năng cao hơn AutoMapper nhờ Code Generation; TypeAdapterConfig linh hoạt, FlattenIf, `Adapt<T>` extension method tự nhiên. |
+| [**33-FluentValidation**](./33-FluentValidation/) | `5133` | FluentValidation | Validation Rules strongly-typed, testable độc lập — chặn dữ liệu bẩn tại Controller trước khi vào Business Logic; Child Validators, RuleSet, Async rules. |
+
+---
+
+### IX. HTTP Clients (34 – 35)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**34-Refit**](./34-Refit/) | `5134` | Refit | Khai báo REST client bằng C# Interface thuần — không viết `HttpClient` code lặp đi lặp lại; tự động serialize/deserialize, Headers, Multipart. |
+| [**35-Flurl**](./35-Flurl/) | `5135` | Flurl.Http | Fluent URL Builder + HTTP Client trong một; `HttpTest` intercept toàn bộ call trong Unit Test mà không cần mock `HttpMessageHandler` phức tạp. |
+
+---
+
+### X. Bảo Mật & Identity (36 – 37)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**36-OpenIddict**](./36-OpenIddict/) | `5136` | OpenIddict | Xây dựng Authorization Server chuẩn OAuth2/OIDC nhúng trực tiếp vào ASP.NET Core — không cần host riêng; Client Credentials, PKCE, Token Introspection. |
+| [**37-DuendeIdentityServer**](./37-DuendeIdentityServer/) | `5137` | Duende IdentityServer | Enterprise Identity Platform hoàn chỉnh: SSO, Authorization Code + PKCE, Dynamic Client Registration, Back-Channel Logout. |
+
+---
+
+### XI. Logging (38 – 39)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**38-Serilog**](./38-Serilog/) | `5138` | Serilog | Structured Logging với Property Enrichment (UserId, RequestId) — log thành JSON đẩy thẳng ELK/Loki/Seq; LogContext, Destructure, multiple Sinks. |
+| [**39-NLog**](./39-NLog/) | `5139` | NLog | Logging linh hoạt cấu hình XML/JSON; MemoryTarget cho Integration Test, Database Target, async Wrapper để không block request thread. |
+
+---
+
+### XII. Observability (40)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**40-OpenTelemetry**](./40-OpenTelemetry/) | `5140` | OpenTelemetry | Ba trụ Observability: Distributed Tracing (ActivitySource + Jaeger), Metrics (Prometheus), Logs (OTLP Exporter) — tích hợp Grafana dashboard. |
+
+---
+
+### XIII. Testing & API Documentation (41 – 47)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**41-Bogus**](./41-Bogus/) | `5141` | Bogus | Sinh dữ liệu giả lập có ý nghĩa thực tế (tên người Việt, CCCD, địa chỉ, giá cả) với seed cố định — đảm bảo test deterministic, dễ debug. |
+| [**42-Verify**](./42-Verify/) | `5142` | Verify (Verify.Xunit) | Snapshot Testing — so sánh output JSON/HTML/PDF với file verified đã approved; tự động scrub Guid và DateTime biến đổi, đảm bảo regression detection. |
+| [**43-FluentAssertions**](./43-FluentAssertions/) | `5143` | FluentAssertions | Assertion ngôn ngữ tự nhiên, dễ đọc; `BeEquivalentTo` so sánh sâu toàn bộ object graph, `AssertionScope` gom nhiều lỗi một lần thay vì fail từng cái. |
+| [**44-BenchmarkDotNet**](./44-BenchmarkDotNet/) | `5144` | BenchmarkDotNet | Benchmark nanosecond chuẩn xác với JIT warmup tự động; `MemoryDiagnoser` đo allocation, `HardwareCounters`, so sánh nhiều implementation. |
+| [**45-SpecFlow**](./45-SpecFlow/) | `5145` | SpecFlow (SpecFlow.xUnit) | BDD — viết kịch bản kiểm thử bằng Gherkin (`Given / When / Then`) để Business Analyst cùng đọc và nghiệm thu; Living Documentation tự sinh từ test. |
+| [**46-Swashbuckle**](./46-Swashbuckle/) | `5146` | Swashbuckle.AspNetCore | Tự động sinh OpenAPI 3.0, Swagger UI có thể gọi thử trực tiếp; Multi-version API (V1/V2), Operation Filters, XML comments integration. |
+| [**47-NSwag**](./47-NSwag/) | `5147` | NSwag | OpenAPI toolchain hoàn chỉnh: Swagger UI + ReDoc + tự động generate C# Client SDK và TypeScript SDK từ spec — API-first development workflow. |
+
+---
+
+### XIV. Workflow, FSM & Xử Lý Tệp Tin (48 – 52)
+
+| Dự án | Port | Thư viện / Công nghệ | Vấn đề giải quyết trong thực tế (Pain Point) |
+|---|:---:|---|---|
+| [**48-Elsa**](./48-Elsa/) | `5148` | Elsa Workflows | Workflow Engine code-first — định nghĩa quy trình phê duyệt, onboarding nhiều bước bằng C# hoặc JSON; in-process runner không cần Docker external. |
+| [**49-Stateless**](./49-Stateless/) | `5149` | Stateless | Finite State Machine nhẹ, embeddable — quản lý vòng đời đơn hàng (Draft→Paid→Shipped→Completed); Guard Conditions, History State, xuất Mermaid/DOT diagram. |
+| [**50-QuestPDF**](./50-QuestPDF/) | `5150` | QuestPDF | Sinh PDF Hóa đơn/Báo cáo bằng C# Fluent API — không phụ thuộc LibreOffice hay Puppeteer; layout responsive, table tự xuống dòng, Emoji hỗ trợ. |
+| [**51-ClosedXML**](./51-ClosedXML/) | `5151` | ClosedXML | Đọc/ghi file Excel `.xlsx` không cần cài Office; tạo bảng biểu có định dạng màu sắc, Formula, DataValidation; roundtrip import-export chính xác. |
+| [**52-CsvHelper**](./52-CsvHelper/) | `5152` | CsvHelper | Import/Export CSV hiệu năng cao — ClassMap tự động map cột theo tên/index; xử lý encoding, dấu phẩy bên trong ngoặc kép, streaming file lớn. |
+
+---
+
+## 🏗️ Dự Án Tổng Hợp & Showcase (100 – 117)
+
+### Tổng Hợp: 52 Thư Viện Trong 1 Use Case
+
+| Dự án | Port | Mô tả | Tests |
+|---|:---:|---|:---:|
+| [**100-AllInOne**](./100-AllInOne/) | `5200` | Toàn bộ 52 thư viện phối hợp trong một use case **E-Commerce Order Fulfillment & Audit Platform** hoàn chỉnh. | 10/10 |
+
+---
+
+### Benchmark Stack: Battle-tested vs Modern High-Performance
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**101-EnterpriseClassic**](./101-EnterpriseClassic/) | `5201` | MediatR · AutoMapper · Dapper · EF Core · MassTransit · Hangfire · Serilog | Battle-tested Enterprise Stack — ổn định lâu năm, production-proven tại hàng nghìn doanh nghiệp. | 8/8 |
+| [**102-ModernHighPerf**](./102-ModernHighPerf/) | `5202` | Wolverine · Mapster · FusionCache · CAP · EF Core · OpenTelemetry · NSwag | Modern High-Performance Stack — throughput tối đa, latency thấp, cloud-native ready. | 8/8 |
+
+---
+
+### Architecture Patterns
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**103-BenchmarkShowdown**](./103-BenchmarkShowdown/) | — | BenchmarkDotNet · AutoMapper · Mapster · Dapper · EF Core | Benchmark thực chiến đo ns/op & allocation: Classic vs Modern Libraries. | 6/6 |
+| [**104-CleanVerticalSlice**](./104-CleanVerticalSlice/) | `5204` | MediatR · FluentValidation · EF Core · Serilog | Clean Architecture (4 layer) + Vertical Slice (feature-first), Value Object, Aggregate Root, Domain Events. | 10/10 |
+| [**105-Microservices-Basic**](./105-Microservices-Basic/) | `5300/5301/5302` | gRPC · YARP · EF Core | ProductService (REST+gRPC) + OrderService (REST+gRPC client) + YARP API Gateway. | 10/10 |
+| [**106-EventSourcing-CQRS**](./106-EventSourcing-CQRS/) | `5306` | SQLite EventStore · EF Core | Event Store, Aggregate Rebuild từ events, Snapshot, Read Model Projection. | 12/12 |
+| [**107-Saga-Pattern**](./107-Saga-Pattern/) | `5307` | MassTransit StateMachine | Orchestration Saga: Order → Payment → Inventory → Shipping + Compensation flow khi bất kỳ bước thất bại. | 10/10 |
+
+---
+
+### Security & Infrastructure
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**108-AuthStack**](./108-AuthStack/) | `5308` | JWT Bearer · BCrypt · EF Core · Rate Limiting | JWT Auth + Refresh Token Rotation + RBAC Policy + Rate Limiting (sliding window). | 12/12 |
+| [**109-Observability**](./109-Observability/) | `5309` | OpenTelemetry · Prometheus · Serilog | Ba trụ Observability: `/metrics` Prometheus + Distributed Tracing + Structured Logging. | 8/8 |
+| [**110-Middleware-Advanced**](./110-Middleware-Advanced/) | `5310` | ASP.NET Core Middleware · ProblemDetails RFC 9457 | Custom Pipeline: CorrelationId + Request/Response Logging + `IExceptionHandler` + ProblemDetails. | 12/12 |
+
+---
+
+### Performance & Real-time
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**111-gRPC-Streaming**](./111-gRPC-Streaming/) | `5311/5321` | gRPC · Protobuf | 4 gRPC patterns: Unary + Server Streaming + Client Streaming + Bidirectional Streaming. | 10/10 |
+| [**112-CachingAdvanced**](./112-CachingAdvanced/) | `5312` | IMemoryCache · IDistributedCache · HybridCache · FusionCache | L1 Memory + L2 Distributed + HybridCache (.NET 9+) + Anti-stampede FusionCache. | 10/10 |
+| [**113-BulkOps**](./113-BulkOps/) | `5313` | EF Core · EFCore.BulkExtensions · LinqToDB | Bulk Insert/Update/Delete: `ExecuteUpdateAsync` native vs BulkExtensions vs LinqToDB BulkCopy. | 11/11 |
+| [**116-WorkerService**](./116-WorkerService/) | `5316` | `System.Threading.Channels` · BackgroundService · PeriodicTimer | `IHostedService` + `Channel<T>` producer/consumer + `PeriodicTimer` periodic background jobs. | 10/10 |
+
+---
+
+### Testing & Architecture Quality
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**114-TestingMastery**](./114-TestingMastery/) | `5314` | Moq · NSubstitute · Verify.Xunit · FluentAssertions | Unit (Moq + NSubstitute) + Integration (`WebApplicationFactory`) + Snapshot testing (Verify). | 16/16 |
+| [**115-ArchitectureTests**](./115-ArchitectureTests/) | `5315` | NetArchTest.Rules · EF Core | Tự động kiểm tra dependency rules: Domain ← Application ← Infrastructure ← Api trên CI/CD. | 12/12 |
+
+---
+
+### Modern API Styles
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**117-GraphQL**](./117-GraphQL/) | `5317` | Hot Chocolate 14 · EF Core · DataLoader | GraphQL Query/Mutation/Subscription + DataLoader (chặn N+1) + Filtering/Sorting + Banana Cake Pop UI. | 11/11 |
+
+---
+
+## 🎯 Ma Trận Lựa Chọn Giải Pháp Doanh Nghiệp (Solution Blueprints)
+
+Tùy theo loại hình bài toán cần giải quyết, kết hợp các dự án mẫu thành bộ khung kiến trúc hoàn chỉnh:
+
 ```
-Mọi bài test đều độc lập, tự tạo DB in-memory/temp và tự dọn dẹp sau khi chạy xong.
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Ứng Dụng Quản Trị Doanh Nghiệp (Back-Office / ERP / CRM)                                 │
+│    👉 04-MediatR + 19-EFCore + 25-FluentMigrator + 27-FusionCache + 31-AutoMapper + 33-Fluent│
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 2. Hệ Thống Chịu Tải Cao & Thương Mại Điện Tử (High-Throughput E-Commerce)                  │
+│    👉 01-FastEndpoints + 06-MassTransit + 29-Redis + 30-Polly + 40-OpenTelemetry             │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 3. Ngân Hàng, Ví Điện Tử & FinTech (High-Integrity Financial Ledger)                        │
+│    👉 106-EventSourcing + 07-CAP + 36-OpenIddict + 108-AuthStack + 50-QuestPDF               │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 4. Hệ Thống IoT & Thời Gian Thực (Low-Latency Real-Time / IoT Streaming)                    │
+│    👉 12-MQTTnet + 11-ConfluentKafka + 111-gRPC-Streaming + 13-SignalR + 40-OpenTelemetry   │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 5. Microservices & Distributed Systems                                                       │
+│    👉 105-Microservices + 107-Saga + 06-MassTransit + 109-Observability + 30-Polly          │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 6. Chuẩn Hóa Kiến Trúc & Kiểm Thử Tự Động (Clean Architecture & Automated QA)              │
+│    👉 104-CleanVerticalSlice + 114-TestingMastery + 115-ArchitectureTests + 44-BenchmarkDotNet│
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🚀 Hướng Dẫn Chạy & Kiểm Thử Nhanh
+
+### 1. Yêu cầu môi trường
+- **.NET SDK**: 10.0 trở lên ([tải tại dotnet.microsoft.com](https://dotnet.microsoft.com/download)).
+- **IDE**: Visual Studio 2022+, JetBrains Rider, hoặc VS Code + C# Dev Kit.
+
+### 2. Khởi chạy một dự án bất kỳ
+Ví dụ muốn chạy dự án **`27-FusionCache`**:
+```bash
+# Di chuyển vào thư mục dự án
+cd 27-FusionCache
+
+# Khởi chạy ứng dụng
+dotnet run --project ProductCatalogCache.Api
+```
+Ứng dụng sẽ lắng nghe tại `http://localhost:5127`. Swagger UI tại `http://localhost:5127/swagger`.
+
+### 3. Kiểm thử tự động (TDD)
+```bash
+# Chạy tất cả test trong solution
+dotnet test
+
+# Chạy test với báo cáo chi tiết
+dotnet test --logger "console;verbosity=detailed"
+```
+
+### 4. Kiểm thử qua file `*.http`
+Mỗi thư mục dự án đều có sẵn một file **`*.http`** chuẩn hóa với toàn bộ endpoints.
+- Trên **Visual Studio / Rider**: Mở file `.http` và bấm nút ▶ bên cạnh mỗi request.
+- Trên **VS Code**: Cài extension **REST Client** (Huachao Mao), mở file và bấm `Send Request` hiển thị trên mỗi endpoint.
+
+---
+
+## 📄 Bản Quyền (License)
+Dự án được phân phối dưới giấy phép mã nguồn mở **MIT License**. Mọi lập trình viên và doanh nghiệp được tự do tham khảo, tái sử dụng và áp dụng vào các hệ thống sản xuất thương mại.
