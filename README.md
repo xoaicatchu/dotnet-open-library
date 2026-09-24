@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10" />
   <img src="https://img.shields.io/badge/C%23-13.0-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C# 13" />
   <img src="https://img.shields.io/badge/Libraries-52%20Projects-007ACC?style=for-the-badge&logo=nuget&logoColor=white" alt="52 Libraries" />
-  <img src="https://img.shields.io/badge/Showcase-18%20Projects-FF6B35?style=for-the-badge&logo=dotnet&logoColor=white" alt="18 Showcase" />
+  <img src="https://img.shields.io/badge/Showcase-19%20Projects-FF6B35?style=for-the-badge&logo=dotnet&logoColor=white" alt="19 Showcase" />
   <img src="https://img.shields.io/badge/REST%20Ready-100%25-brightgreen?style=for-the-badge" alt="REST Ready" />
   <img src="https://img.shields.io/badge/Tests-TDD%20Verified-blueviolet?style=for-the-badge" alt="Tests" />
 </p>
@@ -13,7 +13,7 @@
 
 ## 📖 Tổng Quan Dự Án (Overview & Philosophy)
 
-Kho lưu trữ này là **Bộ tài liệu kiến trúc thực chiến và mã nguồn mẫu toàn diện gồm 52 dự án thư viện độc lập và 18 dự án showcase** trong hệ sinh thái **.NET 10 (C# 13)**.
+Kho lưu trữ này là **Bộ tài liệu kiến trúc thực chiến và mã nguồn mẫu toàn diện gồm 52 dự án thư viện độc lập và 19 dự án showcase** trong hệ sinh thái **.NET 10 (C# 13)**.
 
 ### 🎯 Triết lý cốt lõi (Core Principles)
 1. **Tập trung vào bài toán thực tế**: Mỗi project giải quyết một **vấn đề sản xuất cụ thể (Pain Point)** kèm use case doanh nghiệp thực tiễn, không dừng lại ở mức hướng dẫn cú pháp cơ bản.
@@ -314,6 +314,14 @@ flowchart TD
 | Dự án | Port | Stack | Mục đích | Tests |
 |---|:---:|---|---|:---:|
 | [**117-GraphQL**](./117-GraphQL/) | `5317` | Hot Chocolate 14 · EF Core · DataLoader | GraphQL Query/Mutation/Subscription + DataLoader (chặn N+1) + Filtering/Sorting + Banana Cake Pop UI. | 11/11 |
+
+---
+
+### AI & Intelligent Agents
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**118-AI-Agent-Messaging**](./118-AI-Agent-Messaging/) | `5153` | MassTransit · Semantic Kernel | AI Agent tích hợp vào Event-Driven Pipeline; AI model tháo lắp (pluggable/NoOp fallback) không ảnh hưởng workflow chính. | 13/13 |
 
 ---
 
