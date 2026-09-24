@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AiAgentMessaging.Api/AiAgentMessaging.Api.csproj" />
+  <Project Path="AiAgentMessaging.Tests/AiAgentMessaging.Tests.csproj" />
+</Solution>
