@@ -1,0 +1,30 @@
+<div class="board-layout">
+  @if (boardState.currentBoard(); as board) {
+    <header class="board-header">
+      <h2>{{ board.name }}</h2>
+      <div class="actions">
+        <button class="btn" (click)="addColumn()">+ Add Column</button>
+        <button class="btn btn-secondary" (click)="toggleActivities()">
+          {{ showActivities() ? 'Hide Activity' : 'Show Activity' }}
+        </button>
+      </div>
+    </header>
+    
+    <!-- CdkDropListGroup: directive từ @angular/cdk cho phép drag-drop giữa nhiều danh sách -->
+    <div class="board-content" cdkDropListGroup>
+      <div class="columns-container">
+        @for (column of board.columns; track column.id) {
+          <app-column [column]="column"></app-column>
+        }
+      </div>
+      
+      @if (showActivities()) {
+        <aside class="sidebar">
+          <app-activity-feed></app-activity-feed>
+        </aside>
+      }
+    </div>
+  } @else {
+    <div class="loading">Loading board...</div>
+  }
+</div>

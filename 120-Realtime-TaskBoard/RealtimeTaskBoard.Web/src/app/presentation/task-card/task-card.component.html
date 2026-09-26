@@ -1,0 +1,23 @@
+<div class="card" [ngClass]="'priority-' + task().priority.toLowerCase()" (click)="editTask()">
+  <div class="card-header">
+    <h4>{{ task().title }}</h4>
+    <button class="btn-delete" (click)="deleteTask($event)">×</button>
+  </div>
+  
+  @if (task().description) {
+    <p class="description">{{ task().description }}</p>
+  }
+  
+  <div class="card-footer">
+    <span class="assignee">{{ task().assignee || 'Unassigned' }}</span>
+    <span class="priority-badge">{{ task().priority }}</span>
+  </div>
+</div>
+
+@if (showDialog()) {
+  <app-task-dialog 
+    [columnId]="task().columnId"
+    [task]="task()"
+    (close)="showDialog.set(false)">
+  </app-task-dialog>
+}

@@ -1,0 +1,21 @@
+{
+  "Scenario": "interactive",
+  "TargetConnections": 1000,
+  "ConnectedCount": 1000,
+  "FailedCount": 0,
+  "ReconnectCount": 0,
+  "MessagesPerSecond": 0,
+  "TotalMessagesReceived": 0,
+  "TotalMessagesSent": 150,
+  "LatencyP50Ms": 0,
+  "LatencyP95Ms": 0,
+  "LatencyP99Ms": 0,
+  "ServerRamMb": 586.4,
+  "ServerCpuPercent": 0,
+  "ClientRamMb": 141,
+  "ClientCpuPercent": 1.1,
+  "RampDurationSec": 2.9,
+  "HoldDurationSec": 6,
+  "ErrorBreakdown": {},
+  "BottleneckAssessment": "None (System Healthy)"
+}

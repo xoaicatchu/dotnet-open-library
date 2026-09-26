@@ -1,0 +1,15 @@
+<header class="app-header">
+  <div class="logo">
+    <a routerLink="/boards">
+      <h1>TaskBoard</h1>
+    </a>
+  </div>
+  <div class="actions">
+    <button (click)="toggleTheme()" class="theme-toggle">
+      {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+    </button>
+  </div>
+</header>
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

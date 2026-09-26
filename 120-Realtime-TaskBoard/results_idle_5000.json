@@ -1,0 +1,21 @@
+{
+  "Scenario": "idle",
+  "TargetConnections": 5000,
+  "ConnectedCount": 5000,
+  "FailedCount": 0,
+  "ReconnectCount": 0,
+  "MessagesPerSecond": 0,
+  "TotalMessagesReceived": 0,
+  "TotalMessagesSent": 0,
+  "LatencyP50Ms": 0,
+  "LatencyP95Ms": 0,
+  "LatencyP99Ms": 0,
+  "ServerRamMb": 549.4,
+  "ServerCpuPercent": 0.3,
+  "ClientRamMb": 346.2,
+  "ClientCpuPercent": 0.3,
+  "RampDurationSec": 13.7,
+  "HoldDurationSec": 6,
+  "ErrorBreakdown": {},
+  "BottleneckAssessment": "None (System Healthy)"
+}

@@ -1,0 +1,21 @@
+{
+  "Scenario": "broadcast",
+  "TargetConnections": 100,
+  "ConnectedCount": 100,
+  "FailedCount": 0,
+  "ReconnectCount": 0,
+  "MessagesPerSecond": 313.4,
+  "TotalMessagesReceived": 1900,
+  "TotalMessagesSent": 19,
+  "LatencyP50Ms": 7.3,
+  "LatencyP95Ms": 45.3,
+  "LatencyP99Ms": 45.4,
+  "ServerRamMb": 619.3,
+  "ServerCpuPercent": 1.4,
+  "ClientRamMb": 77.8,
+  "ClientCpuPercent": 0.7,
+  "RampDurationSec": 0.4,
+  "HoldDurationSec": 6.1,
+  "ErrorBreakdown": {},
+  "BottleneckAssessment": "None (System Healthy)"
+}

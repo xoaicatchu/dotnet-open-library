@@ -1,0 +1,13 @@
+<div class="container">
+  <header class="header">
+    <h1>Your Boards</h1>
+    <button class="btn-primary" (click)="createNewBoard()">+ Create New Board</button>
+  </header>
+  <div class="board-grid">
+    @for (board of boards(); track board.id) {
+      <div class="board-card" [routerLink]="['/boards', board.id]">
+        <h2>{{ board.name }}</h2>
+      </div>
+    }
+  </div>
+</div>

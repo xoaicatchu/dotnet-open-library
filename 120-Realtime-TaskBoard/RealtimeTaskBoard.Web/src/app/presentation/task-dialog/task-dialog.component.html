@@ -1,0 +1,39 @@
+<div class="dialog-backdrop" (click)="onBackdropClick()">
+  <div class="dialog-content" (click)="onDialogClick($event)">
+    <h3>{{ task() ? 'Edit Task' : 'Create Task' }}</h3>
+    
+    <form [formGroup]="taskForm" (ngSubmit)="save()">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" formControlName="title" placeholder="Task title">
+      </div>
+      
+      <div class="form-group">
+        <label>Description</label>
+        <textarea formControlName="description" rows="3" placeholder="Task description"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Priority</label>
+          <select formControlName="priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Assignee</label>
+          <input type="text" formControlName="assignee" placeholder="User name">
+        </div>
+      </div>
+      
+      <div class="dialog-actions">
+        <button type="button" class="btn-cancel" (click)="close.emit()">Cancel</button>
+        <button type="submit" class="btn-save" [disabled]="!taskForm.valid">Save</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="activity-feed">
+  <h3>Recent Activity</h3>
+  <div class="activity-list">
+    @for (activity of boardState.activities(); track activity.id) {
+      <div class="activity-item">
+        <div class="activity-header">
+          <span class="user">{{ activity.user }}</span>
+          <span class="time">{{ activity.timestamp | date:'shortTime' }}</span>
+        </div>
+        <p class="detail">{{ activity.detail }}</p>
+      </div>
+    }
+    @empty {
+      <div class="no-activity">No recent activities</div>
+    }
+  </div>
+</div>

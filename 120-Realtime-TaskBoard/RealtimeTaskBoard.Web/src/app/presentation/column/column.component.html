@@ -1,0 +1,31 @@
+<div class="column">
+  <div class="column-header">
+    <h3>{{ column().name }} ({{ column().tasks.length }})</h3>
+    <div class="actions">
+      <button class="btn-icon" (click)="showTaskDialog.set(true)">+</button>
+      <button class="btn-icon danger" (click)="deleteColumn()">×</button>
+    </div>
+  </div>
+
+  <div 
+    class="task-list"
+    cdkDropList
+    [cdkDropListData]="column().tasks"
+    (cdkDropListDropped)="drop($event)">
+    
+    @for (task of column().tasks; track task.id) {
+      <app-task-card 
+        cdkDrag 
+        [cdkDragData]="task"
+        [task]="task">
+      </app-task-card>
+    }
+  </div>
+
+  @if (showTaskDialog()) {
+    <app-task-dialog 
+      [columnId]="column().id" 
+      (close)="showTaskDialog.set(false)">
+    </app-task-dialog>
+  }
+</div>
