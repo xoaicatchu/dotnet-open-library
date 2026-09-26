@@ -1,0 +1,121 @@
+### 120-Realtime-TaskBoard API - http://localhost:5155
+### Requires PostgreSQL running on localhost:5432
+
+### ===== BOARDS =====
+
+### Get all boards
+GET http://localhost:5155/api/boards
+Accept: application/json
+
+### Create a board
+POST http://localhost:5155/api/boards
+Content-Type: application/json
+
+{
+  "name": "Sprint 42",
+  "description": "Q3 Sprint Planning Board"
+}
+
+### Get board detail (with columns and tasks)
+GET http://localhost:5155/api/boards/{{boardId}}
+Accept: application/json
+
+### Update board
+PUT http://localhost:5155/api/boards/{{boardId}}
+Content-Type: application/json
+
+{
+  "name": "Sprint 42 - Updated",
+  "description": "Updated description"
+}
+
+### Delete board
+DELETE http://localhost:5155/api/boards/{{boardId}}
+
+### ===== COLUMNS =====
+
+### Get columns for a board
+GET http://localhost:5155/api/boards/{{boardId}}/columns
+Accept: application/json
+
+### Add column to board
+POST http://localhost:5155/api/boards/{{boardId}}/columns
+Content-Type: application/json
+
+{
+  "name": "QA Testing",
+  "color": "#a855f7"
+}
+
+### Update column
+PUT http://localhost:5155/api/columns/{{columnId}}
+Content-Type: application/json
+
+{
+  "name": "QA Testing (Renamed)",
+  "color": "#7c3aed"
+}
+
+### Reorder columns
+PUT http://localhost:5155/api/columns/reorder
+Content-Type: application/json
+
+{
+  "columnIds": ["{{col1}}", "{{col2}}", "{{col3}}", "{{col4}}"]
+}
+
+### Delete column
+DELETE http://localhost:5155/api/columns/{{columnId}}
+
+### ===== TASKS =====
+
+### Get tasks in a column
+GET http://localhost:5155/api/columns/{{columnId}}/tasks
+Accept: application/json
+
+### Create task
+POST http://localhost:5155/api/columns/{{columnId}}/tasks
+Content-Type: application/json
+
+{
+  "title": "Implement SignalR real-time sync",
+  "description": "Add WebSocket-based real-time updates for task board",
+  "priority": "High",
+  "assignee": "dev@example.com",
+  "labels": ["feature", "backend"],
+  "dueDate": "2026-10-15T00:00:00Z"
+}
+
+### Update task
+PUT http://localhost:5155/api/tasks/{{taskId}}
+Content-Type: application/json
+
+{
+  "title": "Implement SignalR real-time sync (Done!)",
+  "priority": "Medium"
+}
+
+### Move task to another column
+PUT http://localhost:5155/api/tasks/{{taskId}}/move
+Content-Type: application/json
+
+{
+  "targetColumnId": "{{targetColumnId}}",
+  "newPosition": 0
+}
+
+### Delete task
+DELETE http://localhost:5155/api/tasks/{{taskId}}
+
+### ===== ACTIVITIES =====
+
+### Get activity feed for board (latest 50)
+GET http://localhost:5155/api/boards/{{boardId}}/activities?limit=50
+Accept: application/json
+
+### ===== SIGNALR HUBS =====
+### Connect via SignalR client:
+### - Board Hub:    ws://localhost:5155/hubs/board
+### - Task Hub:     ws://localhost:5155/hubs/task
+### - Activity Hub: ws://localhost:5155/hubs/activity
+### Call JoinBoard("boardId") after connecting to receive events

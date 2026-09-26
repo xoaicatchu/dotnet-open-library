@@ -42,3 +42,11 @@ desktop.ini
 BenchmarkDotNet.Artifacts/
 **/publish-*/
 .ast-graph/
+
+## Node / Angular
+**/node_modules/
+**/.angular/
+**/dist/
+
+## Load test results
+**/results_*.json

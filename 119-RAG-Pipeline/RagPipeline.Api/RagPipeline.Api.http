@@ -1,0 +1,44 @@
+@host = http://localhost:5154
+
+### Upload document
+POST {{host}}/api/documents
+Content-Type: application/json
+
+{
+  "title": "Quy trình Onboarding nhân viên",
+  "content": "Bước 1: Nhân viên mới nhận email xác nhận từ HR trong vòng 24h sau khi ký hợp đồng. Email bao gồm link đăng ký tài khoản nội bộ và lịch orientation.\n\nBước 2: Hoàn thành đăng ký tài khoản trên hệ thống VNPT-HIS. IT sẽ cấp laptop và tài khoản VPN trong ngày đầu tiên.\n\nBước 3: Tham gia buổi orientation 2 ngày. Ngày 1 giới thiệu tổng quan công ty, văn hóa doanh nghiệp. Ngày 2 đào tạo quy trình làm việc, công cụ nội bộ.\n\nBước 4: Gặp mentor được phân công. Mentor sẽ hướng dẫn trong 3 tháng đầu tiên.\n\nBước 5: Đánh giá thử việc sau 2 tháng. HR và quản lý trực tiếp cùng đánh giá KPI và năng lực."
+}
+
+### Upload another document
+POST {{host}}/api/documents
+Content-Type: application/json
+
+{
+  "title": "Chính sách nghỉ phép",
+  "content": "Nhân viên chính thức được hưởng 12 ngày phép năm. Phép tăng thêm 1 ngày sau mỗi 5 năm thâm niên.\n\nĐăng ký nghỉ phép qua hệ thống HRM, cần được quản lý trực tiếp phê duyệt trước ít nhất 3 ngày làm việc.\n\nNghỉ phép không sử dụng hết có thể chuyển sang năm sau, tối đa 5 ngày.\n\nNghỉ ốm cần có giấy xác nhận của cơ sở y tế. Nhân viên được hưởng tối đa 30 ngày nghỉ ốm/năm theo quy định BHXH."
+}
+
+### Get all documents
+GET {{host}}/api/documents
+
+### Ask a question
+POST {{host}}/api/questions
+Content-Type: application/json
+
+{
+  "question": "Quy trình onboarding nhân viên mới gồm những bước nào?"
+}
+
+### Ask another question
+POST {{host}}/api/questions
+Content-Type: application/json
+
+{
+  "question": "Nhân viên được nghỉ phép bao nhiêu ngày?"
+}
+
+### Get document by ID
+GET {{host}}/api/documents/{{documentId}}
+
+### Delete document
+DELETE {{host}}/api/documents/{{documentId}}
