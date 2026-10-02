@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WasmWasi.Api/WasmWasi.Api.csproj" />
+  <Project Path="WasmWasi.Tests/WasmWasi.Tests.csproj" />
+</Solution>

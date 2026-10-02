@@ -1,0 +1,11 @@
+### Task 1 — Solution, database và đăng nhập
+
+**Files:** `128-StockFlow/StockFlow.slnx`; `StockFlow.Api/{StockFlow.Api.csproj,Program.cs,appsettings.json,Properties/launchSettings.json,Data/StockFlowDbContext.cs,Data/Migrations/,Data/DevelopmentSeeder.cs,Auth/{AuthController.cs,UsersController.cs,UserDtos.cs,RolePolicies.cs}}`; `StockFlow.Web/{package.json,package-lock.json,angular.json,proxy.conf.json,src/main.ts,src/app/app.config.ts,src/app/app.routes.ts}`; `StockFlow.Tests/{StockFlow.Tests.csproj,Infrastructure/StockFlowApiFactory.cs,AuthTests.cs,SchemaTests.cs}` (mọi đường dẫn con dưới `128-StockFlow/`). Lưu Data Protection key ring trong PostgreSQL để mọi pod dùng chung cookie key.
+
+- [ ] Parent đã quét repo không thấy 5166/5167; chọn API localhost:5166 và Angular localhost:4200 development, kiểm tra listener trước khi thực hiện.
+- [ ] Tạo net10.0 solution độc lập, PostgreSQL migrations và cookie Identity, Angular SPA/PWA qua proxy development, build frontend vào `wwwroot`; dùng antiforgery cookie/header, không tự tạo password hashing. Local chạy PostgreSQL bằng compose; cấu hình rõ lệnh env/config, không chứa secret trong appsettings.
+- [ ] Định nghĩa schema ở trên với check/unique/FK; seed Admin/Warehouse/Viewer chỉ khi Development và secret do operator cung cấp. Seed hàng mẫu, tồn đầu kỳ qua luồng phiếu nhập sau khi Task 2 hoàn thành. Thêm lệnh `--bootstrap-admin` one-shot cho production, yêu cầu email/password cấu hình ngoài image và không chạy API sau bootstrap.
+- [ ] Tests: chưa login GET `/api/auth/me` →401; migration trên DB rỗng thành công; cấu hình production không tự sinh tài khoản demo; thiếu/sai CSRF bị từ chối; token sau login/logout dùng được; hai test hosts dùng chung PostgreSQL vẫn xác thực cookie đã phát từ host còn lại; bootstrap thiếu secret fail closed; SPA deep link hoạt động và `/api/unknown` trả404. Kiểm tra quyền Viewer và SKU trùng cùng CRUD ở Task 2 khi products endpoint tồn tại.
+
+**Acceptance:** Restore/build solution độc lập; auth/permission/schema và migration tests chạy trên PostgreSQL thật bằng Testcontainers/service container; SQLite nếu dùng chỉ cho isolated unit tests, không EF InMemory cho integration. API không trả password hash.
+

@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StockFlow — Bản thiết kế giao diện</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f5f7fa;
+      --surface: #fff;
+      --ink: #172033;
+      --muted: #778197;
+      --line: #e9edf3;
+      --nav: #19243b;
+      --nav-muted: #aab4c6;
+      --brand: #4169e1;
+      --brand-soft: #edf2ff;
+      --green: #198754;
+      --green-soft: #eaf7f0;
+      --amber: #c78116;
+      --amber-soft: #fff5e5;
+      --red: #c14545;
+      --red-soft: #fff0ef;
+      --shadow: 0 3px 12px rgb(24 42 75 / 4%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); font-size: 14px; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app { min-height: 100vh; }
+    .sidebar {
+      width: 244px; position: fixed; inset: 0 auto 0 0; z-index: 4; display: flex; flex-direction: column;
+      padding: 24px 16px 16px; background: var(--nav); color: white;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; margin: 0 8px 35px; font-size: 19px; font-weight: 750; letter-spacing: -.45px; }
+    .brand-mark { display: grid; width: 35px; height: 35px; place-items: center; border-radius: 11px; color: white; background: #5578ef; font-weight: 800; }
+    .brand small { display: block; margin-top: 2px; color: #a9b5cb; font-size: 10px; font-weight: 500; letter-spacing: .6px; }
+    .nav-label { margin: 0 12px 9px; color: #8190a9; font-size: 10px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; }
+    .nav-list { display: grid; gap: 5px; }
+    .nav-item { display: flex; width: 100%; align-items: center; gap: 12px; padding: 11px 12px; border: 0; border-radius: 8px; color: var(--nav-muted); background: transparent; text-align: left; transition: .15s ease; }
+    .nav-item:hover { color: white; background: #ffffff0d; }
+    .nav-item.active { color: white; background: #3455b9; box-shadow: inset 3px 0 #91aaff; }
+    .nav-icon { width: 19px; text-align: center; font-size: 16px; }
+    .nav-pill { margin-left: auto; padding: 3px 7px; border-radius: 20px; color: #ffd685; background: #fff3; font-size: 10px; }
+    .side-bottom { margin-top: auto; }
+    .warehouse-switch { margin: 0 4px 13px; padding: 12px; border: 1px solid #ffffff1b; border-radius: 10px; color: white; background: #ffffff09; }
+    .warehouse-switch small { display: block; margin-bottom: 5px; color: #92a0b8; font-size: 10px; }
+    .warehouse-switch strong { font-size: 12px; font-weight: 600; }
+    .side-user { display: flex; align-items: center; gap: 10px; padding: 13px 6px 0; border-top: 1px solid #ffffff1c; }
+    .avatar { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 50%; color: #263b72; background: #dce5ff; font-size: 12px; font-weight: 700; }
+    .side-user strong { display: block; font-size: 12px; font-weight: 600; }
+    .side-user small { color: #9aa8be; font-size: 11px; }
+    .main { min-height: 100vh; margin-left: 244px; }
+    .topbar { position: sticky; top: 0; z-index: 3; display: flex; height: 68px; align-items: center; justify-content: space-between; padding: 0 34px; border-bottom: 1px solid var(--line); background: #ffffffee; backdrop-filter: blur(12px); }
+    .crumb { color: var(--muted); font-size: 12px; }
+    .crumb b { color: #344057; font-weight: 600; }
+    .top-actions { display: flex; align-items: center; gap: 13px; }
+    .sync-chip { display: inline-flex; min-height: 30px; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid #d7eadf; border-radius: 20px; color: #287451; background: #f1faf4; font-size: 10px; font-weight: 600; }
+    .sync-chip .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #2d9b64; box-shadow: 0 0 0 3px #2d9b6418; }
+    .sync-chip.offline { border-color: #f0d9b7; color: #966218; background: #fff8ed; }
+    .sync-chip.offline .live-dot { background: #da9125; box-shadow: 0 0 0 3px #da91251a; }
+    .pending-chip { min-height: 30px; padding: 0 9px; border: 1px solid #e5e8ee; border-radius: 20px; color: #637087; background: white; font-size: 10px; }
+    .offline-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 17px; padding: 11px 13px; border: 1px solid #f0d9b7; border-radius: 8px; color: #845b19; background: #fff8ed; font-size: 11px; line-height: 1.5; }
+    body.is-offline .offline-banner { display: flex; }
+    .offline-banner strong { display: block; color: #714a0e; }
+    .offline-banner button { flex: 0 0 auto; border: 0; color: #79551c; background: transparent; font-size: 11px; font-weight: 650; text-decoration: underline; }
+    .today { color: var(--muted); font-size: 12px; }
+    .icon-button { position: relative; display: grid; width: 35px; height: 35px; place-items: center; border: 1px solid var(--line); border-radius: 9px; color: #58647a; background: white; }
+    .notice-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border: 1px solid white; border-radius: 50%; background: #e66a62; }
+    .content { max-width: 1500px; margin: auto; padding: 30px 34px 48px; }
+    .page { display: none; animation: arrive .18s ease-out; }
+    .page.active { display: block; }
+    @keyframes arrive { from { opacity: .5; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+    h1 { margin: 0; font-size: 23px; font-weight: 720; letter-spacing: -.55px; }
+    .subtitle { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .head-actions { display: flex; gap: 9px; }
+    .button { display: inline-flex; min-height: 37px; align-items: center; justify-content: center; gap: 7px; padding: 0 13px; border: 1px solid var(--line); border-radius: 7px; color: #46526a; background: white; font-size: 12px; font-weight: 600; transition: .15s ease; }
+    .button:hover { border-color: #c7d1e1; background: #fafbfe; }
+    .button.primary { border-color: var(--brand); color: white; background: var(--brand); box-shadow: 0 2px 5px #4169e12a; }
+    .button.primary:hover { background: #355ad0; }
+    .button.danger { border-color: #f1cecb; color: var(--red); background: white; }
+    .button:disabled { cursor: not-allowed; opacity: .5; }
+    .grid { display: grid; gap: 15px; }
+    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 17px; }
+    .card { border: 1px solid #e9edf3; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+    .stat { position: relative; min-height: 112px; padding: 17px 18px; }
+    .stat-label { display: flex; align-items: center; justify-content: space-between; color: #6d778b; font-size: 11px; }
+    .stat-symbol { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 8px; color: var(--brand); background: var(--brand-soft); font-size: 14px; }
+    .stat.green .stat-symbol { color: var(--green); background: var(--green-soft); }
+    .stat.amber .stat-symbol { color: var(--amber); background: var(--amber-soft); }
+    .stat.red .stat-symbol { color: var(--red); background: var(--red-soft); }
+    .stat-value { margin-top: 8px; font-size: 25px; font-weight: 700; letter-spacing: -.7px; }
+    .stat-note { margin-top: 3px; color: #929bad; font-size: 10px; }
+    .dashboard-grid { grid-template-columns: minmax(0, 1.6fr) minmax(275px, .9fr); align-items: start; }
+    .card-title-row { display: flex; min-height: 57px; align-items: center; justify-content: space-between; gap: 15px; padding: 0 17px; border-bottom: 1px solid var(--line); }
+    .card-title { font-size: 13px; font-weight: 650; }
+    .card-subtitle { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .text-link { padding: 5px 2px; border: 0; color: var(--brand); background: transparent; font-size: 11px; font-weight: 600; }
+    .table-wrap { overflow: auto; }
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    th { height: 40px; padding: 0 15px; color: #667187; background: #fafbfd; font-size: 10px; font-weight: 650; text-align: left; }
+    td { height: 51px; padding: 0 15px; border-top: 1px solid #f0f2f6; color: #39445a; font-size: 12px; }
+    tbody tr:hover { background: #fbfcff; }
+    .product-name { display: flex; align-items: center; gap: 10px; }
+    .product-thumb { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 7px; background: #f3f5f9; font-size: 15px; }
+    .product-name strong { display: block; color: #263149; font-size: 11px; font-weight: 600; }
+    .product-name small { display: block; margin-top: 3px; color: #939daf; font-size: 9px; }
+    .stock-meter { width: 75px; height: 5px; overflow: hidden; margin-top: 5px; border-radius: 5px; background: #edf0f4; }
+    .stock-meter i { display: block; height: 100%; border-radius: inherit; background: var(--green); }
+    .stock-meter i.low { background: #e4a13b; }
+    .stock-number { font-weight: 650; }
+    .stock-number.low { color: var(--amber); }
+    .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+    .status::before { width: 5px; height: 5px; border-radius: 50%; background: currentColor; content: ""; }
+    .status.good { color: #258558; background: var(--green-soft); }
+    .status.warning { color: #af761b; background: var(--amber-soft); }
+    .status.posted { color: #258558; background: var(--green-soft); }
+    .status.draft { color: #63718a; background: #f0f2f6; }
+    .status.cancelled { color: #b4524d; background: var(--red-soft); }
+    .alert-list { display: grid; gap: 0; padding: 0 17px; }
+    .alert { display: flex; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid #f1f3f6; }
+    .alert:last-child { border-bottom: 0; }
+    .alert-icon { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 8px; color: #a97522; background: #fff3df; }
+    .alert strong { display: block; font-size: 11px; font-weight: 600; }
+    .alert small { display: block; margin-top: 4px; color: #929bad; font-size: 10px; }
+    .alert b { margin-left: auto; color: var(--amber); font-size: 12px; }
+    .quick-actions { display: flex; gap: 9px; margin-top: 16px; }
+    .quick-action { flex: 1; display: flex; align-items: center; gap: 9px; padding: 11px; border: 1px solid var(--line); border-radius: 8px; color: #4d5970; background: white; text-align: left; font-size: 11px; font-weight: 600; }
+    .quick-action:hover { border-color: #cbd5e8; background: #fcfdff; }
+    .quick-action span { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 7px; color: var(--brand); background: var(--brand-soft); }
+    .table-card { overflow: hidden; }
+    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .searchbox { display: flex; min-width: 235px; height: 34px; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; color: #97a0b0; background: white; }
+    .searchbox input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 11px; }
+    .filter-select, .field input, .field select { height: 35px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; outline-color: #9eaff2; color: #4c586f; background: white; font-size: 11px; }
+    .filters-spacer { flex: 1; }
+    .count-note { padding: 12px 15px; color: #8993a6; font-size: 10px; }
+    .workflow { max-width: 970px; margin: 0 auto; }
+    .stepper { display: flex; align-items: center; gap: 0; margin: 2px 0 20px; }
+    .step { display: flex; align-items: center; gap: 8px; color: #9aa3b4; font-size: 10px; font-weight: 550; }
+    .step-circle { display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid #dce1ea; border-radius: 50%; color: #929cad; background: white; font-size: 10px; }
+    .step.done { color: var(--brand); }
+    .step.done .step-circle { border-color: var(--brand); color: white; background: var(--brand); }
+    .step-line { width: 70px; height: 1px; margin: 0 12px; background: #dfe4ed; }
+    .doc-card { padding: 20px; margin-bottom: 14px; }
+    .doc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-top: 17px; }
+    .field { display: grid; gap: 6px; }
+    .field label { color: #657087; font-size: 10px; font-weight: 600; }
+    .field input, .field select { width: 100%; height: 37px; }
+    .field input::placeholder { color: #a9b1bf; }
+    .field.wide { grid-column: 1 / -1; }
+    .inline-note { display: flex; align-items: center; gap: 7px; margin-top: 14px; color: #7c8799; font-size: 10px; }
+    .inline-note .lock { color: #8793a6; }
+    .line-table th:first-child, .line-table td:first-child { padding-left: 5px; }
+    .line-table td { height: 55px; }
+    .line-input { width: 74px; height: 30px; padding: 0 7px; border: 1px solid var(--line); border-radius: 6px; text-align: right; font-size: 11px; }
+    .line-input.price { width: 100px; }
+    .remove-line { width: 27px; height: 27px; border: 0; border-radius: 6px; color: #a0a8b6; background: transparent; }
+    .remove-line:hover { color: var(--red); background: var(--red-soft); }
+    .summary { display: flex; justify-content: flex-end; padding: 17px 4px 0; }
+    .summary-inner { width: 265px; }
+    .summary-row { display: flex; justify-content: space-between; padding: 5px 0; color: #788397; font-size: 11px; }
+    .summary-row.total { margin-top: 7px; padding-top: 12px; border-top: 1px solid var(--line); color: #253149; font-size: 14px; font-weight: 700; }
+    .doc-footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 15px; border-top: 1px solid var(--line); }
+    .foot-right { display: flex; gap: 8px; }
+    .notice { padding: 12px 14px; border: 1px solid #fae4bb; border-radius: 8px; color: #89611f; background: #fffaf0; font-size: 11px; line-height: 1.6; }
+    .stocktake-table td { height: 62px; }
+    .count-field { width: 100px; height: 34px; padding: 0 9px; border: 1px solid #cdd6e5; border-radius: 7px; text-align: right; font-size: 12px; }
+    .delta { font-weight: 650; }
+    .delta.negative { color: var(--red); }
+    .delta.positive { color: var(--green); }
+    .report-filters { display: flex; align-items: center; gap: 9px; }
+    .report-filters input { width: 140px; }
+    .report-kpis { grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; }
+    .report-kpi { padding: 15px 16px; }
+    .report-kpi small { color: #8390a4; font-size: 10px; }
+    .report-kpi strong { display: block; margin-top: 8px; font-size: 20px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 8; display: none; place-items: center; padding: 18px; background: #10192b75; }
+    .modal-backdrop.open { display: grid; }
+    .modal { width: min(420px, 100%); padding: 22px; border-radius: 12px; background: white; box-shadow: 0 22px 70px #0d19394a; }
+    .picker-modal { width: min(500px, 100%); max-height: min(700px, 85vh); overflow: auto; }
+    .picker-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: white; text-align: left; }
+    .picker-item:hover { border-color: #bac9ec; background: #f8faff; }
+    .picker-item .picker-copy { flex: 1; }
+    .picker-item strong { display: block; font-size: 12px; }
+    .picker-item small { display: block; margin-top: 4px; color: #7e899d; font-size: 10px; }
+    .picker-item .picker-stock { color: #62708a; font-size: 10px; }
+    .modal h2 { margin: 0; font-size: 17px; }
+    .modal p { margin: 8px 0 18px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 19px; }
+    .toast { position: fixed; right: 24px; bottom: 22px; z-index: 10; padding: 12px 16px; transform: translateY(12px); border-radius: 8px; color: white; background: #25334f; box-shadow: 0 7px 20px #14203e35; font-size: 12px; opacity: 0; pointer-events: none; transition: .2s ease; }
+    .toast.show { transform: none; opacity: 1; }
+    .mobile-menu { display: none; }
+    .menu-backdrop { display: none; }
+    :focus-visible { outline: 3px solid #91aaff !important; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    .sync-row { display: flex; align-items: center; gap: 12px; padding: 15px 17px; border-top: 1px solid var(--line); }
+    .sync-badge { display: grid; width: 33px; height: 33px; flex: 0 0 auto; place-items: center; border-radius: 8px; color: #9a6b20; background: #fff3df; }
+    .sync-row strong { display: block; font-size: 11px; font-weight: 650; }
+    .sync-row small { display: block; margin-top: 4px; color: #8490a4; font-size: 10px; }
+    .sync-row .sync-trailing { margin-left: auto; text-align: right; }
+    .sync-row .sync-trailing .status { margin-bottom: 5px; }
+    .menu-backdrop { display: none; }
+    :focus-visible { outline: 3px solid #91aaff !important; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    @media (max-width: 1080px) {
+      .content { padding-right: 22px; padding-left: 22px; }
+      .topbar { padding: 0 22px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .sidebar { width: 250px; align-items: stretch; padding: 20px 15px; transform: translateX(-105%); transition: transform .18s ease; box-shadow: 12px 0 30px #18243a25; }
+      .sidebar.open { transform: translateX(0); }
+      .menu-backdrop.open { position: fixed; inset: 0; z-index: 3; display: block; background: #111b2c70; }
+      .brand { margin: 0 8px 28px; }
+      .brand-text, .nav-copy, .warehouse-switch, .side-user .user-copy { display: block; }
+      .nav-label, .nav-pill { display: block; }
+      .nav-list { width: 100%; }
+      .nav-item { justify-content: flex-start; padding: 11px 12px; }
+      .nav-icon { width: 19px; font-size: 16px; }
+      .side-bottom { width: 100%; }
+      .side-user { justify-content: flex-start; padding-top: 13px; }
+      .main { margin-left: 0; }
+      .mobile-menu { display: grid; width: 33px; height: 33px; place-items: center; margin-right: 8px; border: 1px solid var(--line); border-radius: 8px; color: #4e5a70; background: white; }
+      .crumb-wrap { display: flex; align-items: center; }
+      .topbar { height: 57px; padding: 0 10px; }
+      .content { padding: 23px 14px 32px; }
+      .page-head { align-items: flex-start; }
+      h1 { font-size: 19px; }
+      .subtitle { max-width: 270px; line-height: 1.5; }
+      .head-actions .button span.hide-mobile { display: none; }
+      .sync-chip { padding: 0 8px; font-size: 0; }
+      .pending-chip { max-width: 88px; overflow: hidden; padding: 0 7px; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+      .crumb-prefix, .crumb-sep, .icon-button { display: none; }
+      .stats { gap: 9px; }
+      .stat { min-height: 103px; padding: 13px; }
+      .stat-value { font-size: 21px; }
+      .quick-actions { flex-direction: column; }
+      .doc-grid { grid-template-columns: 1fr; }
+      .step-line { width: 15px; margin: 0 5px; }
+      .step { gap: 5px; font-size: 9px; }
+      .step-circle { width: 22px; height: 22px; }
+      .doc-card { padding: 14px; }
+      .report-kpis { grid-template-columns: repeat(2, 1fr); }
+      .today { display: none; }
+    }
+    @media (max-width: 380px) {
+      .top-actions { gap: 6px; }
+      .pending-chip { width: 32px; min-width: 32px; max-width: 32px; height: 32px; padding: 0; font-size: 0; }
+      .pending-chip::before { content: "↻"; font-size: 14px; }
+      .mobile-menu { margin-right: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">S</span><span class="brand-text">StockFlow<small>QUẢN LÝ KHO</small></span></div>
+      <div class="nav-label">Không gian làm việc</div>
+      <nav class="nav-list" id="primary-navigation" aria-label="Điều hướng chính">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span><span class="nav-copy">Tổng quan</span></button>
+        <button class="nav-item" data-page="products"><span class="nav-icon">▦</span><span class="nav-copy">Hàng hóa</span></button>
+        <button class="nav-item" data-page="suppliers"><span class="nav-icon">♧</span><span class="nav-copy">Nhà cung cấp</span></button>
+        <div class="nav-label" style="margin-top:20px">Kho hàng</div>
+        <button class="nav-item" data-page="receipts"><span class="nav-icon">↙</span><span class="nav-copy">Nhập kho</span></button>
+        <button class="nav-item" data-page="issues"><span class="nav-icon">↗</span><span class="nav-copy">Xuất kho</span></button>
+        <button class="nav-item" data-page="stocktake"><span class="nav-icon">☷</span><span class="nav-copy">Kiểm kê</span><span class="nav-pill">1</span></button>
+        <div class="nav-label" style="margin-top:20px">Theo dõi</div>
+        <button class="nav-item" data-page="reports"><span class="nav-icon">▤</span><span class="nav-copy">Báo cáo</span></button>
+      </nav>
+      <div class="side-bottom">
+        <div class="warehouse-switch"><small>Kho đang xem</small><strong>Kho cửa hàng ▾</strong></div>
+        <div class="side-user"><div class="avatar">MA</div><div class="user-copy"><strong>Minh Anh</strong><small>Quản lý kho</small></div></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb-wrap"><button class="mobile-menu" id="mobile-menu" aria-label="Mở menu điều hướng" aria-controls="primary-navigation" aria-expanded="false">☰</button><div class="crumb"><span class="crumb-prefix">Kho cửa hàng</span><span class="crumb-sep" style="padding:0 8px;color:#b1b9c7">/</span><b id="crumb-label">Tổng quan</b></div></div>
+        <div class="top-actions"><span class="today">Thứ Năm, 01 tháng 10, 2026</span><button class="sync-chip" id="connection-toggle" aria-label="Mô phỏng mất kết nối"><i class="live-dot"></i><span id="connection-label">Đang online · đã đồng bộ 10:24</span></button><button class="pending-chip" data-go="sync" aria-label="Mở hàng chờ đồng bộ" title="Mở hàng chờ đồng bộ">1 chờ đồng bộ</button><button class="icon-button" aria-label="Thông báo">♧<i class="notice-dot"></i></button></div>
+      </header>
+      <div class="content">
+        <div class="offline-banner" role="status"><div><strong>Đang ngoại tuyến · dữ liệu gần nhất lúc 10:24</strong>Bản nháp sẽ được giữ trên thiết bị. Phiếu chỉ ghi sổ sau khi kết nối để kiểm tra tồn kho.</div><button data-go="sync">Xem hàng chờ đồng bộ</button></div>
+        <section class="page active" id="dashboard">
+          <div class="page-head"><div><h1>Tổng quan kho</h1><p class="subtitle">Tình hình hàng hóa và hoạt động trong ngày của bạn.</p></div><div class="head-actions"><button class="button" data-action="export">⇩ <span class="hide-mobile">Xuất báo cáo</span></button><button class="button primary" data-go="receipts">＋ Tạo phiếu nhập</button></div></div>
+          <div class="grid stats">
+            <article class="card stat"><div class="stat-label">Tổng mặt hàng <span class="stat-symbol">▦</span></div><div class="stat-value">248</div><div class="stat-note">Đang kinh doanh</div></article>
+            <article class="card stat green"><div class="stat-label">Tổng số lượng tồn <span class="stat-symbol">▤</span></div><div class="stat-value">3.486</div><div class="stat-note">Đơn vị hàng hóa</div></article>
+            <article class="card stat amber"><div class="stat-label">Sắp hết hàng <span class="stat-symbol">⚑</span></div><div class="stat-value">08</div><div class="stat-note">Dưới mức tồn tối thiểu</div></article>
+            <article class="card stat red"><div class="stat-label">Phiếu chờ xác nhận <span class="stat-symbol">◷</span></div><div class="stat-value">03</div><div class="stat-note">Nháp trong hôm nay</div></article>
+          </div>
+          <div class="grid dashboard-grid">
+            <article class="card table-card">
+              <div class="card-title-row"><div><div class="card-title">Biến động gần đây</div><div class="card-subtitle">Các phiếu nhập và xuất mới nhất</div></div><button class="text-link" data-go="reports">Xem tất cả →</button></div>
+              <div class="table-wrap"><table><thead><tr><th>MÃ PHIẾU</th><th>LOẠI PHIẾU</th><th>NGƯỜI TẠO</th><th>THỜI GIAN</th><th>TRẠNG THÁI</th></tr></thead><tbody>
+                <tr><td><b>PN-261001-008</b></td><td><span class="status good">Nhập kho</span></td><td>Minh Anh</td><td>09:42 hôm nay</td><td><span class="status posted">Đã xác nhận</span></td></tr>
+                <tr><td><b>PX-261001-006</b></td><td><span class="status warning">Xuất bán</span></td><td>Huyền Trần</td><td>09:18 hôm nay</td><td><span class="status posted">Đã xác nhận</span></td></tr>
+                <tr><td><b>PX-261001-005</b></td><td><span class="status warning">Xuất hỏng</span></td><td>Minh Anh</td><td>08:55 hôm nay</td><td><span class="status posted">Đã xác nhận</span></td></tr>
+                <tr><td><b>PN-300926-007</b></td><td><span class="status good">Nhập kho</span></td><td>Huyền Trần</td><td>16:30 hôm qua</td><td><span class="status draft">Bản nháp</span></td></tr>
+              </tbody></table></div>
+              <div class="count-note">Hiển thị 4 biến động gần nhất</div>
+            </article>
+            <article class="card">
+              <div class="card-title-row"><div><div class="card-title">Cần nhập thêm</div><div class="card-subtitle">Hàng hóa dưới mức tồn tối thiểu</div></div><button class="text-link" data-go="products">Danh sách →</button></div>
+              <div class="alert-list">
+                <div class="alert"><span class="alert-icon">⌁</span><div><strong>Giấy in A4 Double A</strong><small>Tối thiểu 20 ram</small></div><b>6</b></div>
+                <div class="alert"><span class="alert-icon">⌁</span><div><strong>Mực in Canon 325</strong><small>Tối thiểu 10 hộp</small></div><b>3</b></div>
+                <div class="alert"><span class="alert-icon">⌁</span><div><strong>Bút bi Thiên Long TL-027</strong><small>Tối thiểu 50 cây</small></div><b>18</b></div>
+              </div>
+              <div style="padding:0 17px 16px"><button class="button" style="width:100%" data-go="receipts">＋ Nhập hàng sắp hết</button></div>
+            </article>
+          </div>
+          <div class="quick-actions"><button class="quick-action" data-go="receipts"><span>↙</span>Tạo phiếu nhập</button><button class="quick-action" data-go="issues"><span>↗</span>Tạo phiếu xuất</button><button class="quick-action" data-go="stocktake"><span>☷</span>Kiểm kê tồn kho</button><button class="quick-action" data-go="products"><span>＋</span>Thêm hàng hóa</button></div>
+        </section>
+
+        <section class="page" id="products">
+          <div class="page-head"><div><h1>Hàng hóa</h1><p class="subtitle">Quản lý mặt hàng, đơn vị tính và mức tồn tối thiểu.</p></div><div class="head-actions"><button class="button" data-action="export">⇩ <span class="hide-mobile">Xuất Excel</span></button><button class="button primary" data-action="add-product">＋ Thêm hàng hóa</button></div></div>
+          <div class="grid stats">
+            <article class="card stat"><div class="stat-label">Tổng mặt hàng <span class="stat-symbol">▦</span></div><div class="stat-value">248</div><div class="stat-note">Trong danh mục</div></article>
+            <article class="card stat green"><div class="stat-label">Còn hàng <span class="stat-symbol">✓</span></div><div class="stat-value">231</div><div class="stat-note">Tồn kho trên mức tối thiểu</div></article>
+            <article class="card stat amber"><div class="stat-label">Sắp hết <span class="stat-symbol">⚑</span></div><div class="stat-value">08</div><div class="stat-note">Cần lên kế hoạch nhập</div></article>
+            <article class="card stat red"><div class="stat-label">Hết hàng <span class="stat-symbol">⊘</span></div><div class="stat-value">09</div><div class="stat-note">Tồn kho bằng 0</div></article>
+          </div>
+          <article class="card table-card"><div class="filters"><label class="searchbox">⌕ <input id="product-search" placeholder="Tìm tên, SKU hoặc mã vạch..."></label><select class="filter-select"><option>Tất cả nhóm hàng</option><option>Văn phòng phẩm</option><option>Đồ gia dụng</option></select><select class="filter-select"><option>Tất cả trạng thái tồn</option><option>Sắp hết</option><option>Hết hàng</option></select><span class="filters-spacer"></span><button class="button">⚑ Bộ lọc</button></div>
+            <div class="table-wrap"><table id="product-table"><thead><tr><th><input type="checkbox" aria-label="Chọn tất cả"></th><th>MẶT HÀNG</th><th>NHÓM</th><th>GIÁ BÁN</th><th>TỒN KHO</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody>
+              <tr data-search="giấy in a4 double a vp-001 89385012"><td><input type="checkbox"></td><td><div class="product-name"><span class="product-thumb">📄</span><span><strong>Giấy in A4 Double A</strong><small>SKU: VP-001 · ĐVT: Ram</small></span></div></td><td>Văn phòng phẩm</td><td>78.000 ₫</td><td><span class="stock-number low">6 ram</span><div class="stock-meter"><i class="low" style="width:25%"></i></div></td><td><span class="status warning">Sắp hết</span></td><td>···</td></tr>
+              <tr data-search="bút bi thiên long tl-027 vp-014"><td><input type="checkbox"></td><td><div class="product-name"><span class="product-thumb">🖊️</span><span><strong>Bút bi Thiên Long TL-027</strong><small>SKU: VP-014 · ĐVT: Cây</small></span></div></td><td>Văn phòng phẩm</td><td>4.500 ₫</td><td><span class="stock-number low">18 cây</span><div class="stock-meter"><i class="low" style="width:32%"></i></div></td><td><span class="status warning">Sắp hết</span></td><td>···</td></tr>
+              <tr data-search="mực in canon 325 cn-025 8934682"><td><input type="checkbox"></td><td><div class="product-name"><span class="product-thumb">🖨️</span><span><strong>Mực in Canon 325</strong><small>SKU: CN-025 · ĐVT: Hộp</small></span></div></td><td>Thiết bị</td><td>520.000 ₫</td><td><span class="stock-number low">3 hộp</span><div class="stock-meter"><i class="low" style="width:30%"></i></div></td><td><span class="status warning">Sắp hết</span></td><td>···</td></tr>
+              <tr data-search="bình giữ nhiệt locknlock eone jar lh144 152 g-042"><td><input type="checkbox"></td><td><div class="product-name"><span class="product-thumb">🥤</span><span><strong>Bình giữ nhiệt Lock&amp;Lock 500ml</strong><small>SKU: GD-042 · ĐVT: Cái</small></span></div></td><td>Đồ gia dụng</td><td>385.000 ₫</td><td><span class="stock-number">42 cái</span><div class="stock-meter"><i style="width:72%"></i></div></td><td><span class="status good">Đủ hàng</span></td><td>···</td></tr>
+              <tr data-search="hộp nhựa đựng thực phẩm 1 lít gd-118"><td><input type="checkbox"></td><td><div class="product-name"><span class="product-thumb">🥡</span><span><strong>Hộp đựng thực phẩm 1 lít</strong><small>SKU: GD-118 · ĐVT: Cái</small></span></div></td><td>Đồ gia dụng</td><td>35.000 ₫</td><td><span class="stock-number">126 cái</span><div class="stock-meter"><i style="width:88%"></i></div></td><td><span class="status good">Đủ hàng</span></td><td>···</td></tr>
+            </tbody></table></div><div class="card-title-row" style="min-height:47px;border-top:1px solid var(--line);border-bottom:0;color:#8993a6;font-size:10px">Đang hiển thị <b style="color:#43506a">1–5</b> trong <b style="color:#43506a">248</b> mặt hàng <span style="margin-left:auto">‹　<span style="padding:5px 8px;border-radius:5px;color:white;background:var(--brand)">1</span>　2　3　…　50　›</span></div></article>
+        </section>
+
+        <section class="page" id="suppliers">
+          <div class="page-head"><div><h1>Nhà cung cấp</h1><p class="subtitle">Thông tin đối tác xuất hiện trên các phiếu nhập hàng.</p></div><div class="head-actions"><button class="button primary" data-action="add-supplier">＋ Thêm nhà cung cấp</button></div></div>
+          <article class="card table-card"><div class="filters"><label class="searchbox">⌕ <input placeholder="Tìm tên hoặc mã nhà cung cấp..."></label><span class="filters-spacer"></span><span style="color:var(--muted);font-size:11px">12 nhà cung cấp đang hoạt động</span></div><div class="table-wrap"><table><thead><tr><th>MÃ NCC</th><th>NHÀ CUNG CẤP</th><th>SỐ ĐIỆN THOẠI</th><th>PHIẾU NHẬP GẦN NHẤT</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody><tr><td><b>NCC-001</b></td><td><div class="product-name"><span class="product-thumb">🏢</span><strong>Văn phòng phẩm Minh Phát</strong></div></td><td>0903 456 789</td><td>PN-261001-008 · Hôm nay</td><td><span class="status good">Đang hoạt động</span></td><td>···</td></tr><tr><td><b>NCC-002</b></td><td><div class="product-name"><span class="product-thumb">🏢</span><strong>Thiết bị văn phòng Sao Việt</strong></div></td><td>0918 234 567</td><td>PN-300926-007 · Hôm qua</td><td><span class="status good">Đang hoạt động</span></td><td>···</td></tr><tr><td><b>NCC-003</b></td><td><div class="product-name"><span class="product-thumb">🏢</span><strong>Gia dụng Thành Công</strong></div></td><td>028 3822 1188</td><td>PN-280926-003 · 28/09</td><td><span class="status good">Đang hoạt động</span></td><td>···</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="receipts">
+          <div class="page-head"><div><h1>Tạo phiếu nhập kho</h1><p class="subtitle">Ghi nhận hàng về kho từ nhà cung cấp.</p></div><div class="head-actions"><button class="button" data-go="dashboard">← <span class="hide-mobile">Quay lại</span></button></div></div>
+          <div class="workflow">
+            <div class="stepper"><div class="step done"><span class="step-circle">1</span>Thông tin phiếu</div><span class="step-line"></span><div class="step done"><span class="step-circle">2</span>Danh sách hàng</div><span class="step-line"></span><div class="step"><span class="step-circle">3</span>Xác nhận</div></div>
+            <article class="card doc-card"><div class="card-title">Thông tin nhập hàng</div><div class="doc-grid"><div class="field"><label>Số phiếu</label><input value="Tự động khi lưu nháp" disabled></div><div class="field"><label>Ngày nhập</label><input value="01/10/2026 10:24" disabled></div><div class="field"><label>Nhà cung cấp <b style="color:#d15a52">*</b></label><select><option>Chọn nhà cung cấp...</option><option selected>Văn phòng phẩm Minh Phát</option><option>Thiết bị văn phòng Sao Việt</option></select></div><div class="field wide"><label>Ghi chú</label><input placeholder="Ví dụ: Nhập hàng theo đơn đặt tháng 10..."></div></div><div class="inline-note"><span class="lock">▣</span> Người tạo: <b style="color:#566279">Minh Anh</b> · Thời gian do hệ thống ghi nhận</div></article>
+            <article class="card doc-card"><div class="card-title-row" style="padding:0;margin:-3px -2px 4px;border:0"><div><div class="card-title">Danh sách hàng nhập</div><div class="card-subtitle">Thêm sản phẩm và số lượng thực nhận</div></div><button class="button" data-action="add-line">＋ Thêm dòng hàng</button></div><div class="table-wrap"><table class="line-table" id="receipt-lines"><thead><tr><th style="width:36px">#</th><th>MẶT HÀNG</th><th style="text-align:right">SỐ LƯỢNG</th><th style="text-align:right">ĐƠN GIÁ NHẬP</th><th style="text-align:right">THÀNH TIỀN</th><th></th></tr></thead><tbody><tr><td>1</td><td><div class="product-name"><span class="product-thumb">📄</span><span><strong>Giấy in A4 Double A</strong><small>VP-001 · Ram</small></span></div></td><td style="text-align:right"><input class="line-input qty" type="number" min="1" value="30"></td><td style="text-align:right"><input class="line-input price" type="number" min="0" step="1000" value="65000"></td><td class="line-total" style="text-align:right;font-weight:650">1.950.000 ₫</td><td><button class="remove-line" title="Xóa dòng">×</button></td></tr><tr><td>2</td><td><div class="product-name"><span class="product-thumb">🖊️</span><span><strong>Bút bi Thiên Long TL-027</strong><small>VP-014 · Cây</small></span></div></td><td style="text-align:right"><input class="line-input qty" type="number" min="1" value="50"></td><td style="text-align:right"><input class="line-input price" type="number" min="0" step="100" value="3200"></td><td class="line-total" style="text-align:right;font-weight:650">160.000 ₫</td><td><button class="remove-line" title="Xóa dòng">×</button></td></tr></tbody></table></div><div style="padding:9px 0 0"><button class="text-link" data-action="add-line">＋ Thêm một hàng hóa</button></div><div class="summary"><div class="summary-inner"><div class="summary-row"><span>Tổng số lượng</span><b id="qty-total">80 sản phẩm</b></div><div class="summary-row"><span>Số dòng hàng</span><b id="line-count">2 dòng</b></div><div class="summary-row total"><span>Tổng tiền nhập</span><b id="grand-total">2.110.000 ₫</b></div></div></div></article>
+            <div class="notice">ℹ　Phiếu ở trạng thái <b>Nháp</b> chưa làm thay đổi tồn kho. Tồn kho chỉ cập nhật khi bạn xác nhận phiếu.</div>
+            <div class="doc-footer" style="margin-top:14px"><button class="button" data-go="dashboard">Hủy thao tác</button><div class="foot-right"><button class="button" data-action="save-draft">Lưu bản nháp</button><button class="button primary" data-action="confirm-receipt">Lưu &amp; xác nhận nhập →</button></div></div>
+          </div>
+        </section>
+
+        <section class="page" id="issues">
+          <div class="page-head"><div><h1>Tạo phiếu xuất kho</h1><p class="subtitle">Ghi nhận hàng xuất bán, hàng hỏng hoặc trả nhà cung cấp.</p></div><div class="head-actions"><button class="button" data-go="dashboard">← <span class="hide-mobile">Quay lại</span></button></div></div>
+          <div class="workflow"><div class="stepper"><div class="step done"><span class="step-circle">1</span>Thông tin phiếu</div><span class="step-line"></span><div class="step done"><span class="step-circle">2</span>Danh sách hàng</div><span class="step-line"></span><div class="step"><span class="step-circle">3</span>Xác nhận</div></div>
+            <article class="card doc-card"><div class="card-title">Thông tin xuất kho</div><div class="doc-grid"><div class="field"><label>Số phiếu</label><input value="Tự động khi lưu nháp" disabled></div><div class="field"><label>Ngày xuất</label><input value="01/10/2026 10:24" disabled></div><div class="field"><label>Lý do xuất <b style="color:#d15a52">*</b></label><select id="issue-reason"><option>Xuất bán hàng</option><option>Hàng hỏng / thất thoát</option><option>Trả hàng nhà cung cấp</option><option>Khác</option></select></div><div class="field wide"><label>Ghi chú</label><input placeholder="Mã đơn bán hàng, biên bản hàng hỏng..."></div></div><div class="inline-note"><span class="lock">▣</span> Người tạo: <b style="color:#566279">Minh Anh</b> · Tồn kho được kiểm tra lại khi xác nhận</div></article>
+            <article class="card doc-card"><div class="card-title-row" style="padding:0;margin:-3px -2px 4px;border:0"><div><div class="card-title">Danh sách hàng xuất</div><div class="card-subtitle">Không thể xuất vượt quá số lượng đang có trong kho</div></div><button class="button" data-action="add-issue-line">＋ Thêm dòng hàng</button></div><div class="table-wrap"><table class="line-table"><thead><tr><th>#</th><th>MẶT HÀNG</th><th style="text-align:right">TỒN HIỆN TẠI</th><th style="text-align:right">SỐ LƯỢNG XUẤT</th><th></th></tr></thead><tbody><tr><td>1</td><td><div class="product-name"><span class="product-thumb">📄</span><span><strong>Giấy in A4 Double A</strong><small>VP-001 · Ram</small></span></div></td><td style="text-align:right">36 ram</td><td style="text-align:right"><input class="line-input qty" type="number" min="1" max="36" value="12"></td><td><button class="remove-line" title="Xóa dòng">×</button></td></tr><tr><td>2</td><td><div class="product-name"><span class="product-thumb">🖊️</span><span><strong>Bút bi Thiên Long TL-027</strong><small>VP-014 · Cây</small></span></div></td><td style="text-align:right">68 cây</td><td style="text-align:right"><input class="line-input qty" type="number" min="1" max="68" value="14"></td><td><button class="remove-line" title="Xóa dòng">×</button></td></tr></tbody></table></div></article>
+            <div class="notice">ℹ　Hệ thống kiểm tra tồn kho tại thời điểm xác nhận. Nếu có người khác xuất hàng trước, phiếu có thể cần được cập nhật.</div>
+            <div class="doc-footer" style="margin-top:14px"><button class="button" data-go="dashboard">Hủy thao tác</button><div class="foot-right"><button class="button" data-action="save-draft">Lưu bản nháp</button><button class="button primary" data-action="confirm-issue">Lưu &amp; xác nhận xuất →</button></div></div>
+          </div>
+        </section>
+
+        <section class="page" id="stocktake">
+          <div class="page-head"><div><h1>Kiểm kê kho</h1><p class="subtitle">Đối chiếu số liệu hệ thống với số lượng thực tế tại kho.</p></div><div class="head-actions"><button class="button" data-action="export">⇩ <span class="hide-mobile">Xuất biên bản</span></button><button class="button primary" data-action="new-stocktake">＋ Tạo phiếu kiểm kê</button></div></div>
+          <div class="notice" style="margin-bottom:15px">ℹ　Số hệ thống được chụp tại thời điểm tạo phiếu. Nếu phát sinh nhập hoặc xuất trong lúc kiểm đếm, hãy tải lại số hệ thống và xác nhận lại số đếm.</div>
+          <article class="card table-card"><div class="card-title-row"><div><div class="card-title">Kiểm kê đang thực hiện <span class="status draft" style="margin-left:7px">Bản nháp</span></div><div class="card-subtitle">KK-261001-002 · Tạo lúc 09:15 bởi Minh Anh</div></div><button class="button" data-action="refresh-count">↻ Làm mới số hệ thống</button></div><div class="filters"><label class="searchbox">⌕ <input aria-label="Tìm mặt hàng trong phiếu kiểm kê" placeholder="Tìm theo tên hoặc SKU..."></label><select class="filter-select" aria-label="Lọc nhóm hàng"><option>Toàn bộ nhóm hàng</option></select><span class="filters-spacer"></span><span style="font-size:11px;color:#657187">Số tồn chụp lúc 09:15</span></div><div class="table-wrap"><table class="stocktake-table"><thead><tr><th scope="col">MẶT HÀNG</th><th scope="col" style="text-align:right">TỒN HỆ THỐNG</th><th scope="col" style="text-align:right">THỰC ĐẾM</th><th scope="col" style="text-align:right">CHÊNH LỆCH</th><th scope="col">TRẠNG THÁI</th></tr></thead><tbody><tr><td><div class="product-name"><span class="product-thumb">📄</span><span><strong>Giấy in A4 Double A</strong><small>VP-001 · Ram</small></span></div></td><td style="text-align:right">36 ram</td><td style="text-align:right"><label class="sr-only" for="count-a4">Số lượng thực đếm: Giấy in A4</label><input id="count-a4" class="count-field count-input" type="number" min="0" value="35"></td><td class="delta negative" style="text-align:right">−1 ram</td><td><span class="status good">Đã đếm</span></td></tr><tr><td><div class="product-name"><span class="product-thumb">🖊️</span><span><strong>Bút bi Thiên Long TL-027</strong><small>VP-014 · Cây</small></span></div></td><td style="text-align:right">68 cây</td><td style="text-align:right"><label class="sr-only" for="count-pen">Số lượng thực đếm: Bút bi TL-027</label><input id="count-pen" class="count-field count-input" type="number" min="0" placeholder="Nhập số đếm"></td><td class="delta" style="text-align:right;color:#a0a8b6">—</td><td><span class="status draft count-status">Chờ đếm</span></td></tr><tr><td><div class="product-name"><span class="product-thumb">🖨️</span><span><strong>Mực in Canon 325</strong><small>CN-025 · Hộp</small></span></div></td><td style="text-align:right">3 hộp</td><td style="text-align:right"><label class="sr-only" for="count-ink">Số lượng thực đếm: Mực Canon 325</label><input id="count-ink" class="count-field count-input" type="number" min="0" value="3"></td><td class="delta" style="text-align:right">0 hộp</td><td><span class="status good">Đã đếm</span></td></tr></tbody></table></div><div class="card-title-row" style="border-top:1px solid var(--line);border-bottom:0"><span style="color:#566279;font-size:12px">Đã kiểm <b id="count-progress">2 / 3</b> mặt hàng · Chênh lệch: <b style="color:var(--red)">−1 ram</b></span><span class="filters-spacer"></span><button class="button" data-action="save-count">Lưu tiến độ</button><button class="button primary" data-action="post-stocktake">Hoàn tất kiểm kê →</button></div></article>
+        </section>
+
+        <section class="page" id="reports">
+          <div class="page-head"><div><h1>Báo cáo nhập – xuất – tồn</h1><p class="subtitle">Đối chiếu số dư và biến động kho theo khoảng thời gian.</p></div><div class="report-filters"><input class="filter-select" type="date" value="2026-10-01"><span style="color:var(--muted)">đến</span><input class="filter-select" type="date" value="2026-10-01"><button class="button primary" data-action="apply-report">Xem báo cáo</button></div></div>
+          <div class="grid report-kpis"><article class="card report-kpi"><small>TỒN ĐẦU KỲ</small><strong>3.414</strong></article><article class="card report-kpi"><small>NHẬP TRONG KỲ</small><strong style="color:var(--green)">+ 100</strong></article><article class="card report-kpi"><small>XUẤT TRONG KỲ</small><strong style="color:var(--amber)">− 28</strong></article><article class="card report-kpi"><small>TỒN CUỐI KỲ</small><strong>3.486</strong></article></div>
+          <article class="card table-card"><div class="card-title-row"><div><div class="card-title">Chi tiết theo mặt hàng</div><div class="card-subtitle">Tồn đầu + Nhập − Xuất ± Điều chỉnh = Tồn cuối</div></div><button class="button" data-action="export">⇩ Tải Excel</button></div><div class="filters"><label class="searchbox">⌕ <input placeholder="Tìm hàng hóa..."></label><span class="filters-spacer"></span><span style="font-size:10px;color:#8590a2">Múi giờ: Việt Nam (UTC+7)</span></div><div class="table-wrap"><table><thead><tr><th>MẶT HÀNG</th><th style="text-align:right">TỒN ĐẦU</th><th style="text-align:right">NHẬP</th><th style="text-align:right">XUẤT</th><th style="text-align:right">ĐIỀU CHỈNH</th><th style="text-align:right">TỒN CUỐI</th></tr></thead><tbody><tr><td><div class="product-name"><span class="product-thumb">📄</span><span><strong>Giấy in A4 Double A</strong><small>VP-001 · Ram</small></span></div></td><td style="text-align:right">6</td><td style="text-align:right;color:var(--green)">+30</td><td style="text-align:right;color:var(--amber)">−12</td><td style="text-align:right;color:var(--red)">−1</td><td style="text-align:right;font-weight:700">23</td></tr><tr><td><div class="product-name"><span class="product-thumb">🖊️</span><span><strong>Bút bi Thiên Long TL-027</strong><small>VP-014 · Cây</small></span></div></td><td style="text-align:right">32</td><td style="text-align:right;color:var(--green)">+50</td><td style="text-align:right;color:var(--amber)">−14</td><td style="text-align:right">0</td><td style="text-align:right;font-weight:700">68</td></tr><tr><td><div class="product-name"><span class="product-thumb">🖨️</span><span><strong>Mực in Canon 325</strong><small>CN-025 · Hộp</small></span></div></td><td style="text-align:right">4</td><td style="text-align:right">0</td><td style="text-align:right;color:var(--amber)">−1</td><td style="text-align:right">0</td><td style="text-align:right;font-weight:700">3</td></tr></tbody></table></div><div class="count-note">Dữ liệu tổng hợp theo thời điểm ghi sổ. Bấm vào một mặt hàng để xem lịch sử biến động.</div></article>
+        </section>
+
+        <section class="page" id="sync">
+          <div class="page-head"><div><h1>Đồng bộ dữ liệu</h1><p class="subtitle">Bản nháp lưu trên thiết bị và các thao tác đang chờ server xác nhận.</p></div><div class="head-actions"><button class="button" id="queue-refresh" data-action="sync-queue">↻ Kiểm tra kết nối</button></div></div>
+          <div class="grid stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <article class="card stat amber"><div class="stat-label">Bản nháp trên thiết bị <span class="stat-symbol">▣</span></div><div class="stat-value" id="local-draft-count">1</div><div class="stat-note">Đã lưu cục bộ, chưa ghi sổ</div></article>
+            <article class="card stat"><div class="stat-label">Chờ server xác nhận <span class="stat-symbol">◷</span></div><div class="stat-value" id="pending-count">1</div><div class="stat-note">Sẽ kiểm tra tồn khi đồng bộ</div></article>
+            <article class="card stat red"><div class="stat-label">Cần bạn xử lý <span class="stat-symbol">⚑</span></div><div class="stat-value">1</div><div class="stat-note">Dữ liệu server đã thay đổi</div></article>
+          </div>
+          <article class="card" style="margin-bottom:15px"><div class="card-title-row"><div><div class="card-title">Nguyên tắc đồng bộ</div><div class="card-subtitle">Dữ liệu trên thiết bị chưa phải số tồn chính thức</div></div><span class="status warning">Ghi sổ cần kết nối</span></div><div style="padding:15px 17px;color:#626f85;font-size:11px;line-height:1.8">Bản nháp và số kiểm đếm được lưu trong trình duyệt. Khi có mạng, StockFlow gửi lại mỗi thao tác với mã định danh cố định để tránh ghi trùng. Server kiểm tra lại phiên bản phiếu và số tồn; nếu có xung đột, bạn xem lại rồi chọn đồng bộ hoặc sửa phiếu. Thẻ hàng và báo cáo khi offline sẽ hiển thị thời điểm dữ liệu gần nhất.</div></article>
+          <article class="card table-card"><div class="card-title-row"><div><div class="card-title">Hàng chờ trên thiết bị</div><div class="card-subtitle">Các thao tác bên dưới chưa làm thay đổi tồn kho chính thức</div></div></div>
+            <div class="sync-row"><span class="sync-badge">↙</span><div><strong id="draft-queue-title">Phiếu nhập nháp · 2 mặt hàng</strong><small id="draft-queue-time">Lưu trên thiết bị lúc 10:31 · PN nháp</small></div><div class="sync-trailing"><span class="status warning" id="draft-queue-status">Chờ đồng bộ</span><small id="draft-queue-detail">Chưa ghi sổ</small></div><button class="button" data-action="retry-draft">Gửi bản nháp</button></div>
+            <div class="sync-row"><span class="sync-badge" style="color:#ab5247;background:#fff0ef">↗</span><div><strong>Phiếu xuất · Giấy A4 × 12</strong><small>Tạo trên thiết bị lúc 09:58 · chưa ghi sổ · server còn 8</small></div><div class="sync-trailing"><span class="status cancelled">Cần xử lý</span><small>Yêu cầu 12 · máy chủ báo thiếu tồn</small></div><button class="button" data-action="resolve-conflict">Xem xung đột</button></div>
+          </article>
+          <div class="notice" style="margin-top:15px">Bảo mật: thiết bị lưu bản nháp và dữ liệu tra cứu gần nhất; không lưu mật khẩu. Đăng xuất trên thiết bị dùng chung sẽ xóa dữ liệu cục bộ theo chính sách phiên làm việc.</div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="confirm-modal" role="presentation"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><h2 id="modal-title">Xác nhận phiếu?</h2><p id="modal-copy">Khi xác nhận, tồn kho sẽ cập nhật và phiếu không thể chỉnh sửa trực tiếp. Bạn vẫn có thể hủy phiếu để tạo bút toán đảo.</p><div class="modal-actions"><button class="button" data-modal-close>Quay lại</button><button class="button primary" id="modal-confirm">Xác nhận</button></div></section></div>
+  <div class="modal-backdrop" id="picker-modal" role="presentation"><section class="modal picker-modal" role="dialog" aria-modal="true" aria-labelledby="picker-title"><h2 id="picker-title">Thêm hàng hóa vào phiếu</h2><p>Tìm bằng tên, SKU hoặc mã vạch. Hàng hết tồn sẽ báo rõ khi xuất.</p><label class="searchbox">⌕ <input id="picker-search" aria-label="Tìm hàng hóa" placeholder="Nhập SKU hoặc tên sản phẩm..."></label><div id="picker-items" style="display:grid;gap:7px;margin-top:12px"></div><div class="modal-actions"><button class="button" data-modal-close>Đóng</button></div></section></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const labels = { dashboard: 'Tổng quan', products: 'Hàng hóa', suppliers: 'Nhà cung cấp', receipts: 'Nhập kho', issues: 'Xuất kho', stocktake: 'Kiểm kê', reports: 'Báo cáo', sync: 'Đồng bộ dữ liệu' };
+    const navItems = [...document.querySelectorAll('.nav-item[data-page]')];
+    let offlineDemo = !navigator.onLine;
+    const connectionToggle = document.querySelector('#connection-toggle');
+    const connectionLabel = document.querySelector('#connection-label');
+    function paintConnection() {
+      document.body.classList.toggle('is-offline', offlineDemo);
+      connectionToggle.classList.toggle('offline', offlineDemo);
+      connectionLabel.textContent = offlineDemo ? 'Đang ngoại tuyến' : 'Đang online · đã đồng bộ 10:24';
+      connectionToggle.setAttribute('aria-label', offlineDemo ? 'Mô phỏng kết nối lại' : 'Mô phỏng mất kết nối');
+    }
+    paintConnection();
+    connectionToggle.addEventListener('click', () => { offlineDemo = !offlineDemo; paintConnection(); toast(offlineDemo ? 'Đã mô phỏng mất mạng. Bản nháp sẽ ở lại trên thiết bị.' : 'Đã mô phỏng kết nối lại. Kiểm tra hàng chờ đồng bộ.'); });
+    window.addEventListener('offline', () => { offlineDemo = true; paintConnection(); });
+    window.addEventListener('online', () => { offlineDemo = false; paintConnection(); });
+    const sidebar = document.querySelector('.sidebar');
+    const menuBackdrop = document.querySelector('#menu-backdrop');
+    function closeMenu() { sidebar.classList.remove('open'); menuBackdrop.classList.remove('open'); document.querySelector('#mobile-menu').setAttribute('aria-expanded', 'false'); }
+    document.querySelector('#mobile-menu').addEventListener('click', () => { const show = !sidebar.classList.contains('open'); sidebar.classList.toggle('open', show); menuBackdrop.classList.toggle('open', show); document.querySelector('#mobile-menu').setAttribute('aria-expanded', String(show)); });
+    menuBackdrop.addEventListener('click', closeMenu);
+    const queueKey = 'stockflow-review-drafts';
+    function loadQueue() { try { return JSON.parse(localStorage.getItem(queueKey) || '[]'); } catch { return []; } }
+    function renderQueue() {
+      const queue = loadQueue();
+      document.querySelector('.pending-chip').textContent = `${Math.max(1, queue.length)} chờ đồng bộ`;
+      document.querySelector('#local-draft-count').textContent = String(Math.max(1, queue.length));
+      document.querySelector('#pending-count').textContent = String(Math.max(1, queue.length));
+      if (queue.length) {
+        const latest = queue[queue.length - 1];
+        document.querySelector('#draft-queue-title').textContent = `${latest.type} nháp · ${latest.lines.length} mặt hàng`;
+        document.querySelector('#draft-queue-time').textContent = `Lưu trên thiết bị lúc ${latest.time} · Chưa ghi sổ`;
+      }
+    }
+    function saveLocalDraft(action) {
+      const type = action === 'confirm-issue' ? 'Phiếu xuất' : 'Phiếu nhập';
+      const rows = action === 'confirm-issue' ? [...document.querySelectorAll('#issues .line-table tbody tr')] : [...document.querySelectorAll('#receipt-lines tbody tr')];
+      const lines = rows.map(row => ({ name: row.querySelector('.product-name strong')?.textContent || '', quantity: Number(row.querySelector('.qty')?.value || 0), unitCostVnd: Number(row.querySelector('.price')?.value || 0) }));
+      const queue = loadQueue();
+      queue.push({ id: crypto.randomUUID(), type, lines, time: new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(new Date()) });
+      localStorage.setItem(queueKey, JSON.stringify(queue));
+      renderQueue(); closeModal(); go('sync');
+      toast('Đã lưu nháp trên thiết bị. Phiếu chưa ghi sổ; cần kết nối để xác nhận tồn kho.');
+    }
+    function saveLocalCount() {
+      const entries = [...document.querySelectorAll('.count-input')].map(input => ({ productId: input.id, count: input.value === '' ? null : Number(input.value) }));
+      const queue = loadQueue();
+      queue.push({ id: crypto.randomUUID(), type: 'Phiếu kiểm kê', lines: entries, time: new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(new Date()) });
+      localStorage.setItem(queueKey, JSON.stringify(queue)); renderQueue(); go('sync');
+      toast('Đã lưu số đếm trên thiết bị. Số tồn chính thức chưa thay đổi.');
+    }
+    renderQueue();
+    function go(page) {
+      document.querySelectorAll('.page').forEach(section => section.classList.toggle('active', section.id === page));
+      navItems.forEach(item => item.classList.toggle('active', item.dataset.page === page));
+      navItems.forEach(item => item.setAttribute('aria-current', item.dataset.page === page ? 'page' : 'false'));
+      document.querySelector('#crumb-label').textContent = labels[page] || labels.dashboard;
+      closeMenu();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.addEventListener('click', event => {
+      const nav = event.target.closest('[data-page]');
+      const link = event.target.closest('[data-go]');
+      if (nav) go(nav.dataset.page);
+      if (link) go(link.dataset.go);
+      const action = event.target.closest('[data-action]')?.dataset.action;
+      if (action) handleAction(action, event);
+      if (event.target.closest('[data-modal-close]')) closeModal();
+    });
+    document.querySelector('#product-search').addEventListener('input', event => {
+      const query = event.target.value.trim().toLocaleLowerCase('vi');
+      document.querySelectorAll('#product-table tbody tr').forEach(row => row.hidden = !row.dataset.search.includes(query));
+    });
+    function money(amount) { return `${Math.round(amount).toLocaleString('vi-VN')} ₫`; }
+    function updateReceipt() {
+      const rows = [...document.querySelectorAll('#receipt-lines tbody tr')];
+      let quantity = 0, total = 0;
+      rows.forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+        const qty = Math.max(0, Number(row.querySelector('.qty')?.value || 0));
+        const price = Math.max(0, Number(row.querySelector('.price')?.value || 0));
+        quantity += qty; total += qty * price;
+        row.querySelector('.line-total').textContent = money(qty * price);
+      });
+      document.querySelector('#qty-total').textContent = `${quantity} sản phẩm`;
+      document.querySelector('#line-count').textContent = `${rows.length} dòng`;
+      document.querySelector('#grand-total').textContent = money(total);
+    }
+    document.querySelector('#receipt-lines').addEventListener('input', event => { if (event.target.matches('.qty,.price')) updateReceipt(); });
+    document.querySelector('#receipt-lines').addEventListener('click', event => { if (event.target.closest('.remove-line')) { event.target.closest('tr').remove(); updateReceipt(); } });
+    document.querySelectorAll('.count-input').forEach(input => input.addEventListener('input', () => {
+      const row = input.closest('tr');
+      const systemText = row.cells[1].textContent.trim();
+      const systemQty = Number(systemText.match(/[\d,.]+/)?.[0].replaceAll('.', '').replace(',', '.') || 0);
+      const unit = systemText.replace(/[\d,.\s]+/, '');
+      const deltaCell = row.cells[3];
+      if (input.value === '') { deltaCell.textContent = '—'; row.cells[4].innerHTML = '<span class="status draft">Chờ đếm</span>'; }
+      else {
+        const delta = Number(input.value) - systemQty;
+        deltaCell.textContent = `${delta > 0 ? '+' : (delta < 0 ? '−' : '')}${Math.abs(delta)} ${unit}`;
+        deltaCell.classList.toggle('negative', delta < 0); deltaCell.classList.toggle('positive', delta > 0);
+        row.cells[4].innerHTML = '<span class="status good">Đã đếm</span>';
+      }
+      const counts = [...document.querySelectorAll('.count-input')];
+      document.querySelector('#count-progress').textContent = `${counts.filter(field => field.value !== '').length} / ${counts.length}`;
+    }));
+    const sampleItems = [
+      { sku: 'VP-001', name: 'Giấy in A4 Double A', unit: 'Ram', stock: 36, cost: 65000, icon: '📄' },
+      { sku: 'VP-014', name: 'Bút bi Thiên Long TL-027', unit: 'Cây', stock: 68, cost: 3200, icon: '🖊️' },
+      { sku: 'CN-025', name: 'Mực in Canon 325', unit: 'Hộp', stock: 3, cost: 470000, icon: '🖨️' },
+      { sku: 'GD-042', name: 'Bình giữ nhiệt Lock&Lock 500ml', unit: 'Cái', stock: 42, cost: 310000, icon: '🥤' }
+    ];
+    let pickerTarget = 'receipt';
+    function renderPicker(query = '') {
+      const normalized = query.trim().toLocaleLowerCase('vi');
+      const items = sampleItems.filter(item => `${item.name} ${item.sku}`.toLocaleLowerCase('vi').includes(normalized));
+      document.querySelector('#picker-items').innerHTML = items.map(item => `<button class="picker-item" data-pick-sku="${item.sku}"><span class="product-thumb">${item.icon}</span><span class="picker-copy"><strong>${item.name}</strong><small>${item.sku} · ${item.unit}</small></span><span class="picker-stock">Tồn ${item.stock} ${item.unit}</span></button>`).join('') || '<div class="notice">Không tìm thấy hàng hóa phù hợp.</div>';
+    }
+    function openPicker(target) { pickerTarget = target; document.querySelector('#picker-search').value = ''; renderPicker(); document.querySelector('#picker-modal').classList.add('open'); document.querySelector('#picker-search').focus(); }
+    document.querySelector('#picker-search').addEventListener('input', event => renderPicker(event.target.value));
+    document.querySelector('#picker-items').addEventListener('click', event => {
+      const button = event.target.closest('[data-pick-sku]'); if (!button) return;
+      const item = sampleItems.find(candidate => candidate.sku === button.dataset.pickSku);
+      const table = pickerTarget === 'issue' ? document.querySelector('#issues .line-table tbody') : document.querySelector('#receipt-lines tbody');
+      if ([...table.querySelectorAll('tr')].some(row => row.dataset.sku === item.sku)) { toast('Mặt hàng đã có trong phiếu. Điều chỉnh dòng hiện có để tránh cộng trùng.'); return; }
+      const row = document.createElement('tr'); row.dataset.sku = item.sku;
+      if (pickerTarget === 'issue') {
+        row.innerHTML = `<td></td><td><div class="product-name"><span class="product-thumb">${item.icon}</span><span><strong>${item.name}</strong><small>${item.sku} · ${item.unit}</small></span></div></td><td style="text-align:right">${item.stock} ${item.unit}</td><td style="text-align:right"><label class="sr-only" for="issue-${item.sku}">Số lượng xuất: ${item.name}</label><input id="issue-${item.sku}" class="line-input qty" aria-label="Số lượng xuất ${item.name}" type="number" min="1" max="${item.stock}" value="1"></td><td><button class="remove-line" aria-label="Xóa ${item.name} khỏi phiếu" title="Xóa dòng">×</button></td>`;
+        table.append(row);
+      } else {
+        row.innerHTML = `<td></td><td><div class="product-name"><span class="product-thumb">${item.icon}</span><span><strong>${item.name}</strong><small>${item.sku} · ${item.unit}</small></span></div></td><td style="text-align:right"><label class="sr-only" for="receipt-qty-${item.sku}">Số lượng nhập: ${item.name}</label><input id="receipt-qty-${item.sku}" aria-label="Số lượng nhập ${item.name}" class="line-input qty" type="number" min="1" value="1"></td><td style="text-align:right"><label class="sr-only" for="receipt-price-${item.sku}">Đơn giá nhập: ${item.name}</label><input id="receipt-price-${item.sku}" aria-label="Đơn giá nhập ${item.name}" class="line-input price" type="number" min="0" value="${item.cost}"></td><td class="line-total" style="text-align:right;font-weight:650">${money(item.cost)}</td><td><button class="remove-line" aria-label="Xóa ${item.name} khỏi phiếu" title="Xóa dòng">×</button></td>`;
+        table.append(row); updateReceipt();
+      }
+      document.querySelector('#picker-modal').classList.remove('open');
+      row.querySelector('.qty').focus(); toast(`Đã thêm ${item.name}.`);
+    });
+    document.querySelector('#picker-modal').addEventListener('click', event => { if (event.target.id === 'picker-modal') event.currentTarget.classList.remove('open'); });
+    let nextAction = 'confirm-receipt';
+    function toast(message) {
+      const el = document.querySelector('#toast'); el.textContent = message; el.classList.add('show');
+      clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+    function openModal(action) {
+      nextAction = action;
+      const isIssue = action === 'confirm-issue';
+      document.querySelector('#modal-title').textContent = offlineDemo ? 'Lưu phiếu nháp trên thiết bị?' : (isIssue ? 'Xác nhận phiếu xuất?' : 'Xác nhận phiếu nhập?');
+      document.querySelector('#modal-copy').textContent = offlineDemo ? 'Bạn đang ngoại tuyến. Nội dung phiếu sẽ được lưu bền vững trên thiết bị, nhưng chưa thay đổi tồn kho. Kết nối lại để gửi và xác nhận với máy chủ.' : (isIssue ? 'Máy chủ sẽ kiểm tra lại tồn hiện tại trước khi ghi sổ. Nếu thiếu hàng, phiếu không được xác nhận và bạn có thể sửa số lượng.' : 'Khi xác nhận, tồn kho tăng theo phiếu. Phiếu không thể chỉnh sửa trực tiếp; nếu cần, hủy phiếu để tạo bút toán đảo.');
+      document.querySelector('#modal-confirm').textContent = offlineDemo ? 'Lưu nháp trên thiết bị' : 'Xác nhận ghi sổ';
+      document.querySelector('#confirm-modal').classList.add('open');
+      document.querySelector('#modal-confirm').focus();
+    }
+    function closeModal() { document.querySelector('#confirm-modal').classList.remove('open'); }
+    document.querySelector('#modal-confirm').addEventListener('click', () => {
+      if (offlineDemo) { saveLocalDraft(nextAction); return; }
+      closeModal(); go('dashboard'); toast('Đã xác nhận trên máy chủ · tồn kho và lịch sử đã được cập nhật.');
+    });
+    document.querySelector('#confirm-modal').addEventListener('click', event => { if (event.target.id === 'confirm-modal') closeModal(); });
+    function handleAction(action, event) {
+      if (action === 'confirm-receipt' || action === 'confirm-issue') { openModal(action); return; }
+      if (action === 'sync-queue') { toast(offlineDemo ? 'Chưa có kết nối. Bản nháp vẫn được giữ trên thiết bị.' : 'Đã kiểm tra hàng chờ. Phiếu xung đột cần bạn xem lại.'); return; }
+      if (action === 'retry-draft') { if (offlineDemo) { toast('Đang ngoại tuyến · phiếu vẫn là bản nháp trên thiết bị.'); return; } const queue = loadQueue(); if (queue.length) queue.shift(); localStorage.setItem(queueKey, JSON.stringify(queue)); renderQueue(); document.querySelector('#draft-queue-status').textContent = 'Đã đồng bộ nháp'; document.querySelector('#draft-queue-detail').textContent = 'Chưa ghi sổ'; toast('Đã gửi nháp lên máy chủ. Phiếu vẫn chưa tác động tồn kho.'); return; }
+      if (action === 'resolve-conflict') { toast('Server báo tồn hiện tại thấp hơn số muốn xuất. Tải lại số tồn và sửa phiếu trước khi ghi sổ.'); return; }
+      if (action === 'save-offline-count') { toast('Đã lưu số đếm trên thiết bị. Cần đồng bộ để kiểm tra phiên bản tồn.'); return; }
+      if (action === 'add-line') { openPicker('receipt'); return; }
+      if (action === 'add-issue-line') { openPicker('issue'); return; }
+      if (action === 'save-draft') { saveLocalDraft(document.querySelector('#issues').classList.contains('active') ? 'confirm-issue' : 'confirm-receipt'); return; }
+      if (action === 'refresh-count') { if (offlineDemo) { saveLocalCount(); return; } document.querySelectorAll('.count-input').forEach(input => { const row = input.closest('tr'); row.classList.add('needs-review'); row.cells[4].innerHTML = '<button class="button" data-action="review-count-row">✓ Xác nhận số đếm</button>'; }); toast('Snapshot đã cập nhật. Số đã đếm được giữ lại; xác nhận lại các dòng sau khi kiểm tra tại kho.'); return; }
+      if (action === 'review-count-row') { const row = event.target.closest('tr'); row.classList.remove('needs-review'); row.cells[4].innerHTML = '<span class="status good">Đã xác nhận lại</span>'; toast('Đã xác nhận số thực đếm khớp với snapshot mới.'); return; }
+      if (action === 'post-stocktake') { if (offlineDemo) { saveLocalCount(); return; } const counts = [...document.querySelectorAll('.count-input')]; if (counts.some(input => input.value === '')) { toast('Chưa thể hoàn tất: hãy nhập số đếm cho các mặt hàng còn thiếu.'); counts.find(input => input.value === '').focus(); return; } if (document.querySelector('.needs-review')) { toast('Chưa thể hoàn tất: hãy rà soát và xác nhận lại các dòng có snapshot mới.'); return; } document.querySelector('#modal-title').textContent = 'Ghi sổ phiếu kiểm kê?'; document.querySelector('#modal-copy').textContent = 'Máy chủ sẽ đối chiếu snapshot lần cuối. Chênh lệch sẽ ghi vào nhật ký tồn trong một giao dịch nguyên tử.'; nextAction = 'post-stocktake'; document.querySelector('#modal-confirm').textContent = 'Xác nhận ghi sổ'; document.querySelector('#confirm-modal').classList.add('open'); return; }
+      if (action === 'save-count') { if (offlineDemo) { saveLocalCount(); return; } toast('Đã lưu tiến độ kiểm kê trên máy chủ.'); return; }
+      if (action === 'apply-report') { toast('Báo cáo đã được cập nhật (bản review).'); return; }
+      if (action === 'add-product' || action === 'add-supplier' || action === 'new-stocktake') { toast('Bản review: biểu mẫu tạo mới sẽ mở tại đây.'); return; }
+      if (action === 'export') toast('Bản review: tệp báo cáo sẽ được tải xuống khi tích hợp API.');
+    }
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DynamicRuleEngine.Api/DynamicRuleEngine.Api.csproj" />
+  <Project Path="DynamicRuleEngine.Tests/DynamicRuleEngine.Tests.csproj" />
+</Solution>

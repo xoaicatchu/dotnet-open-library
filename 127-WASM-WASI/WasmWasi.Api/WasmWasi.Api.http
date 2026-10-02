@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:5127
+
+### 1. Thông tin runtime WASI
+GET {{baseUrl}}/api/runtime
+
+### 2. Liệt kê tất cả WASM modules đã load
+GET {{baseUrl}}/api/modules
+
+### 3. Chi tiết module math-demo
+GET {{baseUrl}}/api/modules/math-demo
+
+### 4. Gọi hàm add(10, 32) trong math-demo
+POST {{baseUrl}}/api/invoke
+Content-Type: application/json
+
+{
+  "moduleName": "math-demo",
+  "functionName": "add",
+  "args": [
+    { "kind": 0, "value": "10" },
+    { "kind": 0, "value": "32" }
+  ]
+}
+
+### 5. Gọi hàm multiply(7, 6)
+POST {{baseUrl}}/api/invoke
+Content-Type: application/json
+
+{
+  "moduleName": "math-demo",
+  "functionName": "multiply",
+  "args": [
+    { "kind": 0, "value": "7" },
+    { "kind": 0, "value": "6" }
+  ]
+}
+
+### 6. Gọi hàm factorial(10)
+POST {{baseUrl}}/api/invoke
+Content-Type: application/json
+
+{
+  "moduleName": "math-demo",
+  "functionName": "factorial",
+  "args": [
+    { "kind": 0, "value": "10" }
+  ]
+}
+
+### 7. Gọi hàm không tồn tại (test error handling)
+POST {{baseUrl}}/api/invoke
+Content-Type: application/json
+
+{
+  "moduleName": "math-demo",
+  "functionName": "nonExistentFn",
+  "args": []
+}
+
+### 8. Gọi module không tồn tại
+POST {{baseUrl}}/api/invoke
+Content-Type: application/json
+
+{
+  "moduleName": "unknown-module",
+  "functionName": "add",
+  "args": []
+}

@@ -1,0 +1,26 @@
+using ImportStudio.Api.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<CustomerImportParser>();
+builder.Services.AddSingleton<ImportJobStore>();
+builder.Services.AddSingleton<ImportJobQueue>();
+builder.Services.AddSingleton<ImportJobProcessor>();
+builder.Services.AddHostedService<ImportJobWorker>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.MapControllers();
+
+app.Run();
+
+public partial class Program;

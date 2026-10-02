@@ -1,0 +1,98 @@
+@baseUrl = http://localhost:5125
+
+### 1. Lấy danh sách toàn bộ các Workflow và Rules trong hệ thống
+GET {{baseUrl}}/api/workflows
+Accept: application/json
+
+### 2. Kiểm tra tính hợp lệ của biểu thức logic trước khi lưu
+POST {{baseUrl}}/api/workflows/validate-rule
+Content-Type: application/json
+
+{
+  "expression": "Age >= 60 and HasChronicDisease == true and IsRightRoute == true",
+  "targetTypeName": "MedicalInsuranceContext"
+}
+
+### 3. Kiểm tra tính năng Sandbox an toàn (Chặn biểu thức chứa System.IO độc hại)
+POST {{baseUrl}}/api/workflows/validate-rule
+Content-Type: application/json
+
+{
+  "expression": "System.IO.File.Exists(\"C:\\secret.txt\")",
+  "targetTypeName": "MedicalInsuranceContext"
+}
+
+### 4. Ca BHYT 1: Trẻ em dưới 6 tuổi -> Hưởng 100% viện phí (Dừng ngay lập tức)
+POST {{baseUrl}}/api/evaluate/medical-insurance
+Content-Type: application/json
+
+{
+  "patientId": "BN-001",
+  "patientName": "Nguyễn Văn Bé",
+  "age": 4,
+  "isRightRoute": false,
+  "insuranceCardCode": "TE1",
+  "diagnosisCode": "J00",
+  "totalMedicalBill": 500000,
+  "hasChronicDisease": false
+}
+
+### 5. Ca BHYT 2: Người cao tuổi (70 tuổi) mắc bệnh mãn tính (Tăng huyết áp - I10) đúng tuyến -> 95%
+POST {{baseUrl}}/api/evaluate/medical-insurance
+Content-Type: application/json
+
+{
+  "patientId": "BN-002",
+  "patientName": "Trần Văn Cụ",
+  "age": 70,
+  "isRightRoute": true,
+  "insuranceCardCode": "GD4",
+  "diagnosisCode": "I10",
+  "totalMedicalBill": 3500000,
+  "hasChronicDisease": true
+}
+
+### 6. Ca BHYT 3: Bệnh nhân thông thường đi khám TRÁI TUYẾN -> Chỉ hưởng 40%
+POST {{baseUrl}}/api/evaluate/medical-insurance
+Content-Type: application/json
+
+{
+  "patientId": "BN-003",
+  "patientName": "Lê Văn Tuấn",
+  "age": 35,
+  "isRightRoute": false,
+  "insuranceCardCode": "DN4",
+  "diagnosisCode": "K29",
+  "totalMedicalBill": 1200000,
+  "hasChronicDisease": false
+}
+
+### 7. Ca E-Commerce 1: Khách hàng Diamond đơn hàng 2.500.000 -> Giảm 20% + Miễn phí vận chuyển
+POST {{baseUrl}}/api/evaluate/order-discount
+Content-Type: application/json
+
+{
+  "orderId": "ORD-2026-001",
+  "customerTier": "Diamond",
+  "totalOrderAmount": 2500000,
+  "itemCount": 5,
+  "isWeekend": false
+}
+
+### 8. Ca E-Commerce 2: Mua số lượng lớn (12 sản phẩm) -> Tặng quà đặc biệt
+POST {{baseUrl}}/api/evaluate/order-discount
+Content-Type: application/json
+
+{
+  "orderId": "ORD-2026-002",
+  "customerTier": "Standard",
+  "totalOrderAmount": 800000,
+  "itemCount": 12,
+  "isWeekend": true
+}
+
+### 9. Hot-Reload: Tắt tức thì Rule trẻ em trong BHYT mà không cần restart server
+PUT {{baseUrl}}/api/workflows/medical-insurance-approval/rules/bhyt-01-tre-em/toggle?isActive=false
+
+### 10. Hot-Reload: Bật lại Rule trẻ em
+PUT {{baseUrl}}/api/workflows/medical-insurance-approval/rules/bhyt-01-tre-em/toggle?isActive=true

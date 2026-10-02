@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MultiTenant.Api/MultiTenant.Api.csproj" />
+  <Project Path="MultiTenant.Tests/MultiTenant.Tests.csproj" />
+</Solution>

@@ -324,6 +324,12 @@ flowchart TD
 | [**118-AI-Agent-Messaging**](./118-AI-Agent-Messaging/) | `5153` | MassTransit · Semantic Kernel | AI Agent tích hợp vào Event-Driven Pipeline; AI model tháo lắp (pluggable/NoOp fallback) không ảnh hưởng workflow chính. | 13/13 |
 | [**119-RAG-Pipeline**](./119-RAG-Pipeline/) | `5154` | Semantic Kernel · TF-IDF Vector Search | Upload tài liệu → Chunking → Vector Search → AI trả lời; AI pluggable, fallback keyword search khi AI disabled. | 28/28 |
 
+### Import & Data Operations
+
+| Dự án | Port | Stack | Mục đích | Tests |
+|---|:---:|---|---|:---:|
+| [**123-ImportStudio**](./123-ImportStudio/) | `5159` | CsvHelper · ClosedXML · Channels · BackgroundService | Nhận CSV/XLSX từ Excel, Google Sheets hoặc hệ thống cũ; preview, tự ghép cột, báo lỗi theo dòng và import nền có theo dõi tiến độ. | 4/4 |
+
 ---
 
 ## 🎯 Ma Trận Lựa Chọn Giải Pháp Doanh Nghiệp (Solution Blueprints)

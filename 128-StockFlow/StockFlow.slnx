@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="StockFlow.Api/StockFlow.Api.csproj" />
+  <Project Path="StockFlow.Tests/StockFlow.Tests.csproj" />
+</Solution>

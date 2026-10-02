@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ImportStudio.Api/ImportStudio.Api.csproj" />
+  <Project Path="ImportStudio.Tests/ImportStudio.Tests.csproj" />
+</Solution>

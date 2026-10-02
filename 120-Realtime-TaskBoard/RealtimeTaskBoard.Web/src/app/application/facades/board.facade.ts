@@ -1,126 +1,160 @@
 import { Injectable, inject, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IBoardApiPort } from '../../domain/ports/board-api.port';
 import { ISignalRPort } from '../../domain/ports/signalr.port';
 import { BoardStateService } from '../state/board-state.service';
+import { BoardDto } from '../../domain/models/board.model';
 import { CreateBoardRequest, UpdateBoardRequest } from '../../domain/requests/board.request';
 import { CreateColumnRequest } from '../../domain/requests/column.request';
 import { CreateTaskRequest, UpdateTaskRequest, MoveTaskRequest } from '../../domain/requests/task.request';
 
 /**
- * Facade Pattern là lớp trung gian giúp "che giấu" sự phức tạp bên dưới.
- * Components không cần biết về HTTP Requests, SignalR, hay cách cập nhật state cục bộ.
- * Component chỉ việc gọi hàm của Facade và lắng nghe state.
- * 
- * Tại sao inject các abstract classes (Interfaces/Ports) thay vì inject adapter cụ thể?
- * Để tuân thủ Dependency Inversion. Facade chỉ tương tác thông qua Port (Hợp đồng),
- * nhờ đó có thể dễ dàng thay đổi thư viện gọi API hoặc mock test mà Facade không bị ảnh hưởng.
+ * ╔══════════════════════════════════════════════════════════════════════╗
+ * ║  TẦNG APPLICATION - Board Facade (Điều phối Use-case)              ║
+ * ╠══════════════════════════════════════════════════════════════════════╣
+ * ║  Facade Pattern: Lớp trung gian giữa Presentation và các service  ║
+ * ║  phức tạp bên dưới. Component chỉ cần gọi Facade, không cần biết  ║
+ * ║  về HTTP, SignalR, hay cách quản lý state cục bộ.                  ║
+ * ║                                                                    ║
+ * ║  Luồng dữ liệu SignalR end-to-end:                                ║
+ * ║  User B thao tác → Facade gọi API → Server lưu DB →               ║
+ * ║  Server broadcast qua Hub → Client (User A) nhận event ở đây →    ║
+ * ║  Facade cập nhật State → Angular tự re-render UI qua Signal.       ║
+ * ║                                                                    ║
+ * ║  Tại sao inject abstract class (Port) thay vì adapter cụ thể?     ║
+ * ║  → Dependency Inversion: Facade chỉ tương tác qua hợp đồng,      ║
+ * ║  có thể swap HTTP client thành mock khi test mà không sửa code.   ║
+ * ╚══════════════════════════════════════════════════════════════════════╝
  */
 @Injectable({ providedIn: 'root' })
 export class BoardFacade implements OnDestroy {
-  // Tiêm (inject) các phụ thuộc theo chuẩn Dependency Injection
+  /** Inject các phụ thuộc qua abstract Port (Dependency Inversion) */
   private readonly boardApi = inject(IBoardApiPort);
   private readonly signalR = inject(ISignalRPort);
-  private readonly boardState = inject(BoardStateService);
+  readonly state = inject(BoardStateService);
 
-  private signalRSubscriptions = new Subscription();
+  /** Quản lý tất cả subscription SignalR để cleanup khi disconnect */
+  private signalRSubs = new Subscription();
 
-  /**
-   * Lấy dữ liệu toàn bộ Board và danh sách log ban đầu từ API (REST),
-   * sau đó đẩy dữ liệu vào State quản lý.
-   */
+  // ═══════════════════════════════════════════
+  //  QUERY: Đọc dữ liệu từ API
+  // ═══════════════════════════════════════════
+
+  /** Lấy danh sách tất cả board (cho trang board-list) */
+  getBoards(): Observable<BoardDto[]> {
+    return this.boardApi.getBoards();
+  }
+
+  /** Load chi tiết 1 board + activities → đẩy vào State */
   loadBoard(id: string) {
-    this.boardApi.getBoard(id).subscribe(boardDetail => {
-      this.boardState.setBoard(boardDetail);
+    this.boardApi.getBoard(id).subscribe(board => {
+      // Sắp xếp cột và task theo position trước khi set vào state
+      board.columns.sort((a, b) => a.position - b.position);
+      board.columns.forEach(c => c.tasks.sort((a, b) => a.position - b.position));
+      this.state.setBoard(board);
     });
 
-    this.boardApi.getActivities(id).subscribe(activities => {
-      // Đặt danh sách activity (giả sử có phương thức setActivities, ở đây dùng tạm set qua update,
-      // hoặc thêm vào state tùy logic)
-      this.boardState.activities.set(activities);
+    this.boardApi.getActivities(id).subscribe(acts => {
+      this.state.activities.set(acts);
     });
   }
 
+  // ═══════════════════════════════════════════
+  //  REALTIME: Kết nối SignalR
+  // ═══════════════════════════════════════════
+
   /**
-   * Kết nối vào SignalR để nhận push notifications.
-   * 
-   * Tại sao subscribe events ở đây thay vì Component?
-   * Vì Facade quản lý luồng dữ liệu trung tâm. Khi server đẩy (push) data về, 
-   * Facade trực tiếp sửa đổi State. Các Component đang render UI dựa trên State sẽ tự động cập nhật
-   * (Reactiveness). Logic đồng bộ data tập trung tại một nơi giúp dễ debug, dễ đọc.
+   * Kết nối vào 3 SignalR Hub và subscribe events.
+   *
+   * Tại sao subscribe events ở Facade thay vì Component?
+   * → Vì Facade quản lý luồng dữ liệu trung tâm. Khi server push data,
+   * Facade trực tiếp sửa State. Components đang render UI dựa trên State
+   * sẽ tự động cập nhật nhờ Angular Signal reactivity.
+   * Logic đồng bộ data tập trung 1 nơi → dễ debug, dễ maintain.
    */
   async connectRealtime(boardId: string) {
     await this.signalR.connect(boardId);
 
-    // Luồng dữ liệu SignalR end-to-end: 
-    // User B thao tác -> Gọi API qua Facade -> API Server lưu DB -> Server broadcast qua Hub -> 
-    // Client (User A) nhận event ở đây -> Facade update State cục bộ -> UI User A tự cập nhật qua Signal.
-    this.signalRSubscriptions.add(
+    // Subscribe board events: BoardUpdated, ColumnAdded, ColumnMoved, ColumnDeleted
+    this.signalRSubs.add(
       this.signalR.boardEvents$.subscribe(event => {
-        console.log('Realtime Board Event Received:', event);
-        // Tùy theo event.type để gọi các hàm update tương ứng trên boardState
-        // Ví dụ: if (event.type === 'ColumnCreated') this.boardState.addColumn(event.data);
+        if (event.type === 'BoardUpdated') this.state.updateBoardInfo(event.data);
+        if (event.type === 'ColumnAdded') this.state.addColumn(event.data);
+        if (event.type === 'ColumnDeleted') this.state.removeColumn(event.data.columnId ?? event.data);
+        if (event.type === 'ColumnMoved') this.loadBoard(boardId); // Reload khi reorder
       })
     );
 
-    this.signalRSubscriptions.add(
+    // Subscribe task events: TaskCreated, TaskUpdated, TaskMoved, TaskDeleted
+    this.signalRSubs.add(
       this.signalR.taskEvents$.subscribe(event => {
-        console.log('Realtime Task Event Received:', event);
-        // if (event.type === 'TaskCreated') this.boardState.addTask(event.data);
+        if (event.type === 'TaskCreated') this.state.addTask(event.data);
+        if (event.type === 'TaskUpdated') this.state.updateTask(event.data);
+        if (event.type === 'TaskDeleted') this.state.removeTask(event.data.taskId, event.data.columnId);
+        if (event.type === 'TaskMoved') this.loadBoard(boardId);
       })
     );
 
-    this.signalRSubscriptions.add(
+    // Subscribe activity events: ActivityLogged
+    this.signalRSubs.add(
       this.signalR.activityEvents$.subscribe(event => {
-        console.log('Realtime Activity Event Received:', event);
-        // if (event.type === 'ActivityCreated') this.boardState.addActivity(event.data);
+        if (event.type === 'ActivityLogged') this.state.addActivity(event.data);
       })
     );
   }
 
-  /**
-   * Ngắt kết nối và giải phóng resources khi không cần thiết (khi thoát khỏi màn hình board).
-   */
+  /** Ngắt kết nối SignalR và cleanup tất cả subscriptions */
   async disconnectRealtime(boardId: string) {
-    this.signalRSubscriptions.unsubscribe();
+    this.signalRSubs.unsubscribe();
+    this.signalRSubs = new Subscription(); // Reset để có thể reconnect
     await this.signalR.disconnect(boardId);
   }
 
-  // ---- Các thao tác ghi qua API ----
-  
-  createBoard(req: CreateBoardRequest) {
-    return this.boardApi.createBoard(req).subscribe();
+  // ═══════════════════════════════════════════
+  //  COMMAND: Ghi dữ liệu qua API
+  // ═══════════════════════════════════════════
+
+  /** Tạo board mới */
+  createBoard(req: CreateBoardRequest): Observable<BoardDto> {
+    return this.boardApi.createBoard(req);
   }
 
+  /** Xóa board */
   deleteBoard(id: string) {
-    return this.boardApi.deleteBoard(id).subscribe();
+    return this.boardApi.deleteBoard(id);
   }
 
+  /** Tạo cột mới trong board */
   createColumn(boardId: string, req: CreateColumnRequest) {
-    return this.boardApi.createColumn(boardId, req).subscribe();
+    return this.boardApi.createColumn(boardId, req);
   }
 
+  /** Xóa cột */
   deleteColumn(id: string) {
-    return this.boardApi.deleteColumn(id).subscribe();
+    return this.boardApi.deleteColumn(id);
   }
 
+  /** Tạo task mới trong cột */
   createTask(columnId: string, req: CreateTaskRequest) {
-    return this.boardApi.createTask(columnId, req).subscribe();
+    return this.boardApi.createTask(columnId, req);
   }
 
+  /** Cập nhật task */
   updateTask(id: string, req: UpdateTaskRequest) {
-    return this.boardApi.updateTask(id, req).subscribe();
+    return this.boardApi.updateTask(id, req);
   }
 
+  /** Di chuyển task sang cột/vị trí khác */
   moveTask(id: string, req: MoveTaskRequest) {
-    return this.boardApi.moveTask(id, req).subscribe();
+    return this.boardApi.moveTask(id, req);
   }
 
+  /** Xóa task */
   deleteTask(id: string) {
-    return this.boardApi.deleteTask(id).subscribe();
+    return this.boardApi.deleteTask(id);
   }
 
   ngOnDestroy() {
-    this.signalRSubscriptions.unsubscribe();
+    this.signalRSubs.unsubscribe();
   }
 }

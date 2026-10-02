@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:5125
+
+### 1. Thông tin service & Aspire features
+GET {{baseUrl}}/api/info
+
+### 2. Lấy tất cả tasks
+GET {{baseUrl}}/api/tasks
+
+### 3. Tạo task mới (sẽ được push vào Redis queue → Worker xử lý async)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Gửi email xác nhận đơn hàng #1234",
+  "description": "Gửi email HTML đến customer@example.com với chi tiết đơn hàng"
+}
+
+### 4. Tạo thêm task
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Tạo báo cáo doanh thu tháng 9",
+  "description": "Export Excel từ DB và upload lên S3"
+}
+
+### 5. Lấy task theo ID (lần đầu: DB; lần sau: Redis cache)
+GET {{baseUrl}}/api/tasks/1
+
+### 6. Lấy lại task cùng ID (nên thấy cache HIT trong logs)
+GET {{baseUrl}}/api/tasks/1
+
+### 7. Xóa task (invalidate cache)
+DELETE {{baseUrl}}/api/tasks/1
+
+### 8. Health check (từ ServiceDefaults)
+GET {{baseUrl}}/health
+
+### 9. Liveness probe (cho k8s)
+GET {{baseUrl}}/alive

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>HomeDrop — Web app prototype</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#172c27;background:#f5f7f3;font-synthesis:none}*{box-sizing:border-box}body{margin:0}.top{height:68px;background:#fff;border-bottom:1px solid #e2e9e3;display:flex;align-items:center;justify-content:space-between;padding:0 max(22px,calc((100vw - 1080px)/2))}.brand{font-size:19px;font-weight:750;letter-spacing:-.5px;color:#17664e}.brand b{display:inline-grid;place-items:center;background:#17664e;color:white;width:30px;height:30px;border-radius:10px;margin-right:8px}.secure{font-size:13px;color:#47715e}.wrap{max-width:1080px;margin:48px auto;padding:0 22px}.notice{background:#fff4df;border:1px solid #f1d9a9;color:#70501a;padding:12px 15px;border-radius:12px;font-size:13px;margin-bottom:28px}.hero{text-align:center;margin-bottom:34px}.hero h1{font-size:clamp(29px,5vw,46px);letter-spacing:-1.5px;line-height:1.1;margin:0 0 12px}.hero p{color:#607069;margin:0 auto;max-width:590px;line-height:1.6}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:white;border:1px solid #e0e8e1;border-radius:20px;padding:26px;box-shadow:0 14px 35px #243c2010}.card h2{font-size:21px;margin:0 0 7px}.sub{color:#63736b;font-size:14px;margin:0 0 20px;line-height:1.5}.tag{display:inline-block;border-radius:99px;background:#e7f2e9;color:#256146;font-size:12px;padding:5px 10px;margin-bottom:17px}.qr{width:158px;height:158px;margin:4px auto 17px;border:10px solid white;outline:1px solid #d7dfd8;background-color:#fff;background-image:linear-gradient(90deg,#17372b 10px,transparent 10px),linear-gradient(#17372b 10px,transparent 10px),linear-gradient(90deg,transparent 20px,#17372b 20px 30px,transparent 30px),linear-gradient(transparent 20px,#17372b 20px 30px,transparent 30px);background-size:38px 38px,38px 38px,57px 57px,57px 57px;background-position:0 0,0 0,9px 7px,9px 7px;position:relative}.qr:before,.qr:after{content:"";position:absolute;width:35px;height:35px;background:#fff;border:8px solid #17372b;box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 13px #17372b}.qr:before{left:3px;top:3px}.qr:after{right:3px;bottom:3px}.center{text-align:center;color:#697971;font-size:13px;line-height:1.5}.btn{border:0;border-radius:11px;background:#17664e;color:#fff;padding:13px 17px;font:inherit;font-weight:650;font-size:14px;min-height:47px;cursor:pointer;width:100%;margin-top:15px}.btn:hover{background:#10543e}.btn.secondary{background:#e9f2eb;color:#17664e}.btn.secondary:hover{background:#dcebe0}.steps{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:11px}.steps li{display:flex;align-items:center;gap:10px;color:#53645c;font-size:14px}.n{height:25px;width:25px;border-radius:50%;display:grid;place-items:center;background:#edf3ed;color:#17664e;font-size:12px;font-weight:700;flex:none}.field{display:block;width:100%;border:1px dashed #a9b9ad;background:#fbfcfa;border-radius:12px;padding:18px;text-align:center;color:#516259;cursor:pointer;font-size:14px}.field input{position:absolute;left:-9999px}.file{display:none;margin-top:12px;padding:11px;border-radius:10px;background:#f1f6f1;font-size:13px;overflow-wrap:anywhere}.state{margin-top:15px;color:#597067;font-size:13px;min-height:20px}.progress{display:none;margin-top:18px}.bar{height:8px;background:#e5ece5;border-radius:20px;overflow:hidden}.fill{height:100%;width:0;background:#25815f;transition:width .4s}.progress label{display:block;margin-top:8px;color:#586a60;font-size:12px}.fine{font-size:12px;color:#7a8980;line-height:1.55;margin-top:19px}.how{margin:35px 0 0;background:#eaf1e9;border-radius:16px;padding:20px 24px}.how h3{margin:0 0 12px;font-size:15px}.flow{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;color:#50635a}.flow span{background:#fff;border-radius:9px;padding:9px 11px;text-align:center}.flow b{color:#55906e}.foot{text-align:center;font-size:12px;color:#718078;margin:20px 0 40px}@media(max-width:720px){.wrap{margin:25px auto}.grid{grid-template-columns:1fr}.card{padding:22px}.flow{flex-direction:column}.flow b{transform:rotate(90deg)}.top{padding:0 17px}}
+  </style>
+</head>
+<body>
+  <header class="top"><div class="brand"><b>H</b>HomeDrop</div><div class="secure">🔒 Kết nối HTTPS</div></header>
+  <main class="wrap">
+    <div class="notice"><strong>Prototype giao diện:</strong> QR, chọn file và thanh tiến trình đang mô phỏng. Chưa có signaling hoặc truyền WebRTC thật.</div>
+    <section class="hero"><h1>Video của bạn.<br>Đi thẳng giữa hai thiết bị.</h1><p>Mở HomeDrop trên điện thoại và máy tính. Quét mã, chọn video, xác nhận nhận. Không cài ứng dụng, không tạo tài khoản.</p></section>
+    <section class="grid" aria-label="Luồng gửi và nhận">
+      <article class="card">
+        <span class="tag">1 · Trên máy tính</span><h2>Nhận video</h2><p class="sub">Mở trang này trên máy tính rồi để người gửi quét mã.</p>
+        <div class="qr" role="img" aria-label="Mã QR minh họa"></div><p class="center">Mã minh họa · hết hạn sau 10 phút<br>Máy tính sẽ hỏi nơi lưu trước khi truyền.</p>
+        <button class="btn secondary" id="newRoom">Tạo mã mới</button>
+        <ul class="steps"><li><span class="n">1</span>Mở HomeDrop trên điện thoại</li><li><span class="n">2</span>Quét QR và chọn video</li><li><span class="n">3</span>Xác nhận nhận trên máy tính</li></ul>
+      </article>
+      <article class="card">
+        <span class="tag">2 · Trên điện thoại</span><h2>Gửi video</h2><p class="sub">Quét QR bằng camera để mở phiên, sau đó chọn video muốn chuyển.</p>
+        <label class="field">Chọn video từ thiết bị<input id="picker" type="file" accept="video/*"></label>
+        <div class="file" id="fileInfo"></div>
+        <button class="btn" id="send" disabled>Chọn video để bắt đầu</button>
+        <div class="state" id="state" aria-live="polite">Chưa chọn tệp</div>
+        <div class="progress" id="progress"><div class="bar"><div class="fill" id="fill"></div></div><label id="pct">0%</label></div>
+        <p class="fine">Khi kết nối trực tiếp thành công, video truyền giữa hai trình duyệt; máy chủ HomeDrop chỉ giúp ghép nối. Hai trang cần mở trong lúc gửi. Nếu mạng không tạo được kết nối trực tiếp, HomeDrop sẽ báo để bạn thử lại.</p>
+      </article>
+    </section>
+    <section class="how"><h3>Video đi theo đường nào?</h3><div class="flow"><span>Điện thoại<br><small>trình duyệt</small></span><b>⟷ WebRTC trực tiếp ⟷</b><span>Máy tính<br><small>trình duyệt</small></span></div><p class="fine">ASP.NET Core + SignalR phục vụ trang và chuyển tín hiệu kết nối. MVP không upload video lên HomeDrop và không dùng TURN relay.</p></section>
+    <footer class="foot">Bản xem trước thiết kế · Chưa phải ứng dụng truyền file thực tế</footer>
+  </main>
+  <script>
+    const picker=document.querySelector('#picker'),fileInfo=document.querySelector('#fileInfo'),send=document.querySelector('#send'),state=document.querySelector('#state'),progress=document.querySelector('#progress'),fill=document.querySelector('#fill'),pct=document.querySelector('#pct');let timer;
+    picker.addEventListener('change',()=>{clearInterval(timer);progress.style.display='none';fill.style.width='0%';const f=picker.files[0];fileInfo.style.display=f?'block':'none';if(!f){send.disabled=true;send.textContent='Chọn video để bắt đầu';state.textContent='Chưa chọn tệp';return}fileInfo.textContent=`${f.name} · ${(f.size/1024/1024).toFixed(1)} MB`;send.disabled=false;send.textContent='Mô phỏng gửi video';state.textContent='Đã chọn video · thao tác tiếp theo đang được mô phỏng'});
+    send.addEventListener('click',()=>{let n=0;send.disabled=true;state.textContent='Đang mô phỏng kết nối trực tiếp…';progress.style.display='block';timer=setInterval(()=>{n=Math.min(100,n+4);fill.style.width=n+'%';pct.textContent=n+'% · dữ liệu mô phỏng';if(n===100){clearInterval(timer);state.textContent='Mô phỏng hoàn tất · chưa có file nào được truyền';send.disabled=false}},120)});
+    document.querySelector('#newRoom').addEventListener('click',e=>{const b=e.currentTarget;b.textContent='Mã minh họa đã làm mới';setTimeout(()=>b.textContent='Tạo mã mới',1500)});
+  </script>
+</body>
+</html>
+

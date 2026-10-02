@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.angular/
+**/dist/
+**/coverage/
+**/TestResults/
+StockFlow.Api/wwwroot/
+.env
+*.pfx
+*.p12
+**/.install-backup/
+**/package-lock.initial.json
+artifacts/

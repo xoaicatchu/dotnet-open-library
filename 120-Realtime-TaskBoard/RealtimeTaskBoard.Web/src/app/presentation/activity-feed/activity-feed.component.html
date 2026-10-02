@@ -1,17 +1,26 @@
+<!-- 
+  Activity Feed: Sidebar hiển thị lịch sử hoạt động real-time trên board.
+  Dữ liệu được lấy từ BoardStateService.activities() (Angular Signal).
+  Khi có event ActivityLogged từ SignalR, Facade tự động push vào state → UI cập nhật tức thì.
+-->
 <div class="activity-feed">
-  <h3>Recent Activity</h3>
-  <div class="activity-list">
-    @for (activity of boardState.activities(); track activity.id) {
+  <h3>Activity</h3>
+  <div class="activities-list">
+    @for (act of boardState.activities(); track act.id) {
       <div class="activity-item">
-        <div class="activity-header">
-          <span class="user">{{ activity.user }}</span>
-          <span class="time">{{ activity.timestamp | date:'shortTime' }}</span>
+        <div class="meta">
+          <span class="actor">{{ act.actorName }}</span>
+          <span class="time">{{ act.timestamp | date:'short' }}</span>
         </div>
-        <p class="detail">{{ activity.detail }}</p>
+        <div class="action">
+          {{ act.actionType }} {{ act.entityType }}
+          @if (act.newValue) {
+            <span class="value-change">to {{ act.newValue }}</span>
+          }
+        </div>
       </div>
-    }
-    @empty {
-      <div class="no-activity">No recent activities</div>
+    } @empty {
+      <p class="empty">No activity yet</p>
     }
   </div>
 </div>

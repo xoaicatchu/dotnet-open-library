@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AiCodeSandbox.Api/AiCodeSandbox.Api.csproj" />
+  <Project Path="AiCodeSandbox.Tests/AiCodeSandbox.Tests.csproj" />
+</Solution>

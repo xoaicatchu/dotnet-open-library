@@ -1,0 +1,27 @@
+@ImportStudio_HostAddress = http://localhost:5159
+
+### 1. Preview CSV/XLSX
+# Đổi đường dẫn file thành file thật trên máy của bạn.
+POST {{ImportStudio_HostAddress}}/api/imports/preview
+Content-Type: multipart/form-data; boundary=ImportStudioBoundary
+
+--ImportStudioBoundary
+Content-Disposition: form-data; name="file"; filename="customers.csv"
+Content-Type: text/csv
+
+Name,Phone,Email
+Nguyen An,0900000000,an@example.com
+Missing Phone,,bad@example.com
+--ImportStudioBoundary--
+
+### 2. Start job (thay ID bằng giá trị nhận từ request preview)
+POST {{ImportStudio_HostAddress}}/api/imports/{{jobId}}/start
+
+### 3. Poll trạng thái job
+GET {{ImportStudio_HostAddress}}/api/imports/{{jobId}}
+
+### 4. Xem lỗi theo từng dòng
+GET {{ImportStudio_HostAddress}}/api/imports/{{jobId}}/errors
+
+### 5. Tải danh sách lỗi thành CSV
+GET {{ImportStudio_HostAddress}}/api/imports/{{jobId}}/errors.csv

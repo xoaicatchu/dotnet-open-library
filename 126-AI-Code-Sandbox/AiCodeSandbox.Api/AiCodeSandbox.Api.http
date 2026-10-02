@@ -1,0 +1,65 @@
+@baseUrl = http://localhost:5126
+
+### 1. Thực thi C# đơn giản (InProcess / Roslyn)
+POST {{baseUrl}}/api/sandbox/execute
+Content-Type: application/json
+
+{
+  "code": "var nums = Enumerable.Range(1, 10).ToList();\nConsole.WriteLine(\"Sum: \" + nums.Sum());\nConsole.WriteLine(\"Avg: \" + nums.Average());",
+  "language": "csharp",
+  "timeoutSeconds": 5,
+  "mode": 0
+}
+
+### 2. Thực thi C# – lỗi runtime (chia cho 0)
+POST {{baseUrl}}/api/sandbox/execute
+Content-Type: application/json
+
+{
+  "code": "int x = 10 / 0;\nConsole.WriteLine(x);",
+  "language": "csharp",
+  "timeoutSeconds": 5,
+  "mode": 0
+}
+
+### 3. Thực thi C# – timeout test
+POST {{baseUrl}}/api/sandbox/execute
+Content-Type: application/json
+
+{
+  "code": "await Task.Delay(10000);",
+  "language": "csharp",
+  "timeoutSeconds": 2,
+  "mode": 0
+}
+
+### 4. AI Sinh code (Stub nếu không có API key)
+POST {{baseUrl}}/api/ai/generate
+Content-Type: application/json
+
+{
+  "prompt": "in bảng cửu chương từ 1 đến 5",
+  "language": "csharp"
+}
+
+### 5. AI Sinh và Chạy ngay
+POST {{baseUrl}}/api/ai/generate-and-run
+Content-Type: application/json
+
+{
+  "prompt": "tính 10 số Fibonacci đầu tiên và in ra",
+  "language": "csharp",
+  "timeoutSeconds": 10,
+  "mode": 0
+}
+
+### 6. Docker Sandbox (cần Docker daemon)
+POST {{baseUrl}}/api/sandbox/execute
+Content-Type: application/json
+
+{
+  "code": "Console.WriteLine(\"Hello from Docker!\");",
+  "language": "csharp",
+  "timeoutSeconds": 30,
+  "mode": 1
+}

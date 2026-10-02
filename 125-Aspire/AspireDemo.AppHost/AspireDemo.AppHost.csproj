@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>aspire-demo-host</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Aspire Hosting SDK: orchestrates services, containers, databases -->
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <!-- Redis container support -->
+    <PackageReference Include="Aspire.Hosting.Redis" Version="9.3.1" />
+    <!-- PostgreSQL container support -->
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference child services so AppHost can orchestrate them -->
+    <ProjectReference Include="..\AspireDemo.ApiService\AspireDemo.ApiService.csproj" />
+    <ProjectReference Include="..\AspireDemo.Worker\AspireDemo.Worker.csproj" />
+  </ItemGroup>
+</Project>

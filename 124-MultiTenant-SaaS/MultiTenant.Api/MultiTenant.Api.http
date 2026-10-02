@@ -1,0 +1,76 @@
+@baseUrl = http://localhost:5200
+
+### 1. Lấy danh sách Tenant Catalog (Không cần Header)
+GET {{baseUrl}}/api/tenants
+Accept: application/json
+
+### 2. Onboard Tenant mới (Standard - Shared Database)
+POST {{baseUrl}}/api/tenants
+Content-Type: application/json
+
+{
+  "id": "gamma-solutions",
+  "name": "Gamma Solutions Corp",
+  "subdomain": "gamma",
+  "tier": 1
+}
+
+### 3. Tạo sản phẩm cho Tenant Standard 1 (Acme)
+POST {{baseUrl}}/api/products
+X-Tenant-Id: tenant-standard-1
+Content-Type: application/json
+
+{
+  "name": "Cloud Backup Storage 1TB",
+  "sku": "STORAGE-1TB",
+  "price": 19.99,
+  "stockQuantity": 500
+}
+
+### 4. Tạo sản phẩm cho Tenant Standard 2 (Beta)
+POST {{baseUrl}}/api/products
+X-Tenant-Id: tenant-standard-2
+Content-Type: application/json
+
+{
+  "name": "Logistics Dispatch Route Optimizer",
+  "sku": "ROUTE-OPT",
+  "price": 299.00,
+  "stockQuantity": 100
+}
+
+### 5. Tạo sản phẩm cho Tenant Enterprise VIP (Dedicated DB riêng: tenant_vip.db)
+POST {{baseUrl}}/api/products
+X-Tenant-Id: tenant-enterprise-vip
+Content-Type: application/json
+
+{
+  "name": "Dedicated AI On-Premise GPU Node",
+  "sku": "VIP-GPU-01",
+  "price": 25000.00,
+  "stockQuantity": 2
+}
+
+### 6. Query sản phẩm của Tenant Standard 1 (Chỉ thấy sản phẩm của Acme, không thấy của Beta hay VIP)
+GET {{baseUrl}}/api/products
+X-Tenant-Id: tenant-standard-1
+Accept: application/json
+
+### 7. Query sản phẩm của Tenant Standard 2 (Chỉ thấy sản phẩm của Beta)
+GET {{baseUrl}}/api/products
+X-Tenant-Id: tenant-standard-2
+Accept: application/json
+
+### 8. Query sản phẩm của Tenant Enterprise VIP (Chạy trên Dedicated SQLite DB)
+GET {{baseUrl}}/api/products
+X-Tenant-Id: tenant-enterprise-vip
+Accept: application/json
+
+### 9. Thử gọi API khi quên Header Tenant (Sẽ trả về HTTP 400 Bad Request)
+GET {{baseUrl}}/api/products
+Accept: application/json
+
+### 10. Thử gọi API với Tenant bị khóa (tenant-suspended -> HTTP 403 Forbidden)
+GET {{baseUrl}}/api/products
+X-Tenant-Id: tenant-suspended
+Accept: application/json
